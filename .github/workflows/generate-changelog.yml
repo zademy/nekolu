@@ -1,0 +1,102 @@
+name: Generate Changelog
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      future_release:
+        description: "Versión a usar para la sección unreleased (ej. v0.37.0)"
+        required: false
+        type: string
+      since_tag:
+        description: "Tag inicial opcional para acotar el rango"
+        required: false
+        type: string
+      due_tag:
+        description: "Tag final opcional para acotar el rango"
+        required: false
+        type: string
+
+concurrency:
+  group: generate-changelog-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  issues: read
+  pull-requests: read
+
+jobs:
+  changelog:
+    name: Build changelog
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog
+        env:
+          CHANGELOG_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FUTURE_RELEASE: ${{ inputs.future_release }}
+          SINCE_TAG: ${{ inputs.since_tag }}
+          DUE_TAG: ${{ inputs.due_tag }}
+          RELEASE_BRANCH: main
+        run: |
+          set -euo pipefail
+
+          REPO_OWNER="${GITHUB_REPOSITORY%/*}"
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+
+          ARGS=(
+            --user "$REPO_OWNER"
+            --project "$REPO_NAME"
+            --output CHANGELOG.md
+            --issues
+            --issues-wo-labels
+            --pull-requests
+            --pr-wo-labels
+            --unreleased
+            --compare-link
+            --author
+            --usernames-as-github-logins
+            --release-branch "$RELEASE_BRANCH"
+            --verbose
+          )
+
+          if [ -n "${FUTURE_RELEASE}" ]; then
+            ARGS+=(--future-release "${FUTURE_RELEASE}")
+          fi
+
+          if [ -n "${SINCE_TAG}" ]; then
+            ARGS+=(--since-tag "${SINCE_TAG}")
+          fi
+
+          if [ -n "${DUE_TAG}" ]; then
+            ARGS+=(--due-tag "${DUE_TAG}")
+          fi
+
+          docker run --rm \
+            -v "${PWD}:/usr/local/src/your-app" \
+            -e CHANGELOG_GITHUB_TOKEN \
+            githubchangeloggenerator/github-changelog-generator \
+            "${ARGS[@]}"
+
+      - name: Commit updated changelog
+        run: |
+          set -euo pipefail
+
+          if ! git status --porcelain -- CHANGELOG.md | grep -q .; then
+            echo "No changes detected in CHANGELOG.md"
+            exit 0
+          fi
+
+          git config user.name "zademy"
+          git add CHANGELOG.md
+          git commit -m "docs(changelog): update CHANGELOG.md"
+          git pull --rebase origin main
+          git push origin HEAD:main

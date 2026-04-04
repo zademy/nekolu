@@ -1,0 +1,138 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title layout:title-pattern="$CONTENT_TITLE - Nekolu">Nekolu</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css"
+    />
+    <link
+      rel="stylesheet"
+      th:href="@{/vendors/dropzone/dropzone.css}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css"
+    />
+    <link th:href="@{/css/app.css(v=${#dates.createNow().time})}" rel="stylesheet" />
+  </head>
+  <body class="app-body">
+    <div class="app-shell">
+      <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-mark">
+            <i class="fa-brands fa-telegram"></i>
+          </div>
+          <div>
+            <span>Nekolu</span>
+            <small>Your personal Telegram storage</small>
+          </div>
+        </div>
+        <nav class="sidebar-nav">
+          <a
+            th:href="@{/}"
+            th:classappend="${activePage == 'dashboard'} ? 'active'"
+            class="sidebar-link"
+          >
+            <i class="fa-solid fa-gauge-high"></i>
+            <span>Home</span>
+          </a>
+          <a
+            th:href="@{/files}"
+            th:classappend="${activePage == 'files'} ? 'active'"
+            class="sidebar-link"
+          >
+            <i class="fa-solid fa-folder-open"></i>
+            <span>Files</span>
+          </a>
+          <a
+            th:href="@{/folders}"
+            th:classappend="${activePage == 'folders'} ? 'active'"
+            class="sidebar-link"
+          >
+            <i class="fa-solid fa-folder-tree"></i>
+            <span>Folders</span>
+          </a>
+          <a
+            th:href="@{/stats}"
+            th:classappend="${activePage == 'stats'} ? 'active'"
+            class="sidebar-link"
+          >
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Statistics</span>
+          </a>
+          <div class="sidebar-divider"></div>
+          <a href="/swagger-ui.html" target="_blank" class="sidebar-link">
+            <i class="fa-solid fa-book"></i>
+            <span>API Docs</span>
+          </a>
+        </nav>
+        <div class="sidebar-footer">
+          <div class="sidebar-footnote">
+            Save files, organize folders, and use Telegram as your private
+            cloud.
+          </div>
+          <div class="sidebar-status" id="connectionStatus">
+            <span class="status-dot status-offline"></span>
+            <span class="status-text">Checking connection...</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="topbar-left">
+            <button
+              class="btn btn-link sidebar-toggle"
+              id="sidebarToggle"
+              title="Show navigation"
+            >
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="topbar-title">
+              <h1 layout:fragment="page-title">Home</h1>
+              <p>A clean interface for your personal Telegram storage.</p>
+            </div>
+          </div>
+        </header>
+
+        <div class="page-content">
+          <section layout:fragment="content"></section>
+        </div>
+      </main>
+    </div>
+
+    <th:block layout:fragment="modals"></th:block>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+     <script th:src="@{/vendors/dropzone/dropzone.js(v=${#dates.createNow().time})}"></script>
+    <script>
+      if (globalThis.Dropzone) {
+        globalThis.Dropzone.autoDiscover = false;
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script th:src="@{/js/api-client.js(v=${#dates.createNow().time})}"></script>
+    <script th:src="@{/js/grid-table.js(v=${#dates.createNow().time})}"></script>
+    <script th:src="@{/js/app.js(v=${#dates.createNow().time})}"></script>
+    <th:block layout:fragment="scripts"></th:block>
+  </body>
+</html>

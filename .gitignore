@@ -1,0 +1,73 @@
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### Build outputs ###
+out/
+release/
+debug/
+tmp/
+temp/
+.cache/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+.qoder/
+
+### OS / editor noise ###
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+### Logs ###
+*.log
+logs/
+log/
+
+### Local environment / secrets ###
+.env
+.env.*
+!.env.example
+!.env.sample
+*.local
+*.secret
+secrets/
+
+### Spring / local runtime config ###
+src/main/resources/application.properties
+src/main/resources/application-*.properties
+!src/main/resources/application.example.properties
+!src/main/resources/application-*.example.properties
+
+### TDLib local state ###
+tdlib/
+**/tdlib/

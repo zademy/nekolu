@@ -1,0 +1,1145 @@
+<!doctype html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/base}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Files</title>
+  </head>
+  <body>
+    <h1 layout:fragment="page-title">
+      <i class="fa-solid fa-folder-open me-2 text-primary"></i>
+      Files
+    </h1>
+
+    <div layout:fragment="content">
+      <div class="page-stack">
+      <section class="hero-panel">
+        <div class="hero-grid">
+          <div>
+            <span class="hero-badge">
+              <i class="fa-solid fa-folder-open"></i>
+              Personal library
+            </span>
+            <h2 class="hero-title">Explore your Telegram storage with a cleaner, lighter, and adaptable view.</h2>
+            <p class="hero-copy">
+              Upload files, filter by type, switch between table and grid, and manage downloads or deletions without leaving this screen.
+            </p>
+            <div class="hero-points mt-3">
+              <span class="hero-point"><i class="fa-solid fa-cloud-arrow-up"></i> Direct upload</span>
+              <span class="hero-point"><i class="fa-solid fa-filter"></i> Quick filters</span>
+              <span class="hero-point"><i class="fa-solid fa-grip"></i> Table or grid view</span>
+            </div>
+          </div>
+          <div class="hero-card">
+            <h3>How to use it</h3>
+            <p>Use this view as the main hub for all your content stored in Telegram.</p>
+            <ul class="hero-card-list">
+              <li>
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <div>
+                  <strong>Instant recents</strong>
+                  <span>Reload the latest files from Saved Messages.</span>
+                </div>
+              </li>
+              <li>
+                <i class="fa-solid fa-download"></i>
+                <div>
+                  <strong>Bulk actions</strong>
+                  <span>Download or delete multiple items at once.</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <div class="card-panel mb-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <i class="fa-solid fa-cloud-arrow-up text-primary"></i>
+          <h5 class="m-0">Upload files to Telegram</h5>
+        </div>
+        <form action="/api/telegram/files/upload" class="dropzone" id="uploadArea" method="post" enctype="multipart/form-data">
+          <div class="dz-message">
+            <i class="fa-solid fa-cloud-arrow-up fa-3x mb-3 text-primary"></i>
+            <h6 class="mb-2">Drag files here or click to select them</h6>
+            <p class="small text-muted mb-0">Maximum 2 GB per file</p>
+          </div>
+        </form>
+        <div class="mt-3">
+          <label for="uploadCaption" class="form-label small text-muted">Optional description</label>
+          <input
+            type="text"
+            class="filter-input upload-caption-input w-100"
+            id="uploadCaption"
+            placeholder="Add a note for these files..."
+          />
+        </div>
+      </div>
+
+      <div class="card-panel mb-4">
+        <div class="filters-section">
+          <div class="filters-row">
+            <select
+              class="filter-select"
+              id="filterType"
+              title="Filter by type"
+            >
+              <option value="all">All types</option>
+              <option value="photo">
+                <i class="fa-solid fa-image"></i> Photos
+              </option>
+              <option value="video">Videos</option>
+              <option value="audio">Audio</option>
+              <option value="document">Documents</option>
+              <option value="voice">Voice notes</option>
+              <option value="video_note">Video notes</option>
+            </select>
+            <select class="filter-select" id="filterSort" title="Sort by">
+              <option value="date_desc">Newest first</option>
+              <option value="date_asc">Oldest first</option>
+              <option value="size_desc">Largest size</option>
+              <option value="size_asc">Smallest size</option>
+              <option value="name_asc">Name A-Z</option>
+              <option value="name_desc">Name Z-A</option>
+            </select>
+          </div>
+          <div class="filters-actions">
+            <div class="filters-actions-left">
+              <button
+                class="btn btn-tg-success"
+                id="viewRecent"
+                title="View recent files from Saved Messages"
+              >
+                <i class="fa-solid fa-clock-rotate-left me-1"></i> Recent
+              </button>
+              <div class="view-toggle btn-group">
+                <button class="btn btn-tg-outline active" id="viewTable" title="Table view">
+                  <i class="fa-solid fa-table-list"></i>
+                </button>
+                <button class="btn btn-tg-outline" id="viewGrid" title="Grid view">
+                  <i class="fa-solid fa-grip"></i>
+                </button>
+              </div>
+            </div>
+            <div class="filters-actions-right">
+              <button
+                class="btn btn-tg-outline"
+                id="btnDownloadSelected"
+                title="Download selected"
+                disabled
+              >
+                <i class="fa-solid fa-download me-1"></i> Download (0)
+              </button>
+              <button
+                class="btn btn-danger"
+                id="btnDeleteSelected"
+                title="Delete selected"
+                disabled
+              >
+                <i class="fa-solid fa-trash me-1"></i> Delete (0)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-panel">
+        <div class="table-responsive">
+          <table class="file-table" id="filesTable">
+            <thead>
+              <tr>
+                <th>
+                  <input
+                    type="checkbox"
+                    id="selectAll"
+                    class="form-check-input"
+                  />
+                </th>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Size</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="fileGrid" class="file-grid d-none"></div>
+
+      <div
+        class="modal fade"
+        id="deleteModal"
+        tabindex="-1"
+        aria-labelledby="deleteModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteModalLabel">
+                <i class="fa-solid fa-triangle-exclamation text-warning me-2"></i>
+                Confirm deletion
+              </h5>
+              <button
+                type="button"
+                class="btn-close btn-close-white"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <p class="mb-3 text-muted">
+                Are you sure you want to delete this file?
+              </p>
+              <div class="alert mb-3">
+                <i class="fa-solid fa-file-lines me-2 text-primary"></i>
+                <span id="deleteFileName" class="file-name"></span>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">
+                  Deletion type
+                </label>
+                <div class="form-check mb-2 p-3">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="deleteType"
+                    id="deleteLocal"
+                    value="local"
+                    checked
+                  />
+                  <label class="form-check-label ms-2" for="deleteLocal">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                      <i class="fa-solid fa-desktop text-primary"></i>
+                      <strong>Local only</strong>
+                    </div>
+                    <small class="text-muted">
+                      Deletes only the local copy. The file will remain visible in Telegram.
+                    </small>
+                  </label>
+                </div>
+                <div class="form-check p-3">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="deleteType"
+                    id="deletePermanent"
+                    value="permanent"
+                  />
+                  <label class="form-check-label ms-2" for="deletePermanent">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                      <i class="fa-solid fa-triangle-exclamation text-danger"></i>
+                      <strong>Permanent</strong>
+                    </div>
+                    <small class="text-muted">
+                      Delete the message in Telegram for everyone. This action cannot be undone.
+                    </small>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-tg-outline" data-bs-dismiss="modal">
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                id="confirmDeleteBtn"
+                onclick="handleDeleteConfirm()"
+              >
+                <i class="fa-solid fa-trash me-1"></i> Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <th:block layout:fragment="scripts">
+      <script th:inline="none">
+        const selectedFiles = new Set();
+        const activeDownloads = new Set();
+        let deleteTarget = null;
+        let isBulkDelete = false;
+        let allFilesData = [];
+
+        // DataTables is initialized in the second DOMContentLoaded block below
+
+        async function loadRecentFiles() {
+          // Load recent files using DataTables
+          const filterType = document.getElementById("filterType");
+          if (filterType) filterType.value = "all";
+
+          try {
+            const response = await fetch("/api/telegram/files/recent?limit=50");
+            const files = await response.json();
+
+            if (filesTable) {
+              allFilesData = Array.isArray(files) ? files : [];
+              filesTable.clear().rows.add(allFilesData).draw();
+            }
+
+            selectedFiles.clear();
+            updateSelectedCount();
+            showToast("Recent files loaded from Saved Messages", "success");
+          } catch (e) {
+            showToast("Error loading recent files: " + e.message, "error");
+          }
+        }
+
+        // loadFiles() replaced by the table data workflow
+
+        function updateSelectedCount() {
+          const count = selectedFiles.size;
+          const btnDownload = document.getElementById("btnDownloadSelected");
+          const btnDelete = document.getElementById("btnDeleteSelected");
+          if (btnDownload) {
+            btnDownload.textContent = `Download (${count})`;
+            btnDownload.disabled = count === 0;
+          }
+          if (btnDelete) {
+            btnDelete.textContent = `Delete (${count})`;
+            btnDelete.disabled = count === 0;
+          }
+        }
+
+        let tableEventBindingsInitialized = false;
+
+        function bindTableEvents() {
+          if (tableEventBindingsInitialized) {
+            return;
+          }
+
+          tableEventBindingsInitialized = true;
+
+          document.addEventListener('change', event => {
+            const checkbox = event.target.closest('.file-checkbox');
+            if (checkbox) {
+              const fileId = Number(checkbox.dataset.fileId);
+              if (checkbox.checked) {
+                selectedFiles.add(fileId);
+              } else {
+                selectedFiles.delete(fileId);
+              }
+              updateSelectedCount();
+              return;
+            }
+
+            const selectAll = event.target.closest('#selectAll');
+            if (!selectAll) {
+              return;
+            }
+
+            document.querySelectorAll('.file-checkbox').forEach(cb => {
+              cb.checked = selectAll.checked;
+              const fileId = Number(cb.dataset.fileId);
+              if (selectAll.checked) {
+                selectedFiles.add(fileId);
+              } else {
+                selectedFiles.delete(fileId);
+              }
+            });
+            updateSelectedCount();
+          });
+
+          document.addEventListener('click', event => {
+            const downloadBtn = event.target.closest('.btn-download-single');
+            if (downloadBtn) {
+              event.preventDefault();
+              downloadSingle(Number(downloadBtn.dataset.fileId), downloadBtn);
+              return;
+            }
+
+            const deleteBtn = event.target.closest('.btn-delete-single');
+            if (!deleteBtn) {
+              return;
+            }
+
+            event.preventDefault();
+            confirmDelete(
+              Number(deleteBtn.dataset.fileId),
+              Number(deleteBtn.dataset.messageId),
+              Number(deleteBtn.dataset.chatId),
+              deleteBtn.dataset.fileName
+            );
+          });
+        }
+
+        async function downloadSelected() {
+          if (selectedFiles.size === 0) return;
+          try {
+            showToast(
+              `Creating a job for ${selectedFiles.size} files...`,
+              "info",
+            );
+            const job = await TelegramAPI.createBatchJob([...selectedFiles]);
+            showToast(
+              `Job created: ${job.jobId}. Go to Downloads to track progress.`,
+              "success",
+            );
+          } catch (e) {
+            showToast("Error: " + e.message, "error");
+          }
+        }
+
+        async function downloadSingle(fileId, btn) {
+          if (activeDownloads.has(fileId)) {
+            return;
+          }
+          activeDownloads.add(fileId);
+          const row = btn ? btn.closest("tr") : null;
+          const actionsCell = row
+            ? row.querySelector("td:last-child .d-flex")
+            : null;
+          const fileName = btn?.dataset?.fileName || "";
+
+          try {
+            if (actionsCell) {
+              actionsCell.innerHTML = `
+                    <span class="d-flex align-items-center gap-2" id="prog-${fileId}">
+                        <div class="spinner-border spinner-border-sm text-info" role="status"></div>
+                        <small class="text-muted">Downloading...</small>
+                    </span>`;
+            }
+
+            const result = await TelegramAPI.downloadFile(fileId);
+
+            if (result.status === "COMPLETED") {
+              onDownloadComplete(fileId, row, actionsCell, fileName);
+              showToast("File downloaded", "success");
+              activeDownloads.delete(fileId);
+              return;
+            }
+
+            showToast("Download started...", "info");
+            pollUntilDone(fileId, row, actionsCell, fileName);
+          } catch (e) {
+            showToast("Error: " + e.message, "error");
+            if (actionsCell) {
+              actionsCell.innerHTML = `
+                    <button class="btn-icon text-danger btn-download-single" data-file-id="${fileId}" title="Retry">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>`;
+              actionsCell.querySelector('.btn-download-single')?.addEventListener('click', function() {
+                downloadSingle(fileId, this);
+              });
+            }
+            activeDownloads.delete(fileId);
+          }
+        }
+
+        function pollUntilDone(fileId, row, actionsCell, fileName) {
+          let attempts = 0;
+          const maxAttempts = 120;
+          const interval = setInterval(async () => {
+            attempts++;
+            try {
+              const info = await TelegramAPI.getFileInfo(fileId);
+              const progEl = document.getElementById(`prog-${fileId}`);
+
+              if (info.isDownloaded) {
+                clearInterval(interval);
+                onDownloadComplete(fileId, row, actionsCell, fileName);
+                showToast("Download completed", "success");
+                activeDownloads.delete(fileId);
+                return;
+              }
+
+              if (progEl) {
+                const dots = ".".repeat((attempts % 3) + 1);
+                progEl.querySelector("small").textContent =
+                  `Downloading${dots}`;
+              }
+
+              if (attempts >= maxAttempts) {
+                clearInterval(interval);
+                showToast("Timed out. Check Downloads.", "warning");
+                activeDownloads.delete(fileId);
+                if (actionsCell) {
+                  actionsCell.innerHTML = `
+                            <button class="btn-icon text-warning" onclick="downloadSingle(${fileId}, this)" title="Retry">
+                                <i class="fa-solid fa-rotate-right"></i>
+                            </button>`;
+                }
+              }
+            } catch {
+              clearInterval(interval);
+              activeDownloads.delete(fileId);
+            }
+          }, 4000);
+        }
+
+        function onDownloadComplete(fileId, row, actionsCell, fileName) {
+          if (actionsCell) {
+            actionsCell.innerHTML = `
+                <a href="/api/telegram/files/${fileId}/view" target="_blank" rel="noopener noreferrer" class="btn-icon" title="View">
+                    <i class="fa-solid fa-eye"></i>
+                </a>
+                <a href="/api/telegram/files/${fileId}/content" class="btn-icon text-success" title="Download ${escapeHtml(fileName || "")}">
+                    <i class="fa-solid fa-download"></i>
+                </a>
+                <button class="btn-icon btn-icon-sm text-danger btn-delete-single" data-file-id="${fileId}" data-message-id="${row?.dataset?.messageId || ''}" data-chat-id="${row?.dataset?.chatId || ''}" data-file-name="${escapeHtml(fileName || '')}" title="Delete">
+                    <i class="fas fa-trash"></i>
+                </button>`;
+            bindTableEvents();
+          }
+          if (row) {
+            const badge = row.querySelector(".badge-status, .badge-downloaded, .badge-pending");
+            if (badge) {
+              badge.className = "badge badge-downloaded";
+              badge.textContent = "Downloaded";
+            }
+          }
+        }
+
+        // View Toggle functionality
+        let currentView = localStorage.getItem('fileView') || 'table';
+        let galleryInstance = null;
+
+        function applyFiltersToFiles(rows) {
+          const typeFilter = (document.getElementById('filterType')?.value || 'all').toLowerCase();
+          const sortFilter = (document.getElementById('filterSort')?.value || 'date_desc').toLowerCase();
+
+          const filtered = (Array.isArray(rows) ? rows : []).filter(file => {
+            if (typeFilter === 'all') return true;
+            return (file.type || '').toLowerCase() === typeFilter;
+          });
+
+          return filtered.sort((a, b) => {
+            const nameA = (a.fileName || '').toLowerCase();
+            const nameB = (b.fileName || '').toLowerCase();
+            const sizeA = Number(a.size || a.fileSize || 0);
+            const sizeB = Number(b.size || b.fileSize || 0);
+            const dateA = Number(a.date || 0);
+            const dateB = Number(b.date || 0);
+
+            switch (sortFilter) {
+              case 'date_asc': return dateA - dateB;
+              case 'date_desc': return dateB - dateA;
+              case 'size_asc': return sizeA - sizeB;
+              case 'size_desc': return sizeB - sizeA;
+              case 'name_asc': return nameA.localeCompare(nameB);
+              case 'name_desc': return nameB.localeCompare(nameA);
+              default: return dateB - dateA;
+            }
+          });
+        }
+
+        async function refreshFilesByFilters(resetPaging = true) {
+          if (!filesTable) return;
+          try {
+            const rows = await TelegramAPI.listFiles({ type: 'all', sort: 'date_desc', limit: 300 });
+            allFilesData = Array.isArray(rows) ? rows : [];
+            const filteredRows = applyFiltersToFiles(allFilesData);
+            filesTable.clear().rows.add(filteredRows).draw(resetPaging);
+            if (currentView === 'grid') renderFileGrid();
+          } catch (e) {
+            showToast('Error applying filters: ' + e.message, 'error');
+          }
+        }
+
+        function applyView(view) {
+          currentView = view;
+          localStorage.setItem('fileView', view);
+
+          const tableWrapper = document.getElementById('filesTable')?.closest('.card-panel');
+          const gridContainer = document.getElementById('fileGrid');
+          const btnTable = document.getElementById('viewTable');
+          const btnGrid = document.getElementById('viewGrid');
+
+          if (!tableWrapper || !gridContainer) return;
+
+          if (view === 'table') {
+            tableWrapper.classList.remove('d-none');
+            gridContainer.classList.add('d-none');
+            btnTable.classList.add('active');
+            btnGrid.classList.remove('active');
+          } else {
+            tableWrapper.classList.add('d-none');
+            gridContainer.classList.remove('d-none');
+            btnTable.classList.remove('active');
+            btnGrid.classList.add('active');
+            renderFileGrid();
+          }
+        }
+
+        function normalizeUploadedFileName(name) {
+          return (name || '').trim().toLowerCase();
+        }
+
+        function normalizeDeleteTarget(target) {
+          return {
+            fileId: Number(target?.fileId || 0),
+            messageId: Number(target?.messageId || 0)
+          };
+        }
+
+        function rowMatchesDeleteTarget(row, target) {
+          const normalizedTarget = normalizeDeleteTarget(target);
+          if (!row) {
+            return false;
+          }
+
+          if (normalizedTarget.messageId > 0 && Number(row.messageId) === normalizedTarget.messageId) {
+            return true;
+          }
+
+          return normalizedTarget.fileId > 0 && Number(row.fileId) === normalizedTarget.fileId;
+        }
+
+        function removeRowsFromFilesTable(targets) {
+          if (filesTable === undefined || !filesTable) {
+            return 0;
+          }
+
+          const normalizedTargets = (Array.isArray(targets) ? targets : [targets])
+            .filter(Boolean)
+            .map(normalizeDeleteTarget);
+          const currentRows = filesTable.rows().data().toArray();
+          const filteredRows = currentRows.filter(row =>
+            !normalizedTargets.some(target => rowMatchesDeleteTarget(row, target))
+          );
+
+          const removedCount = currentRows.length - filteredRows.length;
+          if (removedCount === 0) {
+            return 0;
+          }
+
+          filesTable.clear().rows.add(filteredRows).draw();
+          if (currentView === 'grid') {
+            renderFileGrid();
+          }
+          return removedCount;
+        }
+
+        function deletedRowsAreGone(rows, targets) {
+          const normalizedTargets = (Array.isArray(targets) ? targets : [targets])
+            .filter(Boolean)
+            .map(normalizeDeleteTarget);
+
+          return normalizedTargets.every(target =>
+            rows.every(row => !rowMatchesDeleteTarget(row, target))
+          );
+        }
+
+        function uploadedFileIsVisible(rows, response, fallbackName) {
+          const uploadedMessageId = Number(response?.messageId || 0);
+          const uploadedName = normalizeUploadedFileName(response?.fileName || fallbackName);
+
+          return rows.some(row => {
+            if (!row) {
+              return false;
+            }
+
+            if (uploadedMessageId > 0 && Number(row.messageId) === uploadedMessageId) {
+              return true;
+            }
+
+            return uploadedName !== '' && normalizeUploadedFileName(row.fileName) === uploadedName;
+          });
+        }
+
+        function sleepForUploadRefresh(ms) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function refreshFilesTableAfterDelete(targets) {
+          if (filesTable === undefined || !filesTable) {
+            return false;
+          }
+
+          const maxAttempts = 6;
+          for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            await filesTable.ajax.reload(null, false);
+            const rows = filesTable.rows().data().toArray();
+            if (currentView === 'grid') {
+              renderFileGrid();
+            }
+
+            if (deletedRowsAreGone(rows, targets)) {
+              return true;
+            }
+
+            if (attempt < maxAttempts - 1) {
+              await sleepForUploadRefresh(900);
+            }
+          }
+
+          return false;
+        }
+
+        async function refreshFilesTableAfterUpload(response, fallbackName) {
+          if (filesTable === undefined || !filesTable) {
+            return false;
+          }
+
+          const maxAttempts = 6;
+          for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            await filesTable.ajax.reload(null, false);
+            const rows = filesTable.rows().data().toArray();
+            if (currentView === 'grid') {
+              renderFileGrid();
+            }
+
+            if (uploadedFileIsVisible(rows, response, fallbackName)) {
+              return true;
+            }
+
+            if (attempt < maxAttempts - 1) {
+              await sleepForUploadRefresh(900);
+            }
+          }
+
+          return false;
+        }
+
+        function renderFileGrid() {
+          const gridContainer = document.getElementById('fileGrid');
+          if (!gridContainer || typeof filesTable === 'undefined' || !filesTable) return;
+
+          // Get the current table rows
+          const data = filesTable.rows().data().toArray();
+
+          if (data.length === 0) {
+            gridContainer.innerHTML = `
+              <div class="text-center py-5 text-muted">
+                <i class="fa-solid fa-folder-open fa-3x mb-3" style="opacity: 0.3"></i>
+                <p>No files found</p>
+              </div>`;
+            return;
+          }
+
+          gridContainer.innerHTML = data.map(file => {
+            const isMedia = file.type === 'PHOTO' || file.type === 'VIDEO';
+            const thumbnailHtml = isMedia && file.isDownloaded
+              ? `<img src="/api/telegram/files/${file.fileId}/thumbnail" alt="${escapeHtml(file.fileName || '')}" loading="lazy" onerror="this.parentElement.innerHTML='<i class=\\'fa-solid ${getFileTypeIcon(file.type)} fa-2x\\'></i>'">`
+              : `<i class="fa-solid ${getFileTypeIcon(file.type)} fa-2x"></i>`;
+
+            const isPreviewable = isMedia && file.isDownloaded;
+            const galleryAttrs = isPreviewable
+              ? `data-gallery-src="/api/telegram/files/${file.fileId}/view" data-gallery-type="${file.type === 'VIDEO' ? 'video' : 'image'}" data-gallery-title="${escapeHtml(file.fileName || 'File')}" data-gallery-description="${escapeHtml(formatBytes(file.fileSize || file.size || 0))} · ${escapeHtml(formatDate(file.date))}"`
+              : '';
+
+            const fileName = file.fileName || `${file.type.toLowerCase()}_${file.fileId}`;
+            const truncatedName = fileName.length > 25 ? fileName.substring(0, 22) + '...' : fileName;
+
+            return `
+              <div class="file-card ${isPreviewable ? 'is-previewable' : ''}" ${galleryAttrs}>
+                <div class="file-card-thumbnail ${getFileTypeClass(file.type)}">
+                  ${thumbnailHtml}
+                </div>
+                <div class="file-card-info">
+                  <span class="file-name" title="${escapeHtml(fileName)}">${escapeHtml(truncatedName)}</span>
+                  <div class="file-card-meta">
+                    <span class="file-size">${formatBytes(file.fileSize || file.size || 0)}</span>
+                    <span class="file-date">${formatDate(file.date)}</span>
+                  </div>
+                </div>
+                <div class="file-card-actions">
+                  ${file.isDownloaded
+                    ? `<a href="/api/telegram/files/${file.fileId}/content" class="btn-icon" title="Download" download onclick="event.stopPropagation()"><i class="fa-solid fa-download"></i></a>`
+                    : `<button class="btn-icon" title="Download from Telegram" onclick="event.stopPropagation(); downloadSingle(${file.fileId}, this)"><i class="fa-solid fa-cloud-arrow-down"></i></button>`
+                  }
+                  <button class="btn-icon text-danger" title="Delete" onclick="event.stopPropagation(); confirmDelete(${file.fileId}, ${file.messageId}, ${file.chatId}, '${escapeHtml(fileName)}')">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              </div>`;
+          }).join('');
+
+          // Initialize or re-initialize GLightbox
+          if (galleryInstance) {
+            galleryInstance.destroy();
+            galleryInstance = null;
+          }
+
+          const previewCards = Array.from(gridContainer.querySelectorAll('.file-card[data-gallery-src]'));
+
+          if (typeof GLightbox !== 'undefined' && previewCards.length > 0) {
+            galleryInstance = GLightbox({
+              loop: true,
+              touchNavigation: true,
+              autoplayVideos: true,
+              openEffect: 'zoom',
+              closeEffect: 'fade',
+              elements: previewCards.map(card => ({
+                href: card.dataset.gallerySrc,
+                type: card.dataset.galleryType || 'image',
+                title: card.dataset.galleryTitle || '',
+                description: card.dataset.galleryDescription || ''
+              }))
+            });
+
+            previewCards.forEach((card, index) => {
+              card.addEventListener('click', event => {
+                if (event.target.closest('.file-card-actions, .btn-icon, button, a')) {
+                  return;
+                }
+                galleryInstance.openAt(index);
+              });
+            });
+          }
+        }
+
+        // Delete functionality
+        function confirmDelete(fileId, messageId, chatId, fileName) {
+          isBulkDelete = false;
+          deleteTarget = { fileId, messageId, chatId, fileName };
+          document.getElementById("deleteFileName").textContent = fileName;
+          document.getElementById("deleteLocal").checked = true;
+          const modal = new bootstrap.Modal(
+            document.getElementById("deleteModal"),
+          );
+          modal.show();
+        }
+
+        function confirmBulkDelete() {
+          if (selectedFiles.size === 0) return;
+          isBulkDelete = true;
+          deleteTarget = null;
+          document.getElementById("deleteFileName").textContent = `${selectedFiles.size} selected files`;
+          document.getElementById("deleteLocal").checked = true;
+          const modal = new bootstrap.Modal(
+            document.getElementById("deleteModal"),
+          );
+          modal.show();
+        }
+
+        function handleDeleteConfirm() {
+          if (isBulkDelete) {
+            executeBulkDelete();
+          } else {
+            executeDelete();
+          }
+        }
+
+        async function executeDelete() {
+          if (!deleteTarget) return;
+
+          const isPermanent =
+            document.getElementById("deletePermanent").checked;
+          const btn = document.getElementById("confirmDeleteBtn");
+          btn.disabled = true;
+          btn.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin me-1"></i> Deleting...';
+
+          try {
+            const response = await fetch("/api/telegram/files/message", {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                messageId: deleteTarget.messageId,
+                chatId: deleteTarget.chatId,
+                fileId: deleteTarget.fileId,
+                permanent: isPermanent,
+              }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.status === "SUCCESS") {
+              const deletedTarget = { ...deleteTarget };
+              removeRowsFromFilesTable(deletedTarget);
+              selectedFiles.delete(deletedTarget.fileId);
+              updateSelectedCount();
+              bootstrap.Modal.getInstance(
+                document.getElementById("deleteModal"),
+              ).hide();
+              showToast(result.message, "success");
+              if (window.softReload) window.softReload();
+              else window.location.reload();
+            } else {
+              showToast(result.message || "Error deleting file", "error");
+            }
+          } catch (e) {
+            showToast("Error: " + e.message, "error");
+          } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-trash me-1"></i> Delete';
+            deleteTarget = null;
+            isBulkDelete = false;
+          }
+        }
+
+        async function executeBulkDelete() {
+          const permanent = document.getElementById("deletePermanent").checked;
+
+          // Build items from selected checkboxes
+          const items = [];
+          document.querySelectorAll('.file-checkbox:checked').forEach(cb => {
+            items.push({
+              fileId: Number(cb.dataset.fileId),
+              messageId: Number(cb.dataset.messageId),
+              chatId: Number(cb.dataset.chatId),
+              fileName: cb.dataset.fileName || ''
+            });
+          });
+
+          if (items.length === 0) return;
+
+          // Disable button and show spinner
+          const deleteBtn = document.getElementById('confirmDeleteBtn');
+          const originalText = deleteBtn.innerHTML;
+          deleteBtn.disabled = true;
+          deleteBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Deleting...';
+
+          try {
+            const result = await TelegramAPI.bulkDelete(items, permanent);
+            removeRowsFromFilesTable(items);
+
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('deleteModal'))?.hide();
+
+            // Clear selection
+            selectedFiles.clear();
+            document.getElementById('selectAll').checked = false;
+            updateSelectedCount();
+
+            // Show toast summary
+            const msg = `Deleted: ${result.successCount}/${result.totalRequested}` +
+                         (result.failedCount > 0 ? ` (${result.failedCount} failed)` : '');
+            showToast(msg, result.failedCount > 0 ? 'warning' : 'success');
+            if (window.softReload) window.softReload();
+            else window.location.reload();
+
+          } catch (error) {
+            showToast('Error deleting files: ' + error.message, 'error');
+          } finally {
+            deleteBtn.disabled = false;
+            deleteBtn.innerHTML = originalText;
+            isBulkDelete = false;
+          }
+        }
+
+        let uploadDropzone;
+
+        // ============================================
+        // DataTables 2 Initialization
+        // ============================================
+        let filesTable;
+
+        document.addEventListener("DOMContentLoaded", () => {
+          // ============================================
+          // Dropzone Initialization
+          // ============================================
+          if (typeof Dropzone !== 'undefined') {
+            Dropzone.autoDiscover = false;
+          }
+
+          // Initialize Dropzone
+          const dropzoneElement = document.getElementById("uploadArea");
+          if (dropzoneElement && typeof Dropzone !== 'undefined') {
+            if (dropzoneElement.dropzone) {
+              dropzoneElement.dropzone.destroy();
+            }
+
+            uploadDropzone = new Dropzone(dropzoneElement, {
+              url: "/api/telegram/files/upload",
+              paramName: "file",
+              maxFilesize: 2000,
+              parallelUploads: 1,
+              uploadMultiple: false,
+              addRemoveLinks: true,
+              autoProcessQueue: true,
+              dictDefaultMessage: "",
+              dictCancelUpload: "Cancel",
+              dictCancelUploadConfirmation: "Are you sure you want to cancel the upload?",
+              dictRemoveFile: "Delete",
+              dictMaxFilesExceeded: "You cannot upload more files.",
+              dictFileTooBig: "The file is too large ({{filesize}}MB). Maximum: {{maxFilesize}}MB.",
+              dictInvalidFileType: "File type not allowed.",
+              dictResponseError: "Server error: {{statusCode}}.",
+
+              // Add caption as an extra parameter
+              sending: function(file, xhr, formData) {
+                const caption = document.getElementById("uploadCaption")?.value;
+                if (caption) {
+                  formData.append("caption", caption);
+                }
+              },
+
+              // Upload success
+              success: function(file, response) {
+                if (response.status === "COMPLETED") {
+                  showToast(`File "${file.name}" uploaded successfully`, "success");
+                  const captionInput = document.getElementById("uploadCaption");
+                  if (captionInput) {
+                    captionInput.value = "";
+                  }
+                  setTimeout(() => {
+                    if (uploadDropzone) {
+                      uploadDropzone.removeFile(file);
+                    }
+                  }, 1200);
+                  if (window.softReload) window.softReload();
+                  else window.location.reload();
+                } else {
+                  showToast(response.message || "Error uploading file", "warning");
+                }
+              },
+
+              // Upload error
+              error: function(file, errorMessage, xhr) {
+                let message = errorMessage;
+                if (xhr && xhr.response) {
+                  try {
+                    const response = JSON.parse(xhr.response);
+                    message = response.message || errorMessage;
+                  } catch (e) {
+                    message = xhr.statusText || errorMessage;
+                  }
+                }
+                showToast(`Error uploading "${file.name}": ${message}`, "error");
+                setTimeout(() => {
+                  if (uploadDropzone) {
+                    uploadDropzone.removeFile(file);
+                  }
+                }, 2000);
+              },
+
+              // Queue completed
+              queuecomplete: function() {
+                setTimeout(() => {
+                  if (uploadDropzone) {
+                    uploadDropzone.removeAllFiles(true);
+                  }
+                }, 1500);
+              }
+            });
+          }
+
+          // Initialize the table manager
+          const tableEl = document.getElementById("filesTable");
+          if (!tableEl) return;
+
+          const tableBody = tableEl.querySelector('tbody');
+          const drawCallbacks = [];
+          let tableData = [];
+
+          function renderTableRows(rows) {
+            const iconMap = {
+              'photo': 'fa-image', 'video': 'fa-video', 'audio': 'fa-music',
+              'document': 'fa-file-lines', 'voice': 'fa-microphone', 'video_note': 'fa-circle-play',
+              'PHOTO': 'fa-image', 'VIDEO': 'fa-video', 'AUDIO': 'fa-music',
+              'DOCUMENT': 'fa-file-lines', 'VOICE': 'fa-microphone', 'VIDEO_NOTE': 'fa-circle-play'
+            };
+            const colorMap = {
+              'photo': '#2aabee', 'video': '#e74c3c', 'audio': '#f7b955',
+              'document': '#8b949e', 'voice': '#34d058', 'video_note': '#e74c3c',
+              'PHOTO': '#2aabee', 'VIDEO': '#e74c3c', 'AUDIO': '#f7b955',
+              'DOCUMENT': '#8b949e', 'VOICE': '#34d058', 'VIDEO_NOTE': '#e74c3c'
+            };
+            tableBody.innerHTML = rows.map(row => {
+              const icon = iconMap[row.type] || 'fa-file';
+              const color = colorMap[row.type] || '#8b949e';
+              let meta = '';
+              if (row.mimeType) meta += `<span class="file-meta">${row.mimeType}</span>`;
+              if (row.width && row.height) meta += `<span class="file-meta">${row.width}×${row.height}</span>`;
+              if (row.duration) meta += `<span class="file-meta">${formatDuration(row.duration)}</span>`;
+              const name = row.fileName || `${row.type}_${row.fileId}`;
+              const statusHtml = row.isDownloaded
+                ? '<span class="badge badge-downloaded">Downloaded</span>'
+                : '<span class="badge badge-pending">Pending</span>';
+              const actionsHtml = row.isDownloaded
+                ? `<a href="/api/telegram/files/${row.fileId}/view" target="_blank" rel="noopener noreferrer" class="btn-icon" title="View"><i class="fa-solid fa-eye"></i></a>
+                   <a href="/api/telegram/files/${row.fileId}/content" class="btn-icon text-success" title="Download"><i class="fa-solid fa-download"></i></a>`
+                : `<button class="btn-icon btn-download-single" data-file-id="${row.fileId}" data-file-name="${escapeHtml(row.fileName || '')}" title="Download" onclick="downloadSingle(${row.fileId}, this); return false;"><i class="fa-solid fa-cloud-arrow-down"></i></button>`;
+              return `<tr data-message-id="${row.messageId || ''}" data-chat-id="${row.chatId || ''}">
+                <td><input type="checkbox" class="form-check-input file-checkbox" data-file-id="${row.fileId}" data-message-id="${row.messageId}" data-chat-id="${row.chatId}" data-file-name="${escapeHtml(row.fileName || '')}"></td>
+                <td><div class="file-icon" style="background: ${color}20; color: ${color};"><i class="fa-solid ${icon}"></i></div></td>
+                <td><div><div class="file-name">${escapeHtml(name)}</div>${meta ? `<div class="file-meta">${meta}</div>` : ''}</div></td>
+                <td>${formatFileSize(row.size || row.fileSize || 0)}</td>
+                <td>${formatDate(row.date)}</td>
+                <td>${statusHtml}</td>
+                <td class="text-end"><div class="d-flex gap-1 justify-content-end">${actionsHtml}<button class="btn-icon text-danger btn-delete-single" data-file-id="${row.fileId}" data-message-id="${row.messageId}" data-chat-id="${row.chatId}" data-file-name="${escapeHtml(row.fileName || '')}" title="Delete"><i class="fa-solid fa-trash"></i></button></div></td>
+              </tr>`;
+            }).join('');
+          }
+
+          filesTable = {
+            clear() {
+              tableData = [];
+              return {
+                rows: {
+                  add: (rows) => ({
+                    draw: (resetPaging = true) => {
+                      tableData = Array.isArray(rows) ? rows.slice() : [];
+                      renderTableRows(tableData);
+                      drawCallbacks.forEach(cb => cb());
+                    }
+                  })
+                }
+              };
+            },
+            rows() {
+              return {
+                data: () => ({
+                  toArray: () => tableData.slice()
+                })
+              };
+            },
+            ajax: {
+              reload: async (_cb = null, resetPaging = true) => {
+                await refreshFilesByFilters(resetPaging);
+              }
+            },
+            on(event, handler) {
+              if (event === 'draw' && typeof handler === 'function') {
+                drawCallbacks.push(handler);
+              }
+            }
+          };
+
+          bindTableEvents();
+
+          // DataTables-integrated filters
+          ['filterType', 'filterSort'].forEach(id => {
+            document.getElementById(id)?.addEventListener('change', () => {
+              refreshFilesByFilters(true);
+            });
+          });
+
+          // Download selected button
+          document.getElementById('btnDownloadSelected')?.addEventListener('click', downloadSelected);
+
+          // Delete selected button
+          document.getElementById('btnDeleteSelected')?.addEventListener('click', () => {
+            if (selectedFiles.size === 0) return;
+            confirmBulkDelete();
+          });
+
+          // View recent files
+          document.getElementById('viewRecent')?.addEventListener('click', loadRecentFiles);
+
+          // View toggle buttons
+          document.getElementById('viewTable')?.addEventListener('click', () => applyView('table'));
+          document.getElementById('viewGrid')?.addEventListener('click', () => applyView('grid'));
+
+          // Update grid when DataTable reloads (after filters, upload, etc.)
+          filesTable.on('draw', function() {
+            if (currentView === 'grid') {
+              renderFileGrid();
+            }
+          });
+
+          // Apply stored view after initialization
+          setTimeout(() => applyView(currentView), 100);
+          refreshFilesByFilters(true);
+        });
+      </script>
+    </th:block>
+  </body>
+</html>

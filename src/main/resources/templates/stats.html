@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics</title>
+</head>
+<body>
+    <h1 layout:fragment="page-title">
+        <i class="fa-solid fa-chart-pie me-2 text-primary"></i> Statistics
+    </h1>
+
+    <div layout:fragment="content">
+        <div class="page-stack">
+        <section class="hero-panel">
+            <div class="hero-grid">
+                <div>
+                    <span class="hero-badge">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Analytical view
+                    </span>
+                    <h2 class="hero-title">Understand how your personal storage grows inside Telegram.</h2>
+                    <p class="hero-copy">
+                        Review file volume, traffic, and local storage from a cleaner view ready for desktop or mobile.
+                    </p>
+                </div>
+                <div class="hero-card">
+                    <h3>What you can review here</h3>
+                    <ul class="hero-card-list">
+                        <li>
+                            <i class="fa-solid fa-pie-chart"></i>
+                            <div>
+                                <strong>Distribution by type</strong>
+                                <span>Photos, videos, documents, and more.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fa-solid fa-server"></i>
+                            <div>
+                                <strong>Local usage</strong>
+                                <span>Files, database, and logs.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="chart-section">
+            <div class="stats-kpi-row four-cols mb-3">
+                <div class="stat-card stat-primary">
+                    <div class="stat-icon"><i class="fa-solid fa-folder-open"></i></div>
+                    <div class="stat-value" id="kpiTotalFiles">--</div>
+                    <div class="stat-label">Total files</div>
+                </div>
+                <div class="stat-card stat-success">
+                    <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="stat-value" id="kpiDownloaded">--</div>
+                    <div class="stat-label">Downloaded</div>
+                </div>
+                <div class="stat-card stat-warning">
+                    <div class="stat-icon"><i class="fa-solid fa-hard-drive"></i></div>
+                    <div class="stat-value" id="kpiTotalSize">--</div>
+                    <div class="stat-label">Total size</div>
+                </div>
+                <div class="stat-card stat-danger">
+                    <div class="stat-icon"><i class="fa-solid fa-download"></i></div>
+                    <div class="stat-value" id="kpiDownloadedSize">--</div>
+                    <div class="stat-label">Downloaded size</div>
+                </div>
+            </div>
+            <div class="stats-kpi-row three-cols">
+                <div class="stat-card stat-primary">
+                    <div class="stat-icon"><i class="fa-solid fa-database"></i></div>
+                    <div class="stat-value" id="kpiDbSize">--</div>
+                    <div class="stat-label">Local database</div>
+                </div>
+                <div class="stat-card stat-warning">
+                    <div class="stat-icon"><i class="fa-solid fa-file-lines"></i></div>
+                    <div class="stat-value" id="kpiLogSize">--</div>
+                    <div class="stat-label">Logs</div>
+                </div>
+                <div class="stat-card stat-success">
+                    <div class="stat-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                    <div class="stat-value" id="kpiMaxUpload">--</div>
+                    <div class="stat-label">Max upload</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="row g-3">
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <i class="fa-solid fa-chart-pie text-primary"></i>
+                            <h5 class="mb-0 text-light">Distribution by type</h5>
+                        </div>
+                        <div id="chartTypeDonut" class="echart-container" style="height: 350px;"></div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="chart-card">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <i class="fa-solid fa-comments text-primary"></i>
+                            <h5 class="mb-0 text-light">Top 10 chats by file count</h5>
+                        </div>
+                        <div id="chartChatBars" class="echart-container" style="height: 350px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="chart-card">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <i class="fa-solid fa-arrow-right-arrow-left text-primary"></i>
+                            <h5 class="mb-0 text-light">Traffic by file type</h5>
+                        </div>
+                        <div id="chartNetworkStacked" class="echart-container" style="height: 420px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="chart-card">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <i class="fa-solid fa-server text-primary"></i>
+                            <h5 class="mb-0 text-light">Local Storage</h5>
+                        </div>
+                        <div id="chartLocalStorage" class="echart-container" style="height: 420px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </div>
+    </div>
+
+    <th:block layout:fragment="scripts">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+    <script th:inline="none">
+    // Color palette consistent with the theme
+    const CHART_COLORS = {
+        photo: '#2AABEE',
+        video: '#E74C3C',
+        audio: '#9B59B6',
+        document: '#F7B955',
+        voice: '#34D058',
+        video_note: '#E67E22',
+        animation: '#1ABC9C',
+        sticker: '#E91E63',
+        other: '#8B949E',
+        // Network
+        mobile: '#E74C3C',
+        mobile_roaming: '#C0392B',
+        wifi: '#2AABEE',
+        other_net: '#9B59B6',
+        // Storage
+        files: '#2AABEE',
+        database: '#9B59B6',
+        logs: '#E67E22',
+        languagePack: '#34D058'
+    };
+
+    const CHART_THEME = {
+        backgroundColor: 'transparent',
+        textStyle: { color: '#64748b', fontFamily: "'Plus Jakarta Sans', sans-serif" },
+        title: { textStyle: { color: '#0f172a', fontSize: 14, fontWeight: 600 } },
+        legend: { textStyle: { color: '#64748b' } },
+        tooltip: {
+            backgroundColor: 'rgba(255,255,255,0.96)',
+            borderColor: 'rgba(148,163,184,0.22)',
+            textStyle: { color: '#0f172a' }
+        }
+    };
+
+    // Helper to format bytes
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Render KPIs
+    function renderKPIs(data) {
+        const fileStats = data.fileStats || {};
+        const storageStats = data.storageStats || {};
+        const limits = data.limits || {};
+
+        document.getElementById('kpiTotalFiles').textContent = fileStats.totalFiles || 0;
+        document.getElementById('kpiDownloaded').textContent = fileStats.downloadedCount || 0;
+        document.getElementById('kpiTotalSize').textContent = formatBytes(fileStats.totalSizeBytes || 0);
+        document.getElementById('kpiDownloadedSize').textContent = formatBytes(fileStats.downloadedSizeBytes || 0);
+        document.getElementById('kpiDbSize').textContent = formatBytes(storageStats.databaseSize || 0);
+        document.getElementById('kpiLogSize').textContent = formatBytes(storageStats.logSize || 0);
+        document.getElementById('kpiMaxUpload').textContent = formatBytes(limits.maxFileUploadSize || 0);
+    }
+
+    // Render donut chart (distribution by type)
+    function renderTypeDonut(containerId, byType) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const entries = Object.entries(byType || {});
+        if (entries.length === 0) {
+            container.innerHTML = '<div class="chart-no-data"><div class="text-center"><i class="fa-solid fa-chart-pie"></i><p>No data</p></div></div>';
+            return;
+        }
+
+        const chart = echarts.init(container);
+        const data = entries.map(([type, count]) => ({
+            name: type.charAt(0).toUpperCase() + type.slice(1).toLowerCase(),
+            value: count,
+            itemStyle: { color: CHART_COLORS[type.toLowerCase()] || CHART_COLORS.other }
+        }));
+
+        chart.setOption({
+            ...CHART_THEME,
+            tooltip: { ...CHART_THEME.tooltip, trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+            legend: { ...CHART_THEME.legend, orient: 'vertical', right: 10, top: 'center' },
+            series: [{
+                type: 'pie',
+                radius: ['45%', '70%'],
+                center: ['35%', '50%'],
+                avoidLabelOverlap: true,
+                itemStyle: { borderRadius: 6, borderColor: '#ffffff', borderWidth: 2 },
+                label: { show: false },
+                emphasis: { label: { show: true, fontSize: 14, fontWeight: 'bold', color: '#0f172a' } },
+                data: data
+            }]
+        });
+
+        window.addEventListener('resize', () => chart.resize());
+    }
+
+    // Render horizontal bars (Top 10 chats)
+    function renderChatBars(containerId, byChat) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const entries = Object.entries(byChat || {})
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10);
+
+        if (entries.length === 0) {
+            container.innerHTML = '<div class="chart-no-data"><div class="text-center"><i class="fa-solid fa-comments"></i><p>No data</p></div></div>';
+            return;
+        }
+
+        const chart = echarts.init(container);
+        const chats = entries.map(([chatId, count]) => 'Chat ' + chatId);
+        const values = entries.map(([_, count]) => count);
+
+        chart.setOption({
+            ...CHART_THEME,
+            tooltip: { ...CHART_THEME.tooltip, trigger: 'axis', axisPointer: { type: 'shadow' } },
+            grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+            xAxis: {
+                type: 'value',
+                axisLabel: { color: '#64748b' },
+                splitLine: { lineStyle: { color: '#e2e8f0' } }
+            },
+            yAxis: {
+                type: 'category',
+                data: chats.reverse(),
+                axisLabel: { color: '#64748b' },
+                axisLine: { lineStyle: { color: '#cbd5e1' } }
+            },
+            series: [{
+                type: 'bar',
+                data: values.reverse(),
+                itemStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                        { offset: 0, color: '#2AABEE' },
+                        { offset: 1, color: '#54c7ec' }
+                    ]),
+                    borderRadius: [0, 4, 4, 0]
+                }
+            }]
+        });
+
+        window.addEventListener('resize', () => chart.resize());
+    }
+
+    // Render stacked bars (traffic by type)
+    function renderNetworkStacked(containerId, fileEntries) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const entries = fileEntries || [];
+        if (entries.length === 0) {
+            container.innerHTML = '<div class="chart-no-data"><div class="text-center"><i class="fa-solid fa-arrow-right-arrow-left"></i><p>No data</p></div></div>';
+            return;
+        }
+
+        // Group by file type
+        const byType = {};
+        entries.forEach(entry => {
+            const type = entry.fileType || 'other';
+            if (!byType[type]) byType[type] = { sent: 0, received: 0 };
+            byType[type].sent += entry.sentBytes || 0;
+            byType[type].received += entry.receivedBytes || 0;
+        });
+
+        const types = Object.keys(byType);
+        const sentData = types.map(t => byType[t].sent);
+        const receivedData = types.map(t => byType[t].received);
+
+        const chart = echarts.init(container);
+        chart.setOption({
+            ...CHART_THEME,
+            tooltip: {
+                ...CHART_THEME.tooltip,
+                trigger: 'axis',
+                axisPointer: { type: 'shadow' },
+                formatter: function(params) {
+                    let result = params[0].name + '<br/>';
+                    params.forEach(p => {
+                        result += p.marker + ' ' + p.seriesName + ': ' + formatBytes(p.value) + '<br/>';
+                    });
+                    return result;
+                }
+            },
+            legend: { ...CHART_THEME.legend, data: ['Sent', 'Received'], top: 0 },
+            grid: { left: '4%', right: '4%', top: 44, bottom: '8%', containLabel: true },
+            xAxis: {
+                type: 'category',
+                data: types.map(t => t.charAt(0).toUpperCase() + t.slice(1)),
+                axisLabel: { color: '#64748b' },
+                axisLine: { lineStyle: { color: '#cbd5e1' } }
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: { color: '#64748b', formatter: val => formatBytes(val) },
+                splitLine: { lineStyle: { color: '#e2e8f0' } }
+            },
+            series: [
+                {
+                    name: 'Sent',
+                    type: 'bar',
+                    stack: 'total',
+                    data: sentData,
+                    itemStyle: { color: '#E74C3C', borderRadius: [0, 0, 4, 4] }
+                },
+                {
+                    name: 'Received',
+                    type: 'bar',
+                    stack: 'total',
+                    data: receivedData,
+                    itemStyle: { color: '#2AABEE', borderRadius: [4, 4, 0, 0] }
+                }
+            ]
+        });
+
+        window.addEventListener('resize', () => chart.resize());
+    }
+
+    // Render local storage (donut)
+    function renderLocalStorageChart(containerId, storageStats) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const stats = storageStats || {};
+        const data = [
+            { name: 'Files', value: stats.filesSize || 0, itemStyle: { color: CHART_COLORS.files } },
+            { name: 'Database', value: stats.databaseSize || 0, itemStyle: { color: CHART_COLORS.database } },
+            { name: 'Logs', value: stats.logSize || 0, itemStyle: { color: CHART_COLORS.logs } },
+            { name: 'Language Pack', value: stats.languagePackDbSize || 0, itemStyle: { color: CHART_COLORS.languagePack } }
+        ].filter(item => item.value > 0);
+
+        if (data.length === 0) {
+            container.innerHTML = '<div class="chart-no-data"><div class="text-center"><i class="fa-solid fa-server"></i><p>No data</p></div></div>';
+            return;
+        }
+
+        const total = data.reduce((sum, item) => sum + item.value, 0);
+        const chart = echarts.init(container);
+        chart.setOption({
+            ...CHART_THEME,
+            tooltip: {
+                ...CHART_THEME.tooltip,
+                trigger: 'item',
+                formatter: function(params) {
+                    return params.name + ': ' + formatBytes(params.value) + ' (' + params.percent + '%)';
+                }
+            },
+            legend: {
+                ...CHART_THEME.legend,
+                orient: 'horizontal',
+                left: 'center',
+                bottom: 8
+            },
+            series: [{
+                type: 'pie',
+                radius: ['52%', '78%'],
+                center: ['50%', '46%'],
+                avoidLabelOverlap: true,
+                itemStyle: { borderRadius: 6, borderColor: '#ffffff', borderWidth: 2 },
+                label: {
+                    show: false
+                },
+                emphasis: {
+                    label: {
+                        show: true,
+                        formatter: function(params) {
+                            return params.name + '\n' + formatBytes(params.value);
+                        },
+                        fontSize: 13,
+                        fontWeight: 700,
+                        color: '#0f172a'
+                    }
+                },
+                data: data
+            }],
+            graphic: [{
+                type: 'text',
+                left: 'center',
+                top: '46%',
+                silent: true,
+                style: {
+                    text: formatBytes(total),
+                    textAlign: 'center',
+                    textVerticalAlign: 'middle',
+                    fill: '#0f172a',
+                    fontSize: 14,
+                    fontWeight: 700
+                }
+            }]
+        });
+
+        window.addEventListener('resize', () => chart.resize());
+    }
+
+    // Render all chart sections
+    function renderStorageCharts(data) {
+        renderTypeDonut('chartTypeDonut', data.fileStats?.byType);
+        renderChatBars('chartChatBars', data.fileStats?.byChat);
+    }
+
+    function renderNetworkCharts(data) {
+        renderNetworkStacked('chartNetworkStacked', data.networkStats?.fileEntries);
+    }
+
+    function renderLocalStorage(data) {
+        renderLocalStorageChart('chartLocalStorage', data.storageStats);
+    }
+
+    // Initialization
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const data = await TelegramAPI.getFullStats();
+            renderKPIs(data);
+            renderStorageCharts(data);
+            renderNetworkCharts(data);
+            renderLocalStorage(data);
+        } catch (error) {
+            console.error('Error loading stats:', error);
+            showToast('Error loading statistics: ' + error.message, 'error');
+        }
+    });
+    </script>
+    </th:block>
+</body>
+</html>

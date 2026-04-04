@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1 layout:fragment="page-title">
+        <i class="fa-solid fa-gauge-high me-2 text-primary"></i> Home
+    </h1>
+
+    <div layout:fragment="content">
+        <div class="page-stack">
+            <section class="hero-panel">
+                <div class="hero-grid">
+                    <div>
+                        <span class="hero-badge">
+                            <i class="fa-solid fa-sparkles"></i>
+                            Nekolu personal storage
+                        </span>
+                        <h2 class="hero-title">Telegram turned into a private cloud, clean and easy to navigate.</h2>
+                        <p class="hero-copy">
+                            Organize your files, download content when needed, and review your storage status from a cleaner, lighter, and responsive interface.
+                        </p>
+                        <div class="hero-actions">
+                            <a th:href="@{/files}" class="btn btn-tg-primary">
+                                <i class="fa-solid fa-folder-open"></i>
+                                Explore files
+                            </a>
+                            <a th:href="@{/folders}" class="btn btn-tg-outline">
+                                <i class="fa-solid fa-folder-tree"></i>
+                                View folders
+                            </a>
+                        </div>
+                        <div class="hero-points mt-3">
+                            <span class="hero-point"><i class="fa-solid fa-bolt"></i> Quick actions</span>
+                            <span class="hero-point"><i class="fa-solid fa-cloud-arrow-up"></i> Direct upload a Telegram</span>
+                            <span class="hero-point"><i class="fa-solid fa-mobile-screen-button"></i> Responsive design</span>
+                        </div>
+                    </div>
+                    <div class="hero-card">
+                        <h3>All in one view</h3>
+                        <p>Review your library, total size, and download status without changing context.</p>
+                        <div class="metrics-inline mt-3">
+                            <div class="metric-chip">
+                                <strong id="totalFiles">--</strong>
+                                <span>Total files</span>
+                            </div>
+                            <div class="metric-chip">
+                                <strong id="totalSize">--</strong>
+                                <span>Detected storage</span>
+                            </div>
+                        </div>
+                        <ul class="hero-card-list">
+                            <li>
+                                <i class="fa-solid fa-circle-check"></i>
+                                <div>
+                                    <strong id="downloadedCount">--</strong>
+                                    <span>Downloaded items</span>
+                                </div>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-clock"></i>
+                                <div>
+                                    <strong id="pendingCount">--</strong>
+                                    <span>Pending sync</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="kpi-grid">
+                <div class="stat-card stat-primary">
+                    <div class="stat-icon"><i class="fa-solid fa-folder-open"></i></div>
+                    <div class="stat-value" id="totalFilesMirror">--</div>
+                    <div class="stat-label">Indexed files</div>
+                </div>
+                <div class="stat-card stat-success">
+                    <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="stat-value" id="downloadedCountMirror">--</div>
+                    <div class="stat-label">Downloaded</div>
+                </div>
+                <div class="stat-card stat-warning">
+                    <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+                    <div class="stat-value" id="pendingCountMirror">--</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card stat-danger">
+                    <div class="stat-icon"><i class="fa-solid fa-hard-drive"></i></div>
+                    <div class="stat-value" id="totalSizeMirror">--</div>
+                    <div class="stat-label">Total size</div>
+                </div>
+            </section>
+
+            <div class="card-panel">
+            <div class="card-panel-header">
+                <span class="card-panel-title">
+                    <i class="fa-solid fa-clock-rotate-left me-1"></i> Recent files
+                </span>
+                <div class="d-flex gap-2">
+                    <a th:href="@{/files}" class="btn btn-tg-outline btn-sm">View all</a>
+                </div>
+            </div>
+
+            <div id="recentFilesLoading" class="text-center py-4">
+                <div class="spinner-tg"></div>
+                <p class="mt-2 text-muted small">Loading recent files...</p>
+            </div>
+
+            <div id="recentFilesEmpty" class="empty-state d-none">
+                <i class="fa-solid fa-folder-open"></i>
+                <h3>No files yet</h3>
+                <p>When you start saving files in Telegram, they will appear here.</p>
+            </div>
+
+            <div class="table-responsive" id="recentFilesTable" style="display: none">
+                <table class="file-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Name</th>
+                            <th>Size</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentFilesBody">
+                    </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+
+    </div>
+
+    <th:block layout:fragment="scripts">
+    <script th:inline="none">
+    document.addEventListener('DOMContentLoaded', async () => {
+
+        // Load stats
+        try {
+            const stats = await TelegramAPI.getStats();
+            const totalFiles = stats.totalFiles || 0;
+            const downloadedCount = stats.downloadedCount || 0;
+            const pendingCount = stats.pendingCount || 0;
+            const totalSize = formatBytes(stats.totalSizeBytes || 0);
+            document.getElementById('totalFiles').textContent = totalFiles;
+            document.getElementById('downloadedCount').textContent = downloadedCount;
+            document.getElementById('pendingCount').textContent = pendingCount;
+            document.getElementById('totalSize').textContent = totalSize;
+            document.getElementById('totalFilesMirror').textContent = totalFiles;
+            document.getElementById('downloadedCountMirror').textContent = downloadedCount;
+            document.getElementById('pendingCountMirror').textContent = pendingCount;
+            document.getElementById('totalSizeMirror').textContent = totalSize;
+        } catch (e) {
+            document.getElementById('totalFiles').textContent = '0';
+            document.getElementById('downloadedCount').textContent = '0';
+            document.getElementById('pendingCount').textContent = '0';
+            document.getElementById('totalSize').textContent = '0 B';
+            document.getElementById('totalFilesMirror').textContent = '0';
+            document.getElementById('downloadedCountMirror').textContent = '0';
+            document.getElementById('pendingCountMirror').textContent = '0';
+            document.getElementById('totalSizeMirror').textContent = '0 B';
+        }
+
+        // Load recent files
+        try {
+            const files = await TelegramAPI.listFiles({ limit: 10, sort: 'date_desc' });
+            const loading = document.getElementById('recentFilesLoading');
+            const empty = document.getElementById('recentFilesEmpty');
+            const table = document.getElementById('recentFilesTable');
+            const tbody = document.getElementById('recentFilesBody');
+
+            loading.style.display = 'none';
+
+            if (!files || files.length === 0) {
+                empty.classList.remove('d-none');
+                return;
+            }
+
+            table.style.display = 'block';
+
+            files.forEach(file => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div class="file-icon ${getFileTypeClass(file.type)}">
+                            <i class="fa-solid ${getFileTypeIcon(file.type)}"></i>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="file-name">${file.fileName || 'Untitled'}</div>
+                        <div class="file-meta">${file.mimeType || file.type}</div>
+                    </td>
+                    <td><span class="text-nowrap">${formatBytes(file.fileSize)}</span></td>
+                    <td><span class="text-nowrap">${formatDate(file.date)}</span></td>
+                    <td>
+                        <span class="badge-status ${file.isDownloaded ? 'badge-downloaded' : 'badge-pending'}">
+                            ${file.isDownloaded ? 'Downloaded' : 'Pending'}
+                        </span>
+                    </td>
+                    <td class="text-end">
+                        <div class="d-flex gap-1 justify-content-end">
+                            ${!file.isDownloaded ? `
+                            <button class="btn-icon" onclick="downloadSingle(${file.fileId}, this)" title="Download">
+                                <i class="fa-solid fa-download"></i>
+                            </button>` : `
+                            <a href="/api/telegram/files/${file.fileId}/content" class="btn-icon text-success" title="Download ${file.fileName || ''}">
+                                <i class="fa-solid fa-download"></i>
+                            </a>`}
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+        } catch (e) {
+            document.getElementById('recentFilesLoading').style.display = 'none';
+            document.getElementById('recentFilesEmpty').classList.remove('d-none');
+            document.getElementById('recentFilesEmpty').querySelector('p').textContent = 'Error loading files: ' + e.message;
+        }
+
+    });
+
+    async function downloadSingle(fileId, btn) {
+        const row = btn ? btn.closest('tr') : null;
+        const actionsCell = row ? row.querySelector('td:last-child .d-flex') : null;
+        const fileName = row ? (row.querySelector('.file-name')?.textContent || '') : '';
+
+        try {
+            if (actionsCell) {
+                actionsCell.innerHTML = `
+                    <span class="d-flex align-items-center gap-2" id="prog-${fileId}">
+                        <div class="spinner-border spinner-border-sm text-info" role="status"></div>
+                        <small class="text-muted">Downloading...</small>
+                    </span>`;
+            }
+
+            const result = await TelegramAPI.downloadFile(fileId);
+
+            if (result.status === 'COMPLETED') {
+                onDownloadComplete(fileId, row, actionsCell, fileName);
+                showToast('File downloaded', 'success');
+                return;
+            }
+
+            showToast('Download started...', 'info');
+
+            let attempts = 0;
+            const interval = setInterval(async () => {
+                attempts++;
+                try {
+                    const info = await TelegramAPI.getFileInfo(fileId);
+                    if (info.isDownloaded) {
+                        clearInterval(interval);
+                        onDownloadComplete(fileId, row, actionsCell, fileName);
+                        showToast('Download completed', 'success');
+                        return;
+                    }
+                    const progEl = document.getElementById(`prog-${fileId}`);
+                    if (progEl) {
+                        const dots = '.'.repeat((attempts % 3) + 1);
+                        progEl.querySelector('small').textContent = `Downloading${dots}`;
+                    }
+                    if (attempts >= 120) { clearInterval(interval); showToast('Download took too long', 'warning'); }
+                } catch { clearInterval(interval); }
+            }, 4000);
+
+        } catch (e) {
+            showToast('Error: ' + e.message, 'error');
+            if (actionsCell) {
+                actionsCell.innerHTML = `
+                    <button class="btn-icon text-danger" onclick="downloadSingle(${fileId}, this)" title="Retry">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>`;
+            }
+        }
+    }
+
+    function onDownloadComplete(fileId, row, actionsCell, fileName) {
+        if (actionsCell) {
+            actionsCell.innerHTML = `
+                <a href="/api/telegram/files/${fileId}/content" class="btn-icon text-success" title="Download ${fileName || ''}">
+                    <i class="fa-solid fa-download"></i>
+                </a>`;
+        }
+        if (row) {
+            const badge = row.querySelector('.badge-status');
+            if (badge) { badge.className = 'badge-status badge-downloaded'; badge.textContent = 'Downloaded'; }
+        }
+    }
+    </script>
+    </th:block>
+
+
+</body>
+</html>
