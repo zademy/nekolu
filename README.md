@@ -1,4 +1,28 @@
-# Nekolu
+<h1 align="center">Nekolu</h1>
+
+<p align="center">
+  Telegram-backed personal file workspace built with Spring Boot 4, Java 25, and TDLib.
+</p>
+
+<p align="center">
+  <a href="https://nekolu.me/">
+    <img src="https://img.shields.io/badge/Official%20Site-nekolu.me-0f172a?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Official site">
+  </a>
+  <a href="./LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-22c55e?style=for-the-badge" alt="MIT License">
+  </a>
+  <img src="https://img.shields.io/badge/Java-25-f89820?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 25">
+  <img src="https://img.shields.io/badge/Spring%20Boot-4-6db33f?style=for-the-badge&logo=springboot&logoColor=white" alt="Spring Boot 4">
+  <img src="https://img.shields.io/badge/TDLib-Native%20Java-229ed9?style=for-the-badge&logo=telegram&logoColor=white" alt="TDLib Native Java">
+</p>
+
+<p align="center">
+  <a href="https://nekolu.me/">Official Website</a>
+  ·
+  <a href="http://localhost:8080/swagger-ui.html">Swagger UI</a>
+  ·
+  <a href="http://localhost:8080/v3/api-docs">OpenAPI</a>
+</p>
 
 ## First run: authenticate TDLib before using the application
 
