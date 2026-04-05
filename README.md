@@ -1,5 +1,104 @@
 # Nekolu
 
+## First run: authenticate TDLib before using the application
+
+If this is your first time starting Nekolu, **authenticate TDLib first**.
+
+Nekolu does **not** currently provide its own login flow for Telegram phone number, code, or 2FA password entry.
+It expects an already authorized TDLib session in the configured `tdlib/` directory.
+
+If you skip this step, Telegram-backed features will fail with errors such as:
+
+```text
+Unauthorized. Telegram requires authentication.
+Error creating chat: Unauthorized
+```
+
+### Required first-run command
+
+From the project root, run:
+
+```bash
+java -Djava.library.path=lib -cp lib/tdlib.jar org.drinkless.tdlib.example.Example
+```
+
+On recent Java releases you may also see a native-access warning similar to:
+
+```text
+WARNING: A restricted method in java.lang.System has been called
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+```
+
+This is a JVM warning, not a Nekolu-specific authentication failure.
+If you want to suppress it, you can run:
+
+```bash
+java --enable-native-access=ALL-UNNAMED -Djava.library.path=lib -cp lib/tdlib.jar org.drinkless.tdlib.example.Example
+```
+
+### First-run authentication flow
+
+The exact authentication steps depend on the Telegram account and the current authorization state.
+
+Typical flow:
+
+1. stop Nekolu if it is already running
+2. run the TDLib example command shown above
+3. enter your phone number in international format, for example `+5255...`
+4. complete the authentication steps required for that account
+5. quit the TDLib example client
+6. start Nekolu again
+
+Depending on the account, Telegram may ask for one or more of the following:
+
+- the phone number
+- a login or verification code
+- a 2FA password
+
+Some accounts may require only the phone number and a code.
+Other accounts may also require a 2FA password.
+
+After the login finishes successfully, exit the example client and then start the application normally.
+
+### Possible first-run errors
+
+#### `PHONE_NUMBER_INVALID`
+
+If TDLib returns:
+
+```text
+Error {
+  code = 400
+  message = "PHONE_NUMBER_INVALID"
+}
+```
+
+the phone number format is invalid for Telegram.
+
+Check the following:
+
+- include the leading `+` and country code
+- do not include spaces or formatting characters unless Telegram accepts them
+- make sure the number belongs to the Telegram account you want to use
+
+#### `Unauthorized` after login attempt
+
+If Nekolu still reports `Unauthorized` after you authenticated successfully:
+
+- make sure you closed the TDLib example client before starting Nekolu
+- make sure Nekolu and the TDLib example used the same `telegram.database-directory`
+- verify that `telegram.api.id` and `telegram.api.hash` are correct
+- complete the authentication steps required for that specific account, including 2FA if enabled
+
+#### TDLib database lock or startup conflicts
+
+TDLib does not allow multiple processes to use the same database directory at the same time.
+
+Do not:
+
+- run Nekolu and the TDLib example client simultaneously against the same `tdlib/` directory
+- run two Nekolu instances against the same `tdlib/` directory
+
 Nekolu is a Spring Boot 4 application that turns Telegram into a personal file workspace.
 It uses the native TDLib Java bindings to upload, browse, download, preview, organize, and inspect files stored in **Saved Messages** and Telegram-backed folder channels.
 
@@ -351,7 +450,27 @@ If you see errors about locking `td.binlog`, another process is already using th
 Stop the other process and start the application again.
 
 ### Unauthorized / authentication errors
-If Telegram operations fail because the client is not authorized, re-authenticate TDLib using the same configured database directory and then restart the application.
+If Telegram operations fail because the client is not authorized, authenticate TDLib first and then restart the application.
+
+Recommended command:
+
+```bash
+java -Djava.library.path=lib -cp lib/tdlib.jar org.drinkless.tdlib.example.Example
+```
+
+On newer Java versions, this equivalent form also works and suppresses the native-access warning:
+
+```bash
+java --enable-native-access=ALL-UNNAMED -Djava.library.path=lib -cp lib/tdlib.jar org.drinkless.tdlib.example.Example
+```
+
+After successful authentication:
+
+1. quit the TDLib example client completely
+2. ensure the same configured `tdlib/` directory is reused
+3. restart Nekolu
+
+If TDLib reports `PHONE_NUMBER_INVALID`, re-enter the phone number in correct international format.
 
 ### File can be listed but not viewed inline
 Inline preview requires a real local downloaded copy.
