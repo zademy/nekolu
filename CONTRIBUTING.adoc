@@ -1,0 +1,116 @@
+= Contributing to Nekolu
+
+Thanks for your interest in contributing to Nekolu.
+
+This repository is the public collaboration channel for the project. We do not provide private support, email support, or phone support. If you need help, want to propose a change, or found a bug, use the repository.
+
+== Before you start
+
+Please read:
+
+- `README.md`
+- `SECURITY.md`
+- `CODE_OF_CONDUCT.md`
+
+For non-trivial changes, open or reference an issue first so the work matches the project's direction.
+
+== Ways to contribute
+
+You can help by:
+
+- reporting bugs
+- improving documentation
+- proposing features
+- submitting code fixes
+- improving tests
+- refining API, UI, or DX details
+
+== Development setup
+
+Nekolu is built around:
+
+- Java 25
+- Maven 3.9+
+- Spring Boot 4
+- native TDLib Java bindings from `lib/`
+
+Basic setup:
+
+. Copy `src/main/resources/application.example.properties` to `src/main/resources/application.properties` for local development.
+. Provide secrets through environment variables when possible.
+. Make sure the native TDLib files under `lib/` are available for your platform.
+. Reuse a valid TDLib session only in a controlled local environment.
+
+IMPORTANT: TDLib does not allow multiple processes to use the same database directory at the same time. Do not run multiple Nekolu instances, or another TDLib client, against the same `tdlib/` directory.
+
+== Local commands
+
+Use the Maven wrapper when possible:
+
+[source,bash]
+----
+./mvnw clean test
+./mvnw spring-boot:run
+----
+
+If you use a system Maven installation instead:
+
+[source,bash]
+----
+mvn clean test
+mvn spring-boot:run
+----
+
+== Contribution workflow
+
+. Start from the branch used for active development in the repository.
+. Create a focused branch for your change.
+. Keep changes small enough to review.
+. Add or update tests when behavior changes.
+. Update documentation when commands, configuration, APIs, or UI behavior change.
+. Open a pull request with a clear description of the problem and fix.
+
+== Coding expectations
+
+Please follow the existing project direction:
+
+- keep controllers thin
+- put business logic in services
+- keep TDLib access encapsulated and asynchronous
+- prefer clear DTO boundaries
+- avoid unrelated refactors in focused pull requests
+- do not introduce JPA or relational persistence unless the project direction changes explicitly
+- do not hardcode Telegram credentials, tokens, or local secrets
+
+== Pull request checklist
+
+Before opening a pull request, confirm that you have:
+
+- explained the problem being solved
+- linked the relevant issue, if one exists
+- run tests locally
+- updated docs when needed
+- removed debug-only code and accidental secrets
+- kept the change scoped to one concern
+
+== Issues, support, and questions
+
+Use the repository for all project communication:
+
+- bug reports: GitHub Issues
+- proposed changes: GitHub Issues or Pull Requests
+- implementation discussion: Pull Request review conversation
+
+Please do not request private support channels. Support is best-effort and repository-based.
+
+== Security reports
+
+Do not post undisclosed vulnerabilities in a public issue. Follow `SECURITY.md`.
+
+== License of contributions
+
+By submitting a contribution, you agree that your work may be distributed under the repository's MIT License.
+
+== Responsible use
+
+Nekolu is an open source tool for managing Telegram-backed files. Each operator is responsible for their own deployment, credentials, data handling, and legal compliance. The maintainers do not endorse or accept responsibility for unlawful, abusive, infringing, or unauthorized use of the software by end users.
