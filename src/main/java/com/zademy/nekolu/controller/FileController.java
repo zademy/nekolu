@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import jakarta.validation.Valid;
+
 import com.zademy.nekolu.dto.BulkDeleteRequest;
 import com.zademy.nekolu.dto.BulkDeleteResponse;
 import com.zademy.nekolu.dto.DeleteMessageRequest;
@@ -366,10 +368,7 @@ public class FileController {
     })
     public CompletableFuture<ResponseEntity<List<DownloadResponse>>> downloadFiles(
             @RequestBody @Parameter(description = "Request with fileId list", required = true)
-            DownloadFilesRequest request) {
-        if (request == null || request.fileIds() == null || request.fileIds().isEmpty()) {
-            return CompletableFuture.completedFuture(ResponseEntity.badRequest().body(null));
-        }
+            @Valid DownloadFilesRequest request) {
         return fileService.downloadFiles(request.fileIds())
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.badRequest().body(null));
@@ -385,10 +384,7 @@ public class FileController {
     })
     public ResponseEntity<DownloadJob> createBatchDownload(
             @RequestBody @Parameter(description = "Request with fileId list", required = true)
-            DownloadFilesRequest request) {
-        if (request == null || request.fileIds() == null || request.fileIds().isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
+            @Valid DownloadFilesRequest request) {
         DownloadJob job = fileService.createBatchDownloadJob(request.fileIds());
         return ResponseEntity.ok(job);
     }
@@ -695,12 +691,7 @@ public class FileController {
     })
     public CompletableFuture<ResponseEntity<FileActionResponse>> moveFile(
             @PathVariable @Parameter(description = "File ID", example = "12345") long fileId,
-            @RequestBody MoveFileRequest request) {
-        if (request == null || request.virtualPath() == null || request.virtualPath().isBlank()) {
-            return CompletableFuture.completedFuture(ResponseEntity.badRequest().body(
-                new FileActionResponse(fileId, FileActionResponse.STATUS_FAILED, "virtualPath is required", "/", false, false, 0)
-            ));
-        }
+            @RequestBody @Valid MoveFileRequest request) {
         return fileService.moveFile(fileId, request.virtualPath())
             .thenApply(ResponseEntity::ok)
             .exceptionally(ex -> ResponseEntity.badRequest().body(
@@ -802,13 +793,7 @@ public class FileController {
     })
     public CompletableFuture<ResponseEntity<BulkDeleteResponse>> bulkDeleteMessages(
             @RequestBody @Parameter(description = "Request with files to delete", required = true)
-            BulkDeleteRequest request) {
-
-        if (request == null || request.items() == null || request.items().isEmpty()) {
-            return CompletableFuture.completedFuture(ResponseEntity.badRequest().body(
-                new BulkDeleteResponse(0, 0, 0, List.of())
-            ));
-        }
+            @Valid BulkDeleteRequest request) {
 
         return fileService.bulkDeleteMessages(request)
                 .thenApply(ResponseEntity::ok)

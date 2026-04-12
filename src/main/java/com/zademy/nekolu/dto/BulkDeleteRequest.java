@@ -10,11 +10,14 @@ import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import jakarta.validation.constraints.NotEmpty;
+
 /**
  * Request payload for deleting multiple Telegram file messages in a single operation.
  */
 @Schema(description = "Request for deleting multiple Telegram messages/files in batch")
 public record BulkDeleteRequest(
+    @NotEmpty(message = "items must not be empty")
     @Schema(description = "List of files to delete", requiredMode = Schema.RequiredMode.REQUIRED)
     List<DeleteItem> items,
 

@@ -38,6 +38,7 @@ public class TelegramServiceImpl implements TelegramService {
     private static final String INTERNAL_INDEX_TITLE = "TGDrive Internal Index";
 
     private final TelegramConfig telegramConfig;
+    private final TelegramRateLimiter rateLimiter;
     private Client client;
     private volatile boolean isAuthorized = false;
     private final ConcurrentHashMap<Integer, CompletableFuture<TdApi.File>> pendingDownloads = new ConcurrentHashMap<>();
@@ -46,8 +47,9 @@ public class TelegramServiceImpl implements TelegramService {
     private volatile CompletableFuture<Long> ownChatIdFuture;
     private volatile boolean internalIndexCleanupAttempted = false;
 
-    public TelegramServiceImpl(TelegramConfig telegramConfig) {
+    public TelegramServiceImpl(TelegramConfig telegramConfig, TelegramRateLimiter rateLimiter) {
         this.telegramConfig = telegramConfig;
+        this.rateLimiter = rateLimiter;
     }
 
     @PostConstruct
@@ -99,18 +101,12 @@ public class TelegramServiceImpl implements TelegramService {
 
     @Override
     public CompletableFuture<TdApi.Message> sendTextMessage(long chatId, String message) {
+        CompletableFuture<TdApi.Message> failed = TdLibPreconditions.requireReady(client, isAuthorized);
+        if (failed != null) return failed;
+        rateLimiter.acquire();
+
         CompletableFuture<TdApi.Message> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException("Telegram client not initialized"));
-            return future;
-        }
-
-        if (!isAuthorized) {
-            future.completeExceptionally(new IllegalStateException("Unauthorized. Telegram requires authentication."));
-            return future;
-        }
-
+        future.whenComplete((r, ex) -> rateLimiter.release());
         TdApi.FormattedText formattedText = new TdApi.FormattedText(message, null);
         TdApi.InputMessageText messageText = new TdApi.InputMessageText(formattedText, null, false);
         TdApi.SendMessage sendMessage = new TdApi.SendMessage();
@@ -132,18 +128,10 @@ public class TelegramServiceImpl implements TelegramService {
 
     @Override
     public CompletableFuture<TdApi.Message> editTextMessage(long chatId, long messageId, String message) {
+        CompletableFuture<TdApi.Message> failed = TdLibPreconditions.requireReady(client, isAuthorized);
+        if (failed != null) return failed;
+
         CompletableFuture<TdApi.Message> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException("Telegram client not initialized"));
-            return future;
-        }
-
-        if (!isAuthorized) {
-            future.completeExceptionally(new IllegalStateException("Unauthorized. Telegram requires authentication."));
-            return future;
-        }
-
         TdApi.EditMessageText editMessageText = new TdApi.EditMessageText();
         editMessageText.chatId = chatId;
         editMessageText.messageId = messageId;
@@ -165,18 +153,10 @@ public class TelegramServiceImpl implements TelegramService {
 
     @Override
     public CompletableFuture<List<TdApi.Message>> searchChatMessages(long chatId, String query, long fromMessageId, int limit) {
+        CompletableFuture<List<TdApi.Message>> failed = TdLibPreconditions.requireReady(client, isAuthorized);
+        if (failed != null) return failed;
+
         CompletableFuture<List<TdApi.Message>> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException("Telegram client not initialized"));
-            return future;
-        }
-
-        if (!isAuthorized) {
-            future.completeExceptionally(new IllegalStateException("Unauthorized. Telegram requires authentication."));
-            return future;
-        }
-
         TdApi.SearchChatMessages search = new TdApi.SearchChatMessages();
         search.chatId = chatId;
         search.query = query != null ? query : "";
@@ -201,13 +181,10 @@ public class TelegramServiceImpl implements TelegramService {
 
     @Override
     public CompletableFuture<TdApi.Message> getMessage(long chatId, long messageId) {
+        CompletableFuture<TdApi.Message> failed = TdLibPreconditions.requireReady(client, isAuthorized);
+        if (failed != null) return failed;
+
         CompletableFuture<TdApi.Message> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException("Telegram client not initialized"));
-            return future;
-        }
-
         TdApi.GetMessages getMessages = new TdApi.GetMessages();
         getMessages.chatId = chatId;
         getMessages.messageIds = new long[] { messageId };
@@ -230,13 +207,12 @@ public class TelegramServiceImpl implements TelegramService {
      */
     @Override
     public CompletableFuture<TdApi.File> downloadFile(int fileId) {
+        CompletableFuture<TdApi.File> failed = TdLibPreconditions.requireReady(client, isAuthorized);
+        if (failed != null) return failed;
+        rateLimiter.acquire();
+
         CompletableFuture<TdApi.File> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException("Telegram client not initialized"));
-            return future;
-        }
-
+        future.whenComplete((r, ex) -> rateLimiter.release());
         pendingDownloads.put(fileId, future);
 
         TdApi.DownloadFile download = new TdApi.DownloadFile();
@@ -429,21 +405,12 @@ public class TelegramServiceImpl implements TelegramService {
      */
     @Override
     public CompletableFuture<TdApi.Chat> createFolder(String title, String description) {
+        CompletableFuture<TdApi.Chat> failed = TdLibPreconditions.requireReady(client, isAuthorized);
+        if (failed != null) return failed;
+        rateLimiter.acquire();
+
         CompletableFuture<TdApi.Chat> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException("Telegram client not initialized"));
-            return future;
-        }
-
-        if (!isAuthorized) {
-            future.completeExceptionally(new IllegalStateException(
-                "Unauthorized. Telegram requires authentication. " +
-                "Use the TDLib CLI client to authenticate first."
-            ));
-            return future;
-        }
-
+        future.whenComplete((r, ex) -> rateLimiter.release());
         TdApi.CreateNewSupergroupChat request = new TdApi.CreateNewSupergroupChat();
         request.title = title;
         request.isChannel = true;
@@ -470,21 +437,10 @@ public class TelegramServiceImpl implements TelegramService {
      */
     @Override
     public CompletableFuture<List<FolderInfo>> listFolders() {
+        CompletableFuture<List<FolderInfo>> failed = TdLibPreconditions.requireReady(client, isAuthorized);
+        if (failed != null) return failed;
+
         CompletableFuture<List<FolderInfo>> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException("Telegram client not initialized"));
-            return future;
-        }
-
-        if (!isAuthorized) {
-            future.completeExceptionally(new IllegalStateException(
-                "Unauthorized. Telegram requires authentication. " +
-                "Use the TDLib CLI client to authenticate first."
-            ));
-            return future;
-        }
-
         TdApi.GetChats getChats = new TdApi.GetChats();
         getChats.chatList = new TdApi.ChatListMain();
         getChats.limit = ServiceDefaults.DEFAULT_CHAT_LIST_LIMIT;
@@ -687,21 +643,10 @@ public class TelegramServiceImpl implements TelegramService {
      */
     @Override
     public CompletableFuture<Void> deleteFolder(long chatId) {
+        CompletableFuture<Void> failed = TdLibPreconditions.requireReady(client, isAuthorized);
+        if (failed != null) return failed;
+
         CompletableFuture<Void> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException("Telegram client not initialized"));
-            return future;
-        }
-
-        if (!isAuthorized) {
-            future.completeExceptionally(new IllegalStateException(
-                "Unauthorized. Telegram requires authentication. " +
-                "Use the TDLib CLI client to authenticate first."
-            ));
-            return future;
-        }
-
         // First leave the chat
         client.send(new TdApi.LeaveChat(chatId), leaveResult -> {
             if (leaveResult instanceof TdApi.Error error) {
@@ -732,17 +677,10 @@ public class TelegramServiceImpl implements TelegramService {
      */
     @Override
     public CompletableFuture<StorageStatsResponse> getStorageStatisticsFast() {
+        CompletableFuture<StorageStatsResponse> failed = TdLibPreconditions.requireReady(client, isAuthorized);
+        if (failed != null) return failed;
+
         CompletableFuture<StorageStatsResponse> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException("Telegram client not initialized"));
-            return future;
-        }
-        if (!isAuthorized) {
-            future.completeExceptionally(new IllegalStateException("Not authorized in Telegram"));
-            return future;
-        }
-
         client.send(new TdApi.GetStorageStatisticsFast(), result -> {
             if (result instanceof TdApi.StorageStatisticsFast stats) {
                 future.complete(new StorageStatsResponse(
@@ -769,17 +707,10 @@ public class TelegramServiceImpl implements TelegramService {
      */
     @Override
     public CompletableFuture<NetworkStatsResponse> getNetworkStatistics(boolean onlyCurrent) {
+        CompletableFuture<NetworkStatsResponse> failed = TdLibPreconditions.requireReady(client, isAuthorized);
+        if (failed != null) return failed;
+
         CompletableFuture<NetworkStatsResponse> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException("Telegram client not initialized"));
-            return future;
-        }
-        if (!isAuthorized) {
-            future.completeExceptionally(new IllegalStateException("Not authorized in Telegram"));
-            return future;
-        }
-
         client.send(new TdApi.GetNetworkStatistics(onlyCurrent), result -> {
             if (result instanceof TdApi.NetworkStatistics stats) {
                 List<NetworkStatsResponse.NetworkFileEntry> fileEntries = new ArrayList<>();
@@ -818,12 +749,8 @@ public class TelegramServiceImpl implements TelegramService {
      */
     @Override
     public CompletableFuture<TelegramLimitsResponse> getTelegramLimits() {
-        if (client == null) {
-            return CompletableFuture.failedFuture(new IllegalStateException("Telegram client not initialized"));
-        }
-        if (!isAuthorized) {
-            return CompletableFuture.failedFuture(new IllegalStateException("Not authorized in Telegram"));
-        }
+        CompletableFuture<TelegramLimitsResponse> failed = TdLibPreconditions.requireReady(client, isAuthorized);
+        if (failed != null) return failed;
 
         CompletableFuture<Long> maxUpload = getOptionLong("upload_max_fileparts")
             .thenApply(parts -> parts > 0 ? parts * 524288L : 2147483648L) // 512KB per part, default 2GB

@@ -24,140 +24,18 @@
   <a href="http://localhost:8080/v3/api-docs">OpenAPI</a>
 </p>
 
-## First run: authenticate TDLib before using the application
-
-If this is your first time starting Nekolu, **authenticate TDLib first**.
-
-Nekolu does **not** currently provide its own login flow for Telegram phone number, code, or 2FA password entry.
-It expects an already authorized TDLib session in the configured `tdlib/` directory.
-
-If you skip this step, Telegram-backed features will fail with errors such as:
-
-```text
-Unauthorized. Telegram requires authentication.
-Error creating chat: Unauthorized
-```
-
-### Required first-run command
-
-From the project root, run:
-
-```bash
-java -Djava.library.path=lib -cp lib/tdlib.jar org.drinkless.tdlib.example.Example
-```
-
-On recent Java releases you may also see a native-access warning similar to:
-
-```text
-WARNING: A restricted method in java.lang.System has been called
-WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
-```
-
-This is a JVM warning, not a Nekolu-specific authentication failure.
-If you want to suppress it, you can run:
-
-```bash
-java --enable-native-access=ALL-UNNAMED -Djava.library.path=lib -cp lib/tdlib.jar org.drinkless.tdlib.example.Example
-```
-
-### First-run authentication flow
-
-The exact authentication steps depend on the Telegram account and the current authorization state.
-
-Typical flow:
-
-1. stop Nekolu if it is already running
-2. run the TDLib example command shown above
-3. enter your phone number in international format, for example `+5255...`
-4. complete the authentication steps required for that account
-5. quit the TDLib example client
-6. start Nekolu again
-
-Depending on the account, Telegram may ask for one or more of the following:
-
-- the phone number
-- a login or verification code
-- a 2FA password
-
-Some accounts may require only the phone number and a code.
-Other accounts may also require a 2FA password.
-
-After the login finishes successfully, exit the example client and then start the application normally.
-
-### Possible first-run errors
-
-#### `PHONE_NUMBER_INVALID`
-
-If TDLib returns:
-
-```text
-Error {
-  code = 400
-  message = "PHONE_NUMBER_INVALID"
-}
-```
-
-the phone number format is invalid for Telegram.
-
-Check the following:
-
-- include the leading `+` and country code
-- do not include spaces or formatting characters unless Telegram accepts them
-- make sure the number belongs to the Telegram account you want to use
-
-#### `Unauthorized` after login attempt
-
-If Nekolu still reports `Unauthorized` after you authenticated successfully:
-
-- make sure you closed the TDLib example client before starting Nekolu
-- make sure Nekolu and the TDLib example used the same `telegram.database-directory`
-- verify that `telegram.api.id` and `telegram.api.hash` are correct
-- complete the authentication steps required for that specific account, including 2FA if enabled
-
-#### TDLib database lock or startup conflicts
-
-TDLib does not allow multiple processes to use the same database directory at the same time.
-
-Do not:
-
-- run Nekolu and the TDLib example client simultaneously against the same `tdlib/` directory
-- run two Nekolu instances against the same `tdlib/` directory
-
 Nekolu is a Spring Boot 4 application that turns Telegram into a personal file workspace.
 It uses the native TDLib Java bindings to upload, browse, download, preview, organize, and inspect files stored in **Saved Messages** and Telegram-backed folder channels.
 
 The project exposes:
 
 - a REST API documented with OpenAPI / Swagger UI
-- a server-rendered Thymeleaf interface
+- a server-rendered Thymeleaf interface with i18n support
 - TDLib-backed file discovery, upload, download, and inline preview workflows
 - logical drive features such as virtual paths, archive state, and trash operations
 - folder management backed by private Telegram channels
-- statistics, exports, and progress monitoring
-
----
-
-## Telegram credentials setup
-
-Before running the application, create your Telegram API credentials at [my.telegram.org/apps](https://my.telegram.org/apps).
-
-You will need:
-
-- `api_id`
-- `api_hash`
-- your Telegram numeric user id
-
-To get `telegram.user.id`, you can use any of these approaches:
-
-- open Telegram Desktop, go to **Saved Messages**, and inspect the account/user id with a Telegram client or utility that exposes numeric ids
-- use a temporary TDLib or Telegram API script to call `getMe` and read the returned numeric `id`
-- use a trusted Telegram helper bot or tool that shows your numeric user id, then copy that value into `TELEGRAM_USER_ID`
-
-For safe local setup:
-
-- use `src/main/resources/application.example.properties` as the template
-- copy it locally to `src/main/resources/application.properties`
-- provide real secrets through environment variables instead of committing them to the repository
+- real-time download progress via WebSocket
+- observability through Actuator, Micrometer metrics, and Prometheus
 
 ---
 
@@ -184,177 +62,173 @@ For safe local setup:
 - Delete folders
 - List files inside a specific folder channel
 
-### Observability and support features
+### Observability
 - OpenAPI / Swagger UI documentation
-- Spring Boot Actuator health endpoint
+- Spring Boot Actuator with custom TDLib + disk health indicators
+- Micrometer metrics with Prometheus exporter (downloads, uploads, folders, errors)
 - Caffeine caches for file metadata
+- Structured logging with request correlation IDs (MDC)
 - TDLib-backed statistics for files, storage, and network activity
+
+### Resilience
+- Global exception handler with consistent error responses
+- Bean Validation on all request DTOs
+- Semaphore-based rate limiter for TDLib operations
+- Centralized TDLib precondition checks
 
 ---
 
 ## Technology stack
 
-- **Java 25**
-- **Spring Boot 4.0.5**
-- **Spring MVC + Thymeleaf**
-- **TDLib Java bindings** (`org.drinkless:tdlib`)
-- **SpringDoc OpenAPI**
-- **Caffeine Cache**
-- **Maven**
-- **Vanilla JavaScript + Tailwind CSS 4 UI**
+| Layer | Technology |
+|-------|-----------|
+| Language | Java 25 |
+| Framework | Spring Boot 4.0.5 |
+| Web | Spring MVC + Thymeleaf + Layout Dialect |
+| Telegram | TDLib native Java bindings (`org.drinkless:tdlib`) |
+| API Docs | SpringDoc OpenAPI 3.0 |
+| Validation | Jakarta Bean Validation |
+| Caching | Caffeine |
+| Metrics | Micrometer + Prometheus |
+| Real-time | WebSocket |
+| Logging | Logback with JSON output (prod) + MDC correlation |
+| i18n | Spring MessageSource (English, Spanish) |
+| Build | Maven |
+| Container | Docker + Docker Compose |
+| Frontend | Vanilla JavaScript + Tailwind CSS 4 |
 
 ---
 
 ## Runtime requirements
 
-Before starting the application, make sure the following are available:
-
 - Java 25
 - Maven 3.9+
-- a Telegram application created at [my.telegram.org](https://my.telegram.org)
-- a valid TDLib runtime environment
-- a previously authenticated TDLib session stored in the configured `tdlib/` directory
+- A Telegram application created at [my.telegram.org](https://my.telegram.org)
+- A valid TDLib runtime environment with the native library available
+- A previously authenticated TDLib session in the configured `tdlib/` directory
 
 ### Important TDLib constraint
 
-TDLib does **not** allow multiple processes to use the same database directory at the same time.
-
-That means:
-
-- do not run the official TDLib example client and this Spring Boot application against the same `tdlib/` directory simultaneously
-- do not start two Nekolu instances that share the same TDLib database directory
+TDLib does **not** allow multiple processes to use the same database directory at the same time. Do not run the TDLib example client and Nekolu simultaneously against the same directory, and do not start two Nekolu instances sharing the same TDLib database.
 
 ---
 
-## Configuration
+## Getting started
 
-The main configuration file is:
+### 1. Create Telegram API credentials
 
-- `src/main/resources/application.properties`
+Go to [my.telegram.org/apps](https://my.telegram.org/apps) and create an application. You will need:
 
-### Telegram credentials
+- your `api_id`
+- your `api_hash`
+- your Telegram numeric user ID
 
-The application supports environment-variable overrides:
+To find your numeric user ID, you can use Telegram Desktop, a TDLib script calling `getMe`, or a trusted Telegram utility.
 
-```properties
-telegram.api.id=${TELEGRAM_API_ID:your_default_api_id}
-telegram.api.hash=${TELEGRAM_API_HASH:your_default_api_hash}
-telegram.user.id=${TELEGRAM_USER_ID:your_numeric_user_id}
-```
+### 2. Configure the application
 
-Recommended shell setup:
+Copy the example properties file and fill in your values:
 
 ```bash
-export TELEGRAM_API_ID=your_api_id
-export TELEGRAM_API_HASH=your_api_hash
-export TELEGRAM_USER_ID=your_numeric_user_id
+cp src/main/resources/application.example.properties src/main/resources/application.properties
 ```
 
-### TDLib directories
+Use environment variables to provide sensitive values instead of hardcoding them:
 
-```properties
-telegram.database-directory=./tdlib
-telegram.files-directory=./tdlib
+```bash
+export TELEGRAM_API_ID=<your_api_id>
+export TELEGRAM_API_HASH=<your_api_hash>
+export TELEGRAM_USER_ID=<your_numeric_user_id>
 ```
 
-These directories are used for:
+> **Never commit `application.properties` with real credentials to version control.**
 
-- TDLib session state
-- local file cache
-- SQLite metadata created by TDLib
-- application-managed upload staging files
+### 3. Authenticate TDLib (first run only)
 
-### Async and upload limits
+Nekolu does **not** provide its own Telegram login flow. It expects an already authorized TDLib session in the configured `tdlib/` directory.
 
-```properties
-spring.mvc.async.request-timeout=300000
-spring.servlet.multipart.max-file-size=2GB
-spring.servlet.multipart.max-request-size=2GB
-spring.servlet.multipart.enabled=true
+From the project root, run:
+
+```bash
+java --enable-native-access=ALL-UNNAMED -Djava.library.path=lib -cp lib/tdlib.jar org.drinkless.tdlib.example.Example
 ```
 
----
+Follow the interactive prompts to complete authentication (phone number, verification code, and 2FA password if enabled). After successful login, quit the example client before starting Nekolu.
 
-## Telegram authentication
+### 4. Run the application
 
-The application expects TDLib to be authenticated already.
-If there is no valid session, API calls that require Telegram access will fail.
-
-A common workflow is:
-
-1. authenticate once with a TDLib client using the same database directory
-2. close that client completely
-3. start Nekolu using that same TDLib directory
-
-The authenticated session will then be reused by the application.
-
----
-
-## Running the application
-
-From the project root:
+**With Maven:**
 
 ```bash
 mvn spring-boot:run
 ```
 
-Or build first:
+**As a packaged JAR:**
 
 ```bash
-mvn clean package
+mvn clean package -DskipTests
 java -jar target/nekolu-1.0.0.jar
 ```
 
-Default local URL:
+**With Docker Compose:**
 
-- [http://localhost:8080](http://localhost:8080)
+```bash
+docker compose up --build
+```
+
+The application starts at [http://localhost:8080](http://localhost:8080).
 
 ---
 
-## OpenAPI and developer documentation
+## Configuration reference
 
-Once the application is running, the API documentation is available at:
+The main configuration file is `src/main/resources/application.properties`. See `application.example.properties` for all available options.
 
-- Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
-- OpenAPI JSON: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
-- Additional developer reference: `documentation.md`
+### Key configuration areas
+
+| Area | Properties prefix | Description |
+|------|-------------------|-------------|
+| Telegram credentials | `telegram.api.*`, `telegram.user.id` | API ID, hash, and user ID (use env vars) |
+| TDLib directories | `telegram.database-directory`, `telegram.files-directory` | Session state, file cache, SQLite metadata |
+| TDLib features | `telegram.use-*` | Feature flags for message/chat/file databases |
+| Upload limits | `spring.servlet.multipart.*` | Max file and request sizes (default: 2 GB) |
+| Async timeout | `spring.mvc.async.request-timeout` | Timeout for async MVC requests (default: 5 min) |
+| Rate limiter | `nekolu.rate-limit.*` | Max concurrent TDLib operations and acquire timeout |
+| Actuator | `management.endpoints.*` | Exposed health, metrics, and Prometheus endpoints |
+
+---
+
+## Docker
+
+The project includes a multi-stage `Dockerfile` and a `docker-compose.yml`.
+
+```bash
+docker compose up --build
+```
+
+Environment variables for Telegram credentials are passed through the compose file. TDLib session data is persisted in a named volume (`tdlib-data`).
+
+> **Note:** The Dockerfile expects a Linux-compatible TDLib native library (`libtdjni.so`) in the `libs/` directory. Adjust the path if your setup differs.
+
+---
+
+## API documentation
+
+Once running, the API documentation is available at:
+
+- **Swagger UI:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- **OpenAPI JSON:** [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
+- **Developer reference:** `documentation.md`
 
 ### API areas
 
-#### Files
-Base path:
-
-```text
-/api/telegram/files
-```
-
-Main capabilities:
-
-- list files
-- get file metadata
-- download content
-- view content inline
-- fetch thumbnails
-- get stream metadata
-- subscribe to download progress (SSE)
-- start single and batch downloads
-- export file lists
-- upload files
-- archive, move, restore, trash, and delete file messages
-- list files inside a folder channel
-
-#### Folders
-Base path:
-
-```text
-/api/telegram
-```
-
-Main capabilities:
-
-- create folder channels
-- list folders
-- delete folders
+| Area | Base path | Capabilities |
+|------|-----------|-------------|
+| Files | `/api/telegram/files` | List, download, upload, preview, thumbnails, batch operations, archive, move, trash, delete, export |
+| Folders | `/api/telegram` | Create, list, delete folder channels |
+| Progress | `/ws/download-progress` | WebSocket endpoint for real-time download progress |
+| Health | `/actuator/health` | TDLib authorization, disk space, directory accessibility |
+| Metrics | `/actuator/prometheus` | Prometheus-compatible metrics endpoint |
 
 > The OpenAPI definition is the source of truth for request and response contracts.
 
@@ -362,20 +236,33 @@ Main capabilities:
 
 ## Web interface
 
-The Thymeleaf UI currently includes the following main screens:
+The Thymeleaf UI includes the following screens:
 
-- **Dashboard**
-- **Files**
-- **Folders**
-- **Folder Files**
-- **Statistics**
+- **Dashboard** — overview and quick actions
+- **Files** — file listing, search, upload, and inline preview
+- **Folders** — folder management
+- **Folder Files** — files inside a specific folder channel
+- **Statistics** — TDLib storage, network, and account limits
 
 ### UI behavior notes
 
-- file tables and grids are backed by the REST API
-- inline media preview is enabled only when a file is truly downloaded locally
-- uploads use an application-controlled staging directory under `tdlib/upload-staging`
-- staged upload files are not treated as downloaded files
+- File tables and grids are backed by the REST API
+- Inline media preview is available only when a file is fully downloaded locally
+- Uploads use a staging directory under `tdlib/upload-staging`
+- The UI supports language switching via the `lang` query parameter (e.g., `?lang=es`)
+
+---
+
+## Internationalization (i18n)
+
+Nekolu supports multiple languages through Spring MessageSource:
+
+| Locale | File |
+|--------|------|
+| English (default) | `messages.properties` |
+| Spanish | `messages_es.properties` |
+
+The locale is resolved from the `Accept-Language` header or the `lang` query parameter.
 
 ---
 
@@ -386,32 +273,46 @@ src/main/java/com/zademy/nekolu/
 ├── Application.java
 ├── config/
 │   ├── CacheConfig.java
+│   ├── MetricsConfig.java
 │   ├── OpenApiConfig.java
-│   └── TelegramConfig.java
+│   ├── RequestCorrelationFilter.java
+│   ├── TelegramConfig.java
+│   ├── TelegramHealthIndicator.java
+│   ├── WebConfig.java
+│   └── WebSocketConfig.java
 ├── constants/
 │   ├── FileTypeConstants.java
 │   ├── MediaConstants.java
 │   └── ServiceDefaults.java
 ├── controller/
 │   ├── FileController.java
+│   ├── GlobalExceptionHandler.java
 │   ├── TelegramController.java
 │   └── WebController.java
 ├── dto/
-│   ├── request and response records used by REST endpoints
+│   ├── ApiErrorResponse.java
+│   └── (request and response records)
 ├── model/
 │   └── LogicalFileMetadata.java
 ├── service/
 │   ├── FileService.java
 │   ├── MetadataIndexService.java
 │   └── TelegramService.java
-└── service/impl/
-    ├── FileServiceImpl.java
-    ├── MetadataIndexServiceImpl.java
-    ├── TelegramServiceImpl.java
-    └── TemporaryUploadJanitor.java
+├── service/impl/
+│   ├── FileServiceImpl.java
+│   ├── MetadataIndexServiceImpl.java
+│   ├── TdLibPreconditions.java
+│   ├── TelegramRateLimiter.java
+│   ├── TelegramServiceImpl.java
+│   └── TemporaryUploadJanitor.java
+└── websocket/
+    └── DownloadProgressWebSocketHandler.java
 
 src/main/resources/
-├── application.properties
+├── application.example.properties
+├── logback-spring.xml
+├── messages.properties
+├── messages_es.properties
 ├── static/
 │   ├── css/
 │   └── js/
@@ -422,13 +323,16 @@ src/main/resources/
     ├── folders.html
     ├── stats.html
     └── layout/
+
+Dockerfile
+docker-compose.yml
 ```
 
 ---
 
 ## Testing
 
-Run the full test suite:
+Run the unit test suite:
 
 ```bash
 mvn test
@@ -440,65 +344,47 @@ Compile without tests:
 mvn -DskipTests compile
 ```
 
-Because TDLib is part of the runtime, some tests may touch files inside the local `tdlib/` directory.
-Treat those files as runtime artifacts, not application source code.
+> Integration tests that load the full Spring context require a TDLib native library and a valid Telegram session. Unit tests run independently.
 
 ---
 
 ## Operational notes
 
 ### Download state
-A file is considered downloaded only when TDLib reports a completed local copy and that file exists on disk.
-A local file used only as an upload source is **not** considered a downloaded file.
+A file is considered downloaded only when TDLib reports a completed local copy and that file exists on disk. A local file used only as an upload source is **not** considered a downloaded file.
 
 ### Upload staging
-Uploads are staged in:
-
-```text
-tdlib/upload-staging/
-```
-
-These files exist only to provide TDLib with a stable local path during upload.
-After TDLib confirms the upload, the staged file is cleaned up and stale leftovers are removed by the startup janitor.
+Uploads are staged in `tdlib/upload-staging/`. These files exist only to provide TDLib with a stable local path during upload. After TDLib confirms the upload, the staged file is cleaned up. Stale leftovers are removed by the startup janitor.
 
 ### Caching
-The application uses Caffeine for in-memory metadata caching.
-This cache is a performance layer only; it is not intended to be a source of truth for file download state.
+The application uses Caffeine for in-memory metadata caching. This cache is a performance layer only; it is not a source of truth for file download state.
+
+### Logging
+In the default profile, logs are written in a human-readable format with request correlation IDs. In the `prod` profile, logs are emitted as structured JSON for log aggregation systems.
+
+Every HTTP request is tagged with an `X-Request-Id` header that appears in all related log entries.
 
 ---
 
 ## Troubleshooting
 
 ### TDLib database lock errors
-If you see errors about locking `td.binlog`, another process is already using the same TDLib directory.
-Stop the other process and start the application again.
+If you see errors about locking `td.binlog`, another process is already using the same TDLib directory. Stop the other process and restart Nekolu.
 
 ### Unauthorized / authentication errors
-If Telegram operations fail because the client is not authorized, authenticate TDLib first and then restart the application.
-
-Recommended command:
-
-```bash
-java -Djava.library.path=lib -cp lib/tdlib.jar org.drinkless.tdlib.example.Example
-```
-
-On newer Java versions, this equivalent form also works and suppresses the native-access warning:
+If Telegram operations fail because the client is not authorized, authenticate TDLib first:
 
 ```bash
 java --enable-native-access=ALL-UNNAMED -Djava.library.path=lib -cp lib/tdlib.jar org.drinkless.tdlib.example.Example
 ```
 
-After successful authentication:
+After successful authentication, quit the TDLib example client, ensure the same `tdlib/` directory is configured, and restart Nekolu.
 
-1. quit the TDLib example client completely
-2. ensure the same configured `tdlib/` directory is reused
-3. restart Nekolu
-
-If TDLib reports `PHONE_NUMBER_INVALID`, re-enter the phone number in correct international format.
+### `PHONE_NUMBER_INVALID`
+Re-enter the phone number in international format with the leading `+` and country code.
 
 ### File can be listed but not viewed inline
-Inline preview requires a real local downloaded copy.
-If a file is still pending, download it first.
+Inline preview requires a fully downloaded local copy. If the file is still pending, trigger a download first.
 
 ---
 
@@ -506,5 +392,5 @@ If a file is still pending, download it first.
 
 - Keep all public-facing API documentation in English
 - Prefer updating OpenAPI annotations when changing request/response contracts
-- Keep README aligned with the actual screens, modules, and endpoints in the codebase
-- Do not document removed modules or deprecated UI features as if they were still active
+- Keep this README aligned with the actual screens, modules, and endpoints in the codebase
+- Never commit real Telegram credentials or session data to version control
