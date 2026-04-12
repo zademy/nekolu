@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zademy.nekolu.dto.CreateFolderRequest;
+
+import jakarta.validation.Valid;
 import com.zademy.nekolu.dto.CreateFolderResponse;
 import com.zademy.nekolu.dto.DeleteFolderResponse;
 import com.zademy.nekolu.dto.FolderInfo;
@@ -64,37 +66,12 @@ public class TelegramController {
     })
     public CompletableFuture<ResponseEntity<CreateFolderResponse>> createFolder(
             @RequestBody @Parameter(description = "Folder data to create", required = true)
-            CreateFolderRequest request) {
+            @Valid CreateFolderRequest request) {
 
-        // Validate title
-        String title = request.title();
-        if (title == null || title.isBlank()) {
-            return CompletableFuture.completedFuture(
-                ResponseEntity.badRequest().body(
-                    new CreateFolderResponse(null, null, null, false, "Folder name is required")
-                )
-            );
-        }
-
-        // Limit title length
-        if (title.length() > 128) {
-            return CompletableFuture.completedFuture(
-                ResponseEntity.badRequest().body(
-                    new CreateFolderResponse(null, null, null, false, "Folder name cannot exceed 128 characters")
-                )
-            );
-        }
-
+        String title = request.title().trim();
         String description = request.description();
-        if (description != null && description.length() > 255) {
-            return CompletableFuture.completedFuture(
-                ResponseEntity.badRequest().body(
-                    new CreateFolderResponse(null, null, null, false, "Description cannot exceed 255 characters")
-                )
-            );
-        }
 
-        return telegramService.createFolder(title.trim(), description != null ? description.trim() : null)
+        return telegramService.createFolder(title, description != null ? description.trim() : null)
                 .thenApply(chat -> ResponseEntity.ok(
                     new CreateFolderResponse(
                         chat.id,
