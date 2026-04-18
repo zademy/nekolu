@@ -386,6 +386,7 @@ Re-enter the phone number in international format with the leading `+` and count
 ### File can be listed but not viewed inline
 Inline preview requires a fully downloaded local copy. If the file is still pending, trigger a download first.
 
+
 ---
 
 ## Notes for maintainers
@@ -394,3 +395,12 @@ Inline preview requires a fully downloaded local copy. If the file is still pend
 - Prefer updating OpenAPI annotations when changing request/response contracts
 - Keep this README aligned with the actual screens, modules, and endpoints in the codebase
 - Never commit real Telegram credentials or session data to version control
+
+---
+
+## Support Development
+
+If Nekolu is useful to you, consider buying me a coffee!
+
+<a href="https://ko-fi.com/C0C01Y1SQI" target="_blank"><img height="26" src="https://img.shields.io/badge/Donate-Ko--fi-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Donate with Ko-fi" /></a>
+<a href="https://buy.stripe.com/00wcN67J46kl8LY8GYfMA01" target="_blank"><img height="26" src="https://img.shields.io/badge/Donate-Stripe-635bff?style=for-the-badge&logo=stripe&logoColor=white" alt="Donate with Stripe" /></a>
