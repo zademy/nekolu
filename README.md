@@ -14,6 +14,9 @@
   <img src="https://img.shields.io/badge/Java-25-f89820?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 25">
   <img src="https://img.shields.io/badge/Spring%20Boot-4-6db33f?style=for-the-badge&logo=springboot&logoColor=white" alt="Spring Boot 4">
   <img src="https://img.shields.io/badge/TDLib-Native%20Java-229ed9?style=for-the-badge&logo=telegram&logoColor=white" alt="TDLib Native Java">
+  <a href="https://deepwiki.com/zademy/nekolu">
+    <img src="https://img.shields.io/badge/DeepWiki-Ask%20AI-5b21b6?style=for-the-badge&logo=googledocs&logoColor=white" alt="Ask DeepWiki">
+  </a>
 </p>
 
 <p align="center">
