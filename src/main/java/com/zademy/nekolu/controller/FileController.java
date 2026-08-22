@@ -141,8 +141,7 @@ public class FileController {
 
         return fileService.searchFilesAdvanced(type, limit, offset, sort,
                 minDate, maxDate, minSize, maxSize, chatId, filenameContains)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().body(null));
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/{fileId}")
@@ -157,8 +156,7 @@ public class FileController {
     public CompletableFuture<ResponseEntity<FileInfoResponse>> getFileInfo(
             @PathVariable @Parameter(description = "File ID", example = "12345") long fileId) {
         return fileService.getFileInfo(fileId)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.notFound().build());
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/{fileId}/content")
@@ -184,7 +182,7 @@ public class FileController {
             fileService.getFileInfo(fileId)
                 .thenApply(fileInfo -> buildFileResponse(resource, fileInfo, "attachment"))
                 .exceptionally(ex -> buildFallbackFileResponse(resource, fileId, "attachment"))
-        ).exceptionally(ex -> ResponseEntity.notFound().build());
+        );
     }
 
     @GetMapping("/{fileId}/view")
@@ -204,7 +202,7 @@ public class FileController {
             fileService.getFileInfo(fileId)
                 .thenApply(fileInfo -> buildFileResponse(resource, fileInfo, "inline"))
                 .exceptionally(ex -> buildFallbackFileResponse(resource, fileId, "inline"))
-        ).exceptionally(ex -> ResponseEntity.notFound().build());
+        );
     }
 
     private ResponseEntity<org.springframework.core.io.Resource> buildFileResponse(
@@ -321,8 +319,7 @@ public class FileController {
     public CompletableFuture<ResponseEntity<FileStreamResponse>> getStreamInfo(
             @PathVariable @Parameter(description = "File ID", example = "12345") long fileId) {
         return fileService.getStreamInfo(fileId)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.notFound().build());
+                .thenApply(ResponseEntity::ok);
     }
 
     @PostMapping("/{fileId}/download")
@@ -355,8 +352,7 @@ public class FileController {
             @RequestBody @Parameter(description = "Request with fileId list", required = true)
             @Valid DownloadFilesRequest request) {
         return fileService.downloadFiles(request.fileIds())
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().body(null));
+                .thenApply(ResponseEntity::ok);
     }
 
     @PostMapping("/batch-download")
@@ -679,8 +675,7 @@ public class FileController {
     })
     public CompletableFuture<ResponseEntity<List<FileInfoResponse>>> listTrash() {
         return fileService.listTrash()
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.ok(List.of()));
+            .thenApply(ResponseEntity::ok);
     }
 
     @DeleteMapping("/message")

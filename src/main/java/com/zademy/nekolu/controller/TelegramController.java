@@ -9,6 +9,7 @@ package com.zademy.nekolu.controller;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zademy.nekolu.dto.CreateFolderRequest;
+import com.zademy.nekolu.exception.TelegramOperationException;
 
 import jakarta.validation.Valid;
 import com.zademy.nekolu.dto.CreateFolderResponse;
@@ -81,15 +83,22 @@ public class TelegramController {
                         "Folder created successfully"
                     )
                 ))
-                .exceptionally(ex -> {
-                    String errorMsg = ex.getMessage();
-                    if (ex.getCause() != null) {
-                        errorMsg = ex.getCause().getMessage();
-                    }
-                    return ResponseEntity.badRequest().body(
-                        new CreateFolderResponse(null, title, description, false, errorMsg)
-                    );
-                });
+                .exceptionally(ex -> failedFolderCreation(ex, title, description));
+    }
+
+    /**
+     * Business-failure mapping: only Telegram-rejected operations become a
+     * failed-creation response; session and infrastructure failures
+     * propagate to the global handler.
+     */
+    private ResponseEntity<CreateFolderResponse> failedFolderCreation(Throwable error, String title, String description) {
+        Throwable cause = error instanceof CompletionException && error.getCause() != null ? error.getCause() : error;
+        if (!(cause instanceof TelegramOperationException)) {
+            throw new CompletionException(cause);
+        }
+        return ResponseEntity.badRequest().body(
+            new CreateFolderResponse(null, title, description, false, cause.getMessage())
+        );
     }
 
     @GetMapping("/folders")
@@ -132,14 +141,16 @@ public class TelegramController {
                 .thenApply(v -> ResponseEntity.ok(
                     new DeleteFolderResponse(chatId, true, "Folder deleted successfully")
                 ))
-                .exceptionally(ex -> {
-                    String errorMsg = ex.getMessage();
-                    if (ex.getCause() != null) {
-                        errorMsg = ex.getCause().getMessage();
-                    }
-                    return ResponseEntity.badRequest().body(
-                        new DeleteFolderResponse(chatId, false, errorMsg)
-                    );
-                });
+                .exceptionally(ex -> failedFolderDeletion(ex, chatId));
+    }
+
+    private ResponseEntity<DeleteFolderResponse> failedFolderDeletion(Throwable error, long chatId) {
+        Throwable cause = error instanceof CompletionException && error.getCause() != null ? error.getCause() : error;
+        if (!(cause instanceof TelegramOperationException)) {
+            throw new CompletionException(cause);
+        }
+        return ResponseEntity.badRequest().body(
+            new DeleteFolderResponse(chatId, false, cause.getMessage())
+        );
     }
 }

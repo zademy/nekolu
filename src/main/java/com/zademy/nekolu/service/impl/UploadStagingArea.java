@@ -44,7 +44,10 @@ public class UploadStagingArea {
         this(DEFAULT_DIRECTORY);
     }
 
-    UploadStagingArea(Path directory) {
+    /**
+     * Testing seam: staging against an explicit directory.
+     */
+    public UploadStagingArea(Path directory) {
         this.directory = directory;
     }
 
