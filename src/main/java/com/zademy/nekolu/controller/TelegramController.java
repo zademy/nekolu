@@ -72,10 +72,10 @@ public class TelegramController {
         String description = request.description();
 
         return telegramService.createFolder(title, description != null ? description.trim() : null)
-                .thenApply(chat -> ResponseEntity.ok(
+                .thenApply(folder -> ResponseEntity.ok(
                     new CreateFolderResponse(
-                        chat.id,
-                        chat.title,
+                        folder.chatId(),
+                        folder.title(),
                         description,
                         true,
                         "Folder created successfully"

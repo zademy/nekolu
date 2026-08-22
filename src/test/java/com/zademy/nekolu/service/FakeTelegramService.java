@@ -12,9 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import org.drinkless.tdlib.Client;
-import org.drinkless.tdlib.TdApi;
-
 import com.zademy.nekolu.constants.FileTypeConstants;
 import com.zademy.nekolu.dto.FolderInfo;
 import com.zademy.nekolu.dto.NetworkStatsResponse;
@@ -212,11 +209,6 @@ public class FakeTelegramService implements TelegramService {
     // ==================== SESSION / UPLOAD TRACKING ====================
 
     @Override
-    public Client getClient() {
-        return null;
-    }
-
-    @Override
     public boolean isAuthorized() {
         return state == SessionState.READY;
     }
@@ -244,36 +236,16 @@ public class FakeTelegramService implements TelegramService {
         return CompletableFuture.completedFuture(null);
     }
 
-    // ==================== LEGACY OPERATIONS (UNSUPPORTED) ====================
+    // ==================== FOLDERS / STATISTICS (UNSUPPORTED) ====================
 
     @Override
-    public CompletableFuture<TdApi.Message> sendTextMessage(long chatId, String message) {
-        return unsupported();
-    }
-
-    @Override
-    public CompletableFuture<TdApi.Message> editTextMessage(long chatId, long messageId, String message) {
-        return unsupported();
-    }
-
-    @Override
-    public CompletableFuture<List<TdApi.Message>> searchChatMessages(long chatId, String query, long fromMessageId, int limit) {
-        return unsupported();
-    }
-
-    @Override
-    public CompletableFuture<TdApi.Message> getMessage(long chatId, long messageId) {
-        return unsupported();
-    }
-
-    @Override
-    public CompletableFuture<TdApi.File> downloadFile(int fileId) {
-        return unsupported();
-    }
-
-    @Override
-    public CompletableFuture<TdApi.Chat> createFolder(String title, String description) {
-        return unsupported();
+    public CompletableFuture<FolderInfo> createFolder(String title, String description) {
+        return guarded(() -> new FolderInfo(
+            nextMessageId++,
+            title,
+            description != null ? description : "",
+            1,
+            (int) (System.currentTimeMillis() / 1000)));
     }
 
     @Override

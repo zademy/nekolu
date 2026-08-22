@@ -473,22 +473,45 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
-     * Downloads a file from Telegram and waits for completion.
+     * Starts the download through the seam and polls its state until the
+     * local copy is complete or the deadline expires.
      */
     private CompletableFuture<Resource> downloadAndWait(long fileId, long timeoutMs) {
-        return telegramService.waitForUploadRelease((int) fileId)
-            .thenCompose(_ignored -> telegramService.downloadFile((int) fileId))
-            .orTimeout(timeoutMs, TimeUnit.MILLISECONDS)
-            .thenCompose(file -> getFileInfo(fileId))
-            .thenApply(updatedInfo -> {
-                if (updatedInfo.localPath() != null) {
-                    File downloadedFile = new File(updatedInfo.localPath());
-                    if (downloadedFile.exists()) {
-                        return (Resource) new FileSystemResource(downloadedFile);
-                    }
+        CompletableFuture<Resource> future = new CompletableFuture<>();
+        long deadline = System.currentTimeMillis() + timeoutMs;
+
+        telegramService.waitForUploadRelease((int) fileId)
+            .thenCompose(_v -> telegramService.startDownload(fileId))
+            .whenComplete((state, error) -> {
+                if (error != null) {
+                    future.completeExceptionally(error);
+                    return;
                 }
-                throw new IllegalStateException("Could not download the file");
+                pollUntilDownloaded(fileId, deadline, future);
             });
+
+        return future;
+    }
+
+    private void pollUntilDownloaded(long fileId, long deadline, CompletableFuture<Resource> future) {
+        telegramService.getFileState(fileId).whenComplete((state, error) -> {
+            if (future.isDone()) {
+                return;
+            }
+            if (error == null && state.downloaded() && state.localPath() != null) {
+                File downloadedFile = new File(state.localPath());
+                if (downloadedFile.exists()) {
+                    future.complete(new FileSystemResource(downloadedFile));
+                    return;
+                }
+            }
+            if (System.currentTimeMillis() >= deadline) {
+                future.completeExceptionally(new IllegalStateException("Could not download the file"));
+                return;
+            }
+            CompletableFuture.delayedExecutor(250, TimeUnit.MILLISECONDS)
+                .execute(() -> pollUntilDownloaded(fileId, deadline, future));
+        });
     }
 
     /**

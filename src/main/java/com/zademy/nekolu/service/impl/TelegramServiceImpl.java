@@ -45,7 +45,6 @@ public class TelegramServiceImpl implements TelegramService {
     private final TelegramRateLimiter rateLimiter;
     private Client client;
     private volatile boolean isAuthorized = false;
-    private final ConcurrentHashMap<Integer, CompletableFuture<TdApi.File>> pendingDownloads = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Integer, String> pendingUploads = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Integer, CompletableFuture<Void>> pendingUploadReleases = new ConcurrentHashMap<>();
     private volatile CompletableFuture<Long> ownChatIdFuture;
@@ -138,14 +137,6 @@ public class TelegramServiceImpl implements TelegramService {
     }
 
     /**
-     * Gets the TDLib client for use by other services.
-     */
-    @Override
-    public Client getClient() {
-        return client;
-    }
-
-    /**
      * Checks whether the session is authorized.
      */
     @Override
@@ -181,96 +172,6 @@ public class TelegramServiceImpl implements TelegramService {
                 logger.error("Error setting TDLib parameters: {}", error.message);
             }
         });
-    }
-
-    @Override
-    public CompletableFuture<TdApi.Message> sendTextMessage(long chatId, String message) {
-        TdApi.FormattedText formattedText = new TdApi.FormattedText(message, null);
-        TdApi.InputMessageText messageText = new TdApi.InputMessageText(formattedText, null, false);
-        TdApi.SendMessage sendMessage = new TdApi.SendMessage();
-        sendMessage.chatId = chatId;
-        sendMessage.inputMessageContent = messageText;
-
-        return send(sendMessage);
-    }
-
-    @Override
-    public CompletableFuture<TdApi.Message> editTextMessage(long chatId, long messageId, String message) {
-        TdApi.EditMessageText editMessageText = new TdApi.EditMessageText();
-        editMessageText.chatId = chatId;
-        editMessageText.messageId = messageId;
-        editMessageText.replyMarkup = null;
-        editMessageText.inputMessageContent = new TdApi.InputMessageText(new TdApi.FormattedText(message, null), null, false);
-
-        return send(editMessageText);
-    }
-
-    @Override
-    public CompletableFuture<List<TdApi.Message>> searchChatMessages(long chatId, String query, long fromMessageId, int limit) {
-        TdApi.SearchChatMessages search = new TdApi.SearchChatMessages();
-        search.chatId = chatId;
-        search.query = query != null ? query : "";
-        search.senderId = null;
-        search.fromMessageId = fromMessageId;
-        search.offset = 0;
-        search.limit = Math.max(1, Math.min(limit, 100));
-        search.filter = null;
-
-        return send(search).thenApply(foundMessages -> List.of(foundMessages.messages));
-    }
-
-    @Override
-    public CompletableFuture<TdApi.Message> getMessage(long chatId, long messageId) {
-        TdApi.GetMessages getMessages = new TdApi.GetMessages();
-        getMessages.chatId = chatId;
-        getMessages.messageIds = new long[] { messageId };
-
-        return send(getMessages).thenCompose(messages -> {
-            if (messages.messages.length > 0 && messages.messages[0] != null) {
-                return CompletableFuture.completedFuture(messages.messages[0]);
-            }
-            return CompletableFuture.failedFuture(new RuntimeException("Message not found"));
-        });
-    }
-
-    /**
-     * Starts a file download and returns a CompletableFuture.
-     */
-    @Override
-    public CompletableFuture<TdApi.File> downloadFile(int fileId) {
-        CompletableFuture<TdApi.File> failed = TdLibPreconditions.requireReady(client, isAuthorized);
-        if (failed != null) return failed;
-
-        // The download cycle holds its permit until UpdateFile completes it,
-        // exactly one permit per download as before the guard existed.
-        CompletableFuture<TdApi.File> downloadFuture = new CompletableFuture<>();
-        try {
-            holdPermitUntil(downloadFuture);
-        } catch (RuntimeException e) {
-            return CompletableFuture.failedFuture(e);
-        }
-        pendingDownloads.put(fileId, downloadFuture);
-
-        TdApi.DownloadFile download = new TdApi.DownloadFile();
-        download.fileId = fileId;
-        download.priority = 1;
-        download.offset = 0;
-        download.limit = 0;
-        download.synchronous = false;
-
-        // Only the initial request is bounded by the request timeout; the
-        // cycle itself completes via UpdateFile no matter how long the
-        // transfer takes.
-        sendUnguarded(download)
-            .orTimeout(ServiceDefaults.TDLIB_REQUEST_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-            .whenComplete((initial, error) -> {
-                if (error != null) {
-                    pendingDownloads.remove(fileId);
-                    downloadFuture.completeExceptionally(unwrap(error));
-                }
-            });
-
-        return downloadFuture;
     }
 
     // ==================== FILE MESSAGE OPERATIONS (DOMAIN TYPES) ====================
@@ -743,27 +644,6 @@ public class TelegramServiceImpl implements TelegramService {
                 return;
             }
         }
-
-        // Handle downloads (existing code)
-        CompletableFuture<TdApi.File> future = pendingDownloads.get(file.id);
-
-        if (future != null) {
-            if (file.local != null && file.local.isDownloadingCompleted) {
-                future.complete(file);
-                pendingDownloads.remove(file.id);
-                logger.info("File downloaded: {} -> {}", file.id, file.local.path);
-            } else if (file.local != null && !file.local.isDownloadingActive && file.local.downloadedPrefixSize == 0) {
-                // Download canceled or failed
-                future.completeExceptionally(new RuntimeException("Download was cancelled or failed"));
-                pendingDownloads.remove(file.id);
-            } else {
-                // Download in progress - optional log
-                if (file.local != null && file.expectedSize > 0) {
-                    int progress = (int) ((file.local.downloadedPrefixSize * 100) / file.expectedSize);
-                    logger.info("Downloading file {}: {}%", file.id, progress);
-                }
-            }
-        }
     }
 
     private void handleAuthorizationState(TdApi.AuthorizationState state) {
@@ -792,7 +672,7 @@ public class TelegramServiceImpl implements TelegramService {
      * Creates a "folder", internally represented as a private Telegram channel.
      */
     @Override
-    public CompletableFuture<TdApi.Chat> createFolder(String title, String description) {
+    public CompletableFuture<FolderInfo> createFolder(String title, String description) {
         TdApi.CreateNewSupergroupChat request = new TdApi.CreateNewSupergroupChat();
         request.title = title;
         request.isChannel = true;
@@ -803,7 +683,7 @@ public class TelegramServiceImpl implements TelegramService {
 
         return send(request).thenApply(chat -> {
             logger.info("Folder created: {} (ID: {})", chat.title, chat.id);
-            return chat;
+            return new FolderInfo(chat.id, chat.title, description != null ? description : "", 1, 0);
         });
     }
 
