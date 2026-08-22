@@ -20,12 +20,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.zademy.nekolu.constants.FileTypeConstants;
+import com.zademy.nekolu.constants.MediaConstants;
 import com.zademy.nekolu.constants.ServiceDefaults;
 import com.zademy.nekolu.config.TelegramConfig;
 import com.zademy.nekolu.dto.FolderInfo;
 import com.zademy.nekolu.dto.NetworkStatsResponse;
 import com.zademy.nekolu.dto.StorageStatsResponse;
 import com.zademy.nekolu.dto.TelegramLimitsResponse;
+import com.zademy.nekolu.model.TelegramFileMessage;
 import com.zademy.nekolu.service.TelegramService;
 
 import jakarta.annotation.PostConstruct;
@@ -268,6 +270,272 @@ public class TelegramServiceImpl implements TelegramService {
             });
 
         return downloadFuture;
+    }
+
+    // ==================== FILE MESSAGE OPERATIONS (DOMAIN TYPES) ====================
+
+    @Override
+    public CompletableFuture<List<TelegramFileMessage>> getFileMessages(long chatId, long fromMessageId, int limit) {
+        TdApi.GetChatHistory getHistory = new TdApi.GetChatHistory();
+        getHistory.chatId = chatId;
+        getHistory.fromMessageId = fromMessageId;
+        getHistory.offset = 0;
+        getHistory.limit = limit;
+        getHistory.onlyLocal = false;
+
+        return send(getHistory).thenApply(messages -> toFileMessages(messages.messages));
+    }
+
+    @Override
+    public CompletableFuture<List<TelegramFileMessage>> searchFileMessages(String query, String type, String offset, int limit) {
+        TdApi.SearchMessages search = new TdApi.SearchMessages();
+        search.chatList = null;
+        search.query = query != null ? query : "";
+        search.offset = offset != null ? offset : "";
+        search.limit = limit;
+        search.filter = createSearchFilterForType(type);
+        search.minDate = 0;
+        search.maxDate = 0;
+
+        return send(search).thenApply(found -> toFileMessages(found.messages));
+    }
+
+    @Override
+    public CompletableFuture<TelegramFileMessage> getFileMessage(long chatId, long messageId) {
+        TdApi.GetMessage getMessage = new TdApi.GetMessage();
+        getMessage.chatId = chatId;
+        getMessage.messageId = messageId;
+
+        return send(getMessage).thenCompose(message -> {
+            TelegramFileMessage fileMessage = toFileMessage(message);
+            if (fileMessage == null) {
+                return CompletableFuture.failedFuture(new RuntimeException("Message contains no file"));
+            }
+            return CompletableFuture.completedFuture(fileMessage);
+        });
+    }
+
+    private List<TelegramFileMessage> toFileMessages(TdApi.Message[] messages) {
+        List<TelegramFileMessage> fileMessages = new ArrayList<>();
+        for (TdApi.Message message : messages) {
+            TelegramFileMessage fileMessage = toFileMessage(message);
+            if (fileMessage != null) {
+                fileMessages.add(fileMessage);
+            }
+        }
+        return fileMessages;
+    }
+
+    /**
+     * Maps a Telegram message to the domain file-message view, or null when
+     * the message carries no file. Single source of the message-content
+     * classification.
+     */
+    private TelegramFileMessage toFileMessage(TdApi.Message message) {
+        if (message.content == null) return null;
+
+        return switch (message.content) {
+            case TdApi.MessagePhoto photo -> fromPhoto(message, photo);
+            case TdApi.MessageVideo video -> fromVideo(message, video);
+            case TdApi.MessageAudio audio -> fromAudio(message, audio);
+            case TdApi.MessageDocument doc -> fromDocument(message, doc);
+            case TdApi.MessageVoiceNote voice -> fromVoiceNote(message, voice);
+            case TdApi.MessageVideoNote videoNote -> fromVideoNote(message, videoNote);
+            default -> null;
+        };
+    }
+
+    private TelegramFileMessage fromPhoto(TdApi.Message message, TdApi.MessagePhoto photo) {
+        if (photo.photo == null || photo.photo.sizes == null || photo.photo.sizes.length == 0) {
+            return null;
+        }
+        // Use the largest size for the main file
+        TdApi.PhotoSize largest = photo.photo.sizes[photo.photo.sizes.length - 1];
+        TdApi.File file = largest.photo;
+
+        // Use the smallest size for the thumbnail
+        TdApi.PhotoSize smallest = photo.photo.sizes[0];
+        String thumbnailPath = thumbnailPathOf(smallest.photo);
+
+        return new TelegramFileMessage(
+            message.id,
+            message.chatId,
+            file.id,
+            MediaConstants.FILE_PREFIX_PHOTO + file.id + MediaConstants.EXTENSION_JPG,
+            file.size,
+            MediaConstants.MIME_IMAGE_JPEG,
+            FileTypeConstants.PHOTO,
+            largest.width,
+            largest.height,
+            null,
+            thumbnailPath,
+            message.date,
+            isFileActuallyDownloaded(file),
+            file.local != null ? file.local.path : null
+        );
+    }
+
+    private TelegramFileMessage fromVideo(TdApi.Message message, TdApi.MessageVideo video) {
+        if (video.video == null) return null;
+        TdApi.File file = video.video.video;
+
+        String thumbnailPath = null;
+        if (video.video.thumbnail != null && video.video.thumbnail.file != null) {
+            thumbnailPath = thumbnailPathOf(video.video.thumbnail.file);
+        }
+
+        return new TelegramFileMessage(
+            message.id,
+            message.chatId,
+            file.id,
+            video.video.fileName != null ? video.video.fileName
+                : MediaConstants.FILE_PREFIX_VIDEO + file.id + MediaConstants.EXTENSION_MP4,
+            file.size,
+            video.video.mimeType != null ? video.video.mimeType : MediaConstants.MIME_VIDEO_MP4,
+            FileTypeConstants.VIDEO,
+            video.video.width,
+            video.video.height,
+            video.video.duration,
+            thumbnailPath,
+            message.date,
+            isFileActuallyDownloaded(file),
+            file.local != null ? file.local.path : null
+        );
+    }
+
+    private TelegramFileMessage fromAudio(TdApi.Message message, TdApi.MessageAudio audio) {
+        if (audio.audio == null) return null;
+        TdApi.File file = audio.audio.audio;
+
+        return new TelegramFileMessage(
+            message.id,
+            message.chatId,
+            file.id,
+            audio.audio.fileName != null ? audio.audio.fileName
+                : MediaConstants.FILE_PREFIX_AUDIO + file.id + MediaConstants.EXTENSION_MP3,
+            file.size,
+            audio.audio.mimeType != null ? audio.audio.mimeType : MediaConstants.MIME_AUDIO_MPEG,
+            FileTypeConstants.AUDIO,
+            null,
+            null,
+            audio.audio.duration,
+            null,
+            message.date,
+            isFileActuallyDownloaded(file),
+            file.local != null ? file.local.path : null
+        );
+    }
+
+    private TelegramFileMessage fromDocument(TdApi.Message message, TdApi.MessageDocument doc) {
+        if (doc.document == null) return null;
+        TdApi.File file = doc.document.document;
+
+        return new TelegramFileMessage(
+            message.id,
+            message.chatId,
+            file.id,
+            doc.document.fileName != null ? doc.document.fileName
+                : MediaConstants.FILE_PREFIX_DOCUMENT + file.id,
+            file.size,
+            doc.document.mimeType != null ? doc.document.mimeType : MediaConstants.MIME_APPLICATION_OCTET_STREAM,
+            FileTypeConstants.DOCUMENT,
+            null,
+            null,
+            null,
+            null,
+            message.date,
+            isFileActuallyDownloaded(file),
+            file.local != null ? file.local.path : null
+        );
+    }
+
+    private TelegramFileMessage fromVoiceNote(TdApi.Message message, TdApi.MessageVoiceNote voice) {
+        if (voice.voiceNote == null) return null;
+        TdApi.File file = voice.voiceNote.voice;
+
+        return new TelegramFileMessage(
+            message.id,
+            message.chatId,
+            file.id,
+            MediaConstants.FILE_PREFIX_VOICE + file.id + MediaConstants.EXTENSION_OGA,
+            file.size,
+            MediaConstants.MIME_AUDIO_OGG,
+            FileTypeConstants.VOICE,
+            null,
+            null,
+            voice.voiceNote.duration,
+            null,
+            message.date,
+            isFileActuallyDownloaded(file),
+            file.local != null ? file.local.path : null
+        );
+    }
+
+    private TelegramFileMessage fromVideoNote(TdApi.Message message, TdApi.MessageVideoNote videoNote) {
+        if (videoNote.videoNote == null) return null;
+        TdApi.File file = videoNote.videoNote.video;
+
+        return new TelegramFileMessage(
+            message.id,
+            message.chatId,
+            file.id,
+            MediaConstants.FILE_PREFIX_VIDEO_NOTE + file.id + MediaConstants.EXTENSION_MP4,
+            file.size,
+            MediaConstants.MIME_VIDEO_MP4,
+            FileTypeConstants.VIDEO_NOTE,
+            videoNote.videoNote.length,
+            videoNote.videoNote.length,
+            videoNote.videoNote.duration,
+            null,
+            message.date,
+            isFileActuallyDownloaded(file),
+            file.local != null ? file.local.path : null
+        );
+    }
+
+    /**
+     * Returns the thumbnail path when it is already available locally; never
+     * forces a download.
+     */
+    private String thumbnailPathOf(TdApi.File thumbnailFile) {
+        if (thumbnailFile == null || thumbnailFile.local == null) {
+            return null;
+        }
+        if (thumbnailFile.local.isDownloadingCompleted && thumbnailFile.local.path != null
+                && !thumbnailFile.local.path.isBlank()) {
+            return thumbnailFile.local.path;
+        }
+        return null;
+    }
+
+    private boolean isFileActuallyDownloaded(TdApi.File file) {
+        if (isUploadTracked(file.id)) {
+            return false;
+        }
+        if (file.local == null || !file.local.isDownloadingCompleted) {
+            return false;
+        }
+        if (file.local.path == null || file.local.path.isBlank()) {
+            return false;
+        }
+        return new java.io.File(file.local.path).exists();
+    }
+
+    /**
+     * Single source of the workspace-type-to-TDLib-filter mapping.
+     */
+    private TdApi.SearchMessagesFilter createSearchFilterForType(String type) {
+        if (type == null || type.isBlank() || FileTypeConstants.ALL.equalsIgnoreCase(type)) return null;
+
+        return switch (type.toLowerCase()) {
+            case FileTypeConstants.PHOTO -> new TdApi.SearchMessagesFilterPhoto();
+            case FileTypeConstants.VIDEO -> new TdApi.SearchMessagesFilterVideo();
+            case FileTypeConstants.AUDIO -> new TdApi.SearchMessagesFilterAudio();
+            case FileTypeConstants.DOCUMENT -> new TdApi.SearchMessagesFilterDocument();
+            case FileTypeConstants.VOICE -> new TdApi.SearchMessagesFilterVoiceNote();
+            case FileTypeConstants.VIDEO_NOTE -> new TdApi.SearchMessagesFilterVideoNote();
+            default -> null; // No filter = all
+        };
     }
 
     @Override

@@ -16,6 +16,7 @@ import com.zademy.nekolu.dto.FolderInfo;
 import com.zademy.nekolu.dto.NetworkStatsResponse;
 import com.zademy.nekolu.dto.StorageStatsResponse;
 import com.zademy.nekolu.dto.TelegramLimitsResponse;
+import com.zademy.nekolu.model.TelegramFileMessage;
 
 /**
  * Defines the TDLib-backed Telegram operations used by the web and REST layers.
@@ -76,6 +77,43 @@ public interface TelegramService {
      * @return a future completed with the resolved message
      */
     CompletableFuture<TdApi.Message> getMessage(long chatId, long messageId);
+
+    // ==================== FILE MESSAGE OPERATIONS (DOMAIN TYPES) ====================
+
+    /**
+     * Lists the recent messages that carry files in a chat, newest first.
+     * Messages without a file are skipped.
+     *
+     * @param chatId the chat (Saved Messages or a folder channel)
+     * @param fromMessageId the TDLib pagination cursor, 0 to start from the newest
+     * @param limit the maximum number of messages to retrieve
+     * @return a future completed with the file messages found
+     */
+    CompletableFuture<List<TelegramFileMessage>> getFileMessages(long chatId, long fromMessageId, int limit);
+
+    /**
+     * Searches file messages across all chats, optionally constrained to a
+     * workspace file type. This is the single source of the type-to-filter
+     * mapping.
+     *
+     * @param query the text query, or empty for type-only browsing
+     * @param type the workspace file type (photo, video, audio, document, voice,
+     *             video_note), or null/blank/"all" for any type
+     * @param offset the TDLib search offset cursor, or empty to start fresh
+     * @param limit the maximum number of messages to retrieve
+     * @return a future completed with the matching file messages
+     */
+    CompletableFuture<List<TelegramFileMessage>> searchFileMessages(String query, String type, String offset, int limit);
+
+    /**
+     * Resolves the file message carried by a specific message.
+     *
+     * @param chatId the chat that owns the message
+     * @param messageId the Telegram message ID
+     * @return a future completed with the file message, or failed when the
+     *         message does not exist or carries no file
+     */
+    CompletableFuture<TelegramFileMessage> getFileMessage(long chatId, long messageId);
 
     /**
      * Starts a file download and returns a CompletableFuture.
