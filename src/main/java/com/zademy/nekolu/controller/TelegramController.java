@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zademy.nekolu.dto.CreateFolderRequest;
+import com.zademy.nekolu.exception.Exceptions;
 import com.zademy.nekolu.exception.TelegramOperationException;
 
 import jakarta.validation.Valid;
@@ -92,7 +93,7 @@ public class TelegramController {
      * propagate to the global handler.
      */
     private ResponseEntity<CreateFolderResponse> failedFolderCreation(Throwable error, String title, String description) {
-        Throwable cause = error instanceof CompletionException && error.getCause() != null ? error.getCause() : error;
+        Throwable cause = Exceptions.unwrap(error);
         if (!(cause instanceof TelegramOperationException)) {
             throw new CompletionException(cause);
         }
@@ -145,7 +146,7 @@ public class TelegramController {
     }
 
     private ResponseEntity<DeleteFolderResponse> failedFolderDeletion(Throwable error, long chatId) {
-        Throwable cause = error instanceof CompletionException && error.getCause() != null ? error.getCause() : error;
+        Throwable cause = Exceptions.unwrap(error);
         if (!(cause instanceof TelegramOperationException)) {
             throw new CompletionException(cause);
         }

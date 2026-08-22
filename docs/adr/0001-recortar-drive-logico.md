@@ -21,4 +21,4 @@ Recortar. Se eliminan los cuatro métodos y sus endpoints, el indexador stub con
 - La API deja de ofrecer operaciones que siempre fallan; la surface restante es ejecutable de punta a punta.
 - El README describe el producto real.
 - Si algún día se quiere el drive lógico, partir de este ADR: diseñar con persistencia real y una interface que solo declare lo implementado.
-- Los parámetros lógicos de subida (virtualPath, tags, origin, archived) siguen aceptándose y reflejándose en la respuesta como metadatos descriptivos, sin efecto en el almacenamiento.
+- Los parámetros lógicos de subida siguen aceptándose: `virtualPath` y `tags` se reflejan en la respuesta como metadatos descriptivos; `origin` y `archived` se aceptan hoy sin reflejarse (sin efecto en el almacenamiento) — si se quiere reflejarlos, añadirlos a la respuesta de subida, no a un indexador.

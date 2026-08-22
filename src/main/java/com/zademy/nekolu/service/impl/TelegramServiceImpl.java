@@ -9,7 +9,6 @@ package com.zademy.nekolu.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +23,7 @@ import com.zademy.nekolu.constants.MediaConstants;
 import com.zademy.nekolu.constants.ServiceDefaults;
 import com.zademy.nekolu.config.TelegramConfig;
 import com.zademy.nekolu.dto.FolderInfo;
+import com.zademy.nekolu.exception.Exceptions;
 import com.zademy.nekolu.exception.TelegramNotFoundException;
 import com.zademy.nekolu.exception.TelegramOperationException;
 import com.zademy.nekolu.dto.NetworkStatsResponse;
@@ -134,7 +134,7 @@ public class TelegramServiceImpl implements TelegramService {
     }
 
     private static Throwable unwrap(Throwable error) {
-        return error instanceof CompletionException && error.getCause() != null ? error.getCause() : error;
+        return Exceptions.unwrap(error);
     }
 
     /**
@@ -243,13 +243,46 @@ public class TelegramServiceImpl implements TelegramService {
      * Registers the staged local source for upload tracking and maps the
      * created message to the domain view.
      */
+    /**
+     * Registers the staged local source for upload tracking and maps the
+     * created message to the domain view. Guards against the
+     * upload-completion update racing ahead of registration: if the transfer
+     * already finished, the staged source is cleaned eagerly instead of
+     * leaving an orphan entry nobody completes.
+     */
     private CompletableFuture<TelegramFileMessage> trackedFileMessage(TdApi.Message message, String stagedFilePath) {
+        TdApi.File file = fileOf(message);
         TelegramFileMessage fileMessage = toFileMessage(message);
-        if (fileMessage == null) {
-            return CompletableFuture.failedFuture(new RuntimeException("Message contains no file"));
+        if (file == null || fileMessage == null) {
+            return CompletableFuture.failedFuture(new TelegramNotFoundException("Message contains no file"));
+        }
+        if (file.remote != null && !file.remote.isUploadingActive && file.remote.isUploadingCompleted) {
+            java.io.File staged = new java.io.File(stagedFilePath);
+            if (staged.exists() && staged.delete()) {
+                logger.info("[Upload] Upload already completed before tracking; staged file cleaned eagerly: {}", stagedFilePath);
+            }
+            return CompletableFuture.completedFuture(fileMessage);
         }
         trackUpload(fileMessage.fileId(), stagedFilePath);
         return CompletableFuture.completedFuture(fileMessage);
+    }
+
+    /**
+     * Extracts the TDLib file carried by a message, or null when it carries
+     * none.
+     */
+    private TdApi.File fileOf(TdApi.Message message) {
+        if (message.content == null) return null;
+        return switch (message.content) {
+            case TdApi.MessagePhoto photo when photo.photo != null && photo.photo.sizes.length > 0 ->
+                photo.photo.sizes[photo.photo.sizes.length - 1].photo;
+            case TdApi.MessageVideo video when video.video != null -> video.video.video;
+            case TdApi.MessageAudio audio when audio.audio != null -> audio.audio.audio;
+            case TdApi.MessageDocument doc when doc.document != null -> doc.document.document;
+            case TdApi.MessageVoiceNote voice when voice.voiceNote != null -> voice.voiceNote.voice;
+            case TdApi.MessageVideoNote videoNote when videoNote.videoNote != null -> videoNote.videoNote.video;
+            default -> null;
+        };
     }
 
     @Override

@@ -34,7 +34,6 @@ public class OpenApiConfig {
                                 The API covers:
                                 - file discovery with filters, sorting, and folder scoping
                                 - uploads, downloads, inline previews, thumbnails, and streaming metadata
-                                - logical drive operations such as move, archive, restore, and trash workflows
                                 - batch downloads, progress monitoring, statistics, and structured exports
                                 - Telegram folder management backed by private channels
 
@@ -50,7 +49,7 @@ public class OpenApiConfig {
                                 .description("Local development server")
                 ))
                 .tags(List.of(
-                        new Tag().name("Files").description("File discovery, transfer, preview, logical metadata, statistics, and bulk operations"),
+                        new Tag().name("Files").description("File discovery, transfer, preview, statistics, and bulk operations"),
                         new Tag().name("Folders").description("Folder lifecycle operations and folder-scoped file listing")
                 ));
     }

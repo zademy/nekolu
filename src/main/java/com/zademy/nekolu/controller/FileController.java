@@ -6,7 +6,6 @@
 
 package com.zademy.nekolu.controller;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -38,6 +37,8 @@ import com.zademy.nekolu.dto.FileStatsResponse;
 import com.zademy.nekolu.dto.FileStreamResponse;
 import com.zademy.nekolu.dto.FullStatsResponse;
 import com.zademy.nekolu.dto.UploadResponse;
+import com.zademy.nekolu.exception.Exceptions;
+import com.zademy.nekolu.exception.TelegramOperationException;
 import com.zademy.nekolu.service.FileService;
 import com.zademy.nekolu.service.TelegramService;
 
@@ -55,7 +56,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping("/api/telegram/files")
-@Tag(name = "Files", description = "Telegram-backed file discovery, transfer, preview, and logical organization")
+@Tag(name = "Files", description = "Telegram-backed file discovery, transfer, preview, statistics, and bulk operations")
 public class FileController {
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
@@ -395,8 +396,7 @@ public class FileController {
     })
     public CompletableFuture<ResponseEntity<FileStatsResponse>> getStats() {
         return fileService.getFileStats()
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().build());
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/stats/full")
@@ -424,11 +424,7 @@ public class FileController {
                 storageStatsFuture.join(),
                 networkStatsFuture.join(),
                 limitsFuture.join()
-            )))
-            .exceptionally(ex -> {
-                logger.error("Error getting full statistics: {}", ex.getMessage());
-                return ResponseEntity.badRequest().build();
-            });
+            )));
     }
 
     @GetMapping("/export")
@@ -449,8 +445,7 @@ public class FileController {
             @Parameter(description = "File type to filter", example = "photo")
             String type) {
         return fileService.exportFiles(format, type)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().build());
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/recent")
@@ -468,11 +463,7 @@ public class FileController {
             @Parameter(description = "Result limit", example = "50")
             Integer limit) {
         return fileService.getRecentFilesFromOwnChat(limit != null ? limit : 50)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> {
-                    logger.error("[RecentFiles] Error: {}", ex.getMessage());
-                    return ResponseEntity.ok(List.of());
-                });
+                .thenApply(ResponseEntity::ok);
     }
 
     /**
@@ -584,13 +575,7 @@ public class FileController {
                     // The staging area cleans up after failures; the Telegram module
                     // cleans the staged file once TDLib confirms the remote upload.
                     return ResponseEntity.ok(response);
-                }).exceptionally(ex -> {
-                    logger.error("[UploadController] Upload failed", ex);
-                    return ResponseEntity.badRequest().body(
-                        new UploadResponse(0, targetChatId, UploadResponse.STATUS_FAILED,
-                            file.getOriginalFilename(), file.getSize(), caption, "Failure: " + ex.getMessage())
-                    );
-                });
+                }).exceptionally(ex -> failedUpload(ex, file, targetChatId, caption));
 
             } catch (Exception e) {
                 logger.error("[UploadController] Error processing file", e);
@@ -602,14 +587,25 @@ public class FileController {
                     )
                 );
             }
-        }).exceptionally(ex -> {
-            logger.error("[UploadController] Error getting chat", ex);
-            return ResponseEntity.badRequest().body(
-                new UploadResponse(0, 0, UploadResponse.STATUS_FAILED,
-                    file.getOriginalFilename() != null ? file.getOriginalFilename() : "unknown",
-                    0, caption, "Error resolving chat: " + ex.getMessage())
-            );
         });
+    }
+
+    /**
+     * Business-failure mapping for uploads: only Telegram-rejected transfers
+     * become a failed-upload response; session and infrastructure failures
+     * propagate to the global handler.
+     */
+    private ResponseEntity<UploadResponse> failedUpload(Throwable error,
+            org.springframework.web.multipart.MultipartFile file, long chatId, String caption) {
+        Throwable cause = Exceptions.unwrap(error);
+        if (!(cause instanceof TelegramOperationException)) {
+            throw new java.util.concurrent.CompletionException(cause);
+        }
+        logger.error("[UploadController] Upload failed: {}", cause.getMessage());
+        return ResponseEntity.badRequest().body(
+            new UploadResponse(0, chatId, UploadResponse.STATUS_FAILED,
+                file.getOriginalFilename(), file.getSize(), caption, "Failure: " + cause.getMessage())
+        );
     }
 
     @DeleteMapping("/message")
@@ -642,13 +638,7 @@ public class FileController {
         }
 
         return fileService.deleteMessage(request.messageId(), request.chatId(), request.permanent())
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().body(
-                    new DeleteMessageResponse(request.messageId(), request.chatId(),
-                        DeleteMessageResponse.STATUS_FAILED,
-                        request.permanent() ? DeleteMessageResponse.DELETION_TYPE_PERMANENT : DeleteMessageResponse.DELETION_TYPE_LOCAL,
-                        "Error: " + ex.getMessage())
-                ));
+                .thenApply(ResponseEntity::ok);
     }
 
     @DeleteMapping("/bulk-delete")
@@ -677,17 +667,7 @@ public class FileController {
             @Valid BulkDeleteRequest request) {
 
         return fileService.bulkDeleteMessages(request)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().body(
-                    new BulkDeleteResponse(
-                        request.items().size(),
-                        0,
-                        request.items().size(),
-                        List.of(new BulkDeleteResponse.DeleteResult(
-                            0, null, false, "Error general: " + ex.getMessage()
-                        ))
-                    )
-                ));
+                .thenApply(ResponseEntity::ok);
     }
 
     // ==================== FOLDER ENDPOINTS ====================
@@ -728,8 +708,7 @@ public class FileController {
         }
 
         return fileService.searchFilesInChat(chatId, type, limit)
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.ok(Collections.emptyList()));
+            .thenApply(ResponseEntity::ok);
     }
 
     private List<String> parseTags(String tags) {

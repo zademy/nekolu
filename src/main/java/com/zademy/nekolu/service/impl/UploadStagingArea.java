@@ -20,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.zademy.nekolu.exception.StagingException;
+
 import jakarta.annotation.PostConstruct;
 
 /**
@@ -63,8 +65,12 @@ public class UploadStagingArea {
         }
         long cutoff = Instant.now().minus(LEFTOVER_RETENTION).toEpochMilli();
         for (File leftover : leftovers) {
-            if (leftover.isFile() && leftover.lastModified() < cutoff && leftover.delete()) {
-                logger.info("[Upload] Purged expired staged file: {}", leftover.getAbsolutePath());
+            if (leftover.isFile() && leftover.lastModified() < cutoff) {
+                if (leftover.delete()) {
+                    logger.info("[Upload] Purged expired staged file: {}", leftover.getAbsolutePath());
+                } else {
+                    logger.warn("[Upload] Could not purge expired staged file: {}", leftover.getAbsolutePath());
+                }
             }
         }
     }
@@ -80,7 +86,8 @@ public class UploadStagingArea {
             Files.copy(content, staged, StandardCopyOption.REPLACE_EXISTING);
             return staged.toFile();
         } catch (IOException e) {
-            throw new IllegalStateException("Could not stage upload file: " + originalFilename, e);
+            // Server-side disk failure: must not surface as a client error.
+            throw new StagingException("Could not stage upload file: " + originalFilename, e);
         }
     }
 

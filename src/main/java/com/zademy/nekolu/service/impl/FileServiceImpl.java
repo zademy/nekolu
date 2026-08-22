@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -45,6 +44,7 @@ import com.zademy.nekolu.dto.FileInfoResponse;
 import com.zademy.nekolu.dto.FileStatsResponse;
 import com.zademy.nekolu.dto.FileStreamResponse;
 import com.zademy.nekolu.dto.UploadResponse;
+import com.zademy.nekolu.exception.Exceptions;
 import com.zademy.nekolu.model.TelegramFileMessage;
 import com.zademy.nekolu.model.TelegramFileState;
 import com.zademy.nekolu.service.FileService;
@@ -1026,7 +1026,10 @@ public class FileServiceImpl implements FileService {
         }
 
         // Best effort TDLib cache cleanup through the seam.
-        telegramService.deleteLocalFile(fileId).exceptionally(_ex -> null);
+        telegramService.deleteLocalFile(fileId).exceptionally(_ex -> {
+            logger.debug("[Cleanup] Could not drop local TDLib file state for {}: {}", fileId, _ex.getMessage());
+            return null;
+        });
     }
 
     private CompletableFuture<Long> resolveFileIdByMessage(long chatId, long messageId) {
@@ -1064,9 +1067,7 @@ public class FileServiceImpl implements FileService {
     }
 
     private static String causeMessage(Throwable error) {
-        return error instanceof CompletionException && error.getCause() != null
-            ? error.getCause().getMessage()
-            : error.getMessage();
+        return Exceptions.unwrap(error).getMessage();
     }
 
     private ResponseEntity<Resource> resolveThumbnailFileResponse(FileInfoResponse fileInfo) {

@@ -36,7 +36,7 @@ Términos del dominio de Nekolu, tal como los usa el código y la documentación
 
 ## Errores
 
-Los modos de error del workspace viajan por tipo (paquete `exception`): **Unauthorized** (401, sesión sin autenticar), **NotInitialized** (503, módulo sin cliente), **Telegram operation error** (502, rechazo upstream con código TDLib), **Not found** (404, recurso inexistente). El manejador global es el único traductor a HTTP.
+Los modos de error del workspace viajan por tipo (paquete `exception`): **Unauthorized** (401, sesión sin autenticar), **NotInitialized** (503, módulo sin cliente), **Telegram operation error** (502, rechazo upstream con código TDLib), **Not found** (404, recurso inexistente). El manejador global es el único traductor de errores de transporte a HTTP; los resultados de negocio fallidos (subida rechazada, borrado fallido) se mapean a su DTO de resultado en el controller, capturando únicamente `TelegramOperationException` — todo lo demás sube.
 
 ## Términos retirados
 
