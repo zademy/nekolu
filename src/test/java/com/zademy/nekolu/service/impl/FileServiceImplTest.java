@@ -41,14 +41,20 @@ import com.zademy.nekolu.service.FakeTelegramService.SessionState;
 class FileServiceImplTest {
 
     private FakeTelegramService telegram;
+    private UploadStagingArea stagingArea;
     private FileServiceImpl fileService;
+
+    @TempDir
+    File stagingDir;
 
     @BeforeEach
     void setUp() {
         telegram = new FakeTelegramService();
+        stagingArea = new UploadStagingArea(stagingDir.toPath());
         fileService = new FileServiceImpl(
             telegram,
             new MetadataIndexServiceImpl(),
+            stagingArea,
             Caffeine.newBuilder().build());
     }
 
@@ -239,6 +245,36 @@ class FileServiceImplTest {
         assertEquals("payload".length(), response.fileSize());
         assertEquals("telegram-700", response.logicalFileId());
         assertTrue(telegram.isUploadTracked(700));
+    }
+
+    @Test
+    void uploadStagedFileCompletesEndToEndWithoutTelegram() throws Exception {
+        telegram.withUploadResult(message(77, 1, 700, null, 0, "document", 1700000000));
+
+        UploadResponse response = fileService.uploadStagedFile(
+            "incoming report.pdf", new java.io.ByteArrayInputStream("payload".getBytes()),
+            1, "caption", "/", List.of(), "telegram-upload", false).get();
+
+        assertEquals(UploadResponse.STATUS_COMPLETED, response.status());
+        assertEquals(77, response.messageId());
+        // The staged file lives in the staging area with a sanitized name
+        File[] stagedFiles = stagingDir.listFiles();
+        assertEquals(1, stagedFiles.length);
+        assertTrue(stagedFiles[0].getName().endsWith("incoming_report.pdf"));
+    }
+
+    @Test
+    void uploadStagedFileDiscardsTheStagedFileOnFailure() throws Exception {
+        telegram.failingWith(new RuntimeException("Telegram error 400: CHAT_ID_INVALID"));
+
+        Exception thrown = assertThrows(ExecutionException.class,
+            () -> fileService.uploadStagedFile(
+                "doomed.pdf", new java.io.ByteArrayInputStream("payload".getBytes()),
+                1, null, "/", List.of(), "telegram-upload", false).get());
+
+        assertTrue(thrown.getCause().getMessage().contains("CHAT_ID_INVALID"));
+        // The failed staging attempt left nothing behind
+        assertEquals(0, stagingDir.listFiles().length);
     }
 
     @Test

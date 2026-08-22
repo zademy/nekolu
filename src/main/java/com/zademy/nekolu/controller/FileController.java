@@ -573,43 +573,25 @@ public class FileController {
                 );
             }
 
-            try {
-                java.io.File stagedFile = createUploadStagingFile(file);
+            try (java.io.InputStream content = file.getInputStream()) {
+                java.util.List<String> parsedTags = parseTags(tags);
 
-                logger.info("[UploadController] Upload staging file created: {}", stagedFile.getAbsolutePath());
-                logger.info("[UploadController] Size: {} bytes", stagedFile.length());
-
-                CompletableFuture<UploadResponse> uploadFuture;
-                if ("photo".equalsIgnoreCase(type)) {
-                    uploadFuture = fileService.uploadPhoto(
-                        stagedFile,
-                        targetChatId,
-                        caption,
-                        virtualPath,
-                        parseTags(tags),
-                        origin,
-                        archived
-                    );
-                } else {
-                    uploadFuture = fileService.uploadFile(
-                        stagedFile,
-                        targetChatId,
-                        caption,
-                        virtualPath,
-                        parseTags(tags),
-                        origin,
-                        archived
-                    );
-                }
+                CompletableFuture<UploadResponse> uploadFuture = "photo".equalsIgnoreCase(type)
+                    ? fileService.uploadStagedPhoto(
+                        file.getOriginalFilename(), content, targetChatId, caption,
+                        virtualPath, parsedTags, origin, archived)
+                    : fileService.uploadStagedFile(
+                        file.getOriginalFilename(), content, targetChatId, caption,
+                        virtualPath, parsedTags, origin, archived);
 
                 return uploadFuture.thenApply(response -> {
                     logger.info("[UploadController] Upload completed - Status: {}, Message ID: {}, Chat ID: {}",
                         response.status(), response.messageId(), response.chatId());
-                    // TelegramServiceImpl cleans the staged upload file once TDLib confirms the remote upload.
+                    // The staging area cleans up after failures; the Telegram module
+                    // cleans the staged file once TDLib confirms the remote upload.
                     return ResponseEntity.ok(response);
                 }).exceptionally(ex -> {
                     logger.error("[UploadController] Upload failed", ex);
-                    stagedFile.delete();
                     return ResponseEntity.badRequest().body(
                         new UploadResponse(0, targetChatId, UploadResponse.STATUS_FAILED,
                             file.getOriginalFilename(), file.getSize(), caption, "Failure: " + ex.getMessage())
@@ -634,21 +616,6 @@ public class FileController {
                     0, caption, "Error resolving chat: " + ex.getMessage())
             );
         });
-    }
-
-    private java.io.File createUploadStagingFile(org.springframework.web.multipart.MultipartFile multipartFile) throws java.io.IOException {
-        java.nio.file.Path stagingDir = java.nio.file.Paths.get("tdlib", "upload-staging");
-        java.nio.file.Files.createDirectories(stagingDir);
-
-        String originalName = multipartFile.getOriginalFilename() != null ? multipartFile.getOriginalFilename() : "upload.bin";
-        String sanitizedName = originalName.replaceAll("[^a-zA-Z0-9._-]", "_");
-        if (sanitizedName.isBlank()) {
-            sanitizedName = "upload.bin";
-        }
-
-        java.nio.file.Path stagedPath = stagingDir.resolve(java.util.UUID.randomUUID() + "_" + sanitizedName);
-        multipartFile.transferTo(stagedPath);
-        return stagedPath.toFile();
     }
 
     @PostMapping("/{fileId}/restore")

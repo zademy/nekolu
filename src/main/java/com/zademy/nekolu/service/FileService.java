@@ -7,6 +7,7 @@
 package com.zademy.nekolu.service;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -197,6 +198,47 @@ public interface FileService {
 
     CompletableFuture<UploadResponse> uploadPhoto(
             File file,
+            long chatId,
+            String caption,
+            String virtualPath,
+            List<String> tags,
+            String origin,
+            boolean archived);
+
+    /**
+     * Stages an incoming upload and publishes it as a document.
+     * The staging area owns materialization, cleanup on failure, and
+     * leftover purging; the caller only supplies the stream.
+     *
+     * @param originalFilename the client-provided file name
+     * @param content the upload content
+     * @param chatId target chat ID
+     * @param caption optional caption
+     * @param virtualPath logical virtual path
+     * @param tags logical tags
+     * @param origin logical origin
+     * @param archived whether the file starts archived
+     * @return upload response
+     */
+    CompletableFuture<UploadResponse> uploadStagedFile(
+            String originalFilename,
+            InputStream content,
+            long chatId,
+            String caption,
+            String virtualPath,
+            List<String> tags,
+            String origin,
+            boolean archived);
+
+    /**
+     * Stages an incoming upload and publishes it as a photo, with the same
+     * staging contract as {@link #uploadStagedFile(String, InputStream, long, String, String, List, String, boolean)}.
+     *
+     * @return upload response
+     */
+    CompletableFuture<UploadResponse> uploadStagedPhoto(
+            String originalFilename,
+            InputStream content,
             long chatId,
             String caption,
             String virtualPath,

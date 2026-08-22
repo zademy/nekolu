@@ -7,6 +7,7 @@
 package com.zademy.nekolu.service.impl;
 
 import java.io.File;
+import java.io.InputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -75,15 +76,18 @@ public class FileServiceImpl implements FileService {
 
     private final TelegramService telegramService;
     private final MetadataIndexService metadataIndexService;
+    private final UploadStagingArea stagingArea;
     private final Cache<Long, FileInfoResponse> fileMetadataCache;
 
     public FileServiceImpl(
         TelegramService telegramService,
         MetadataIndexService metadataIndexService,
+        UploadStagingArea stagingArea,
         @Qualifier("fileInfoNativeCache") Cache<Long, FileInfoResponse> fileMetadataCache
     ) {
         this.telegramService = telegramService;
         this.metadataIndexService = metadataIndexService;
+        this.stagingArea = stagingArea;
         this.fileMetadataCache = fileMetadataCache;
     }
 
@@ -735,6 +739,54 @@ public class FileServiceImpl implements FileService {
             String origin,
             boolean archived) {
         return uploadManaged(file, chatId, caption, virtualPath, tags, true);
+    }
+
+    @Override
+    public CompletableFuture<UploadResponse> uploadStagedFile(
+            String originalFilename,
+            InputStream content,
+            long chatId,
+            String caption,
+            String virtualPath,
+            List<String> tags,
+            String origin,
+            boolean archived) {
+        return uploadStaged(originalFilename, content, chatId, caption, virtualPath, tags, false);
+    }
+
+    @Override
+    public CompletableFuture<UploadResponse> uploadStagedPhoto(
+            String originalFilename,
+            InputStream content,
+            long chatId,
+            String caption,
+            String virtualPath,
+            List<String> tags,
+            String origin,
+            boolean archived) {
+        return uploadStaged(originalFilename, content, chatId, caption, virtualPath, tags, true);
+    }
+
+    /**
+     * Stages the incoming upload and publishes it through the seam. The
+     * staging area materializes the file and discards it when publication
+     * fails; the seam cleans it up once Telegram confirms the transfer.
+     */
+    private CompletableFuture<UploadResponse> uploadStaged(
+            String originalFilename,
+            InputStream content,
+            long chatId,
+            String caption,
+            String virtualPath,
+            List<String> tags,
+            boolean photoMode) {
+        File staged = stagingArea.stage(originalFilename, content);
+        return uploadManaged(staged, chatId, caption, virtualPath, tags, photoMode)
+            .whenComplete((response, error) -> {
+                if (error != null) {
+                    stagingArea.discard(staged);
+                }
+            });
     }
 
     /**
