@@ -50,6 +50,7 @@ import com.zademy.nekolu.dto.FileStatsResponse;
 import com.zademy.nekolu.dto.FileStreamResponse;
 import com.zademy.nekolu.dto.UploadResponse;
 import com.zademy.nekolu.model.TelegramFileMessage;
+import com.zademy.nekolu.model.TelegramFileState;
 import com.zademy.nekolu.service.FileService;
 import com.zademy.nekolu.service.MetadataIndexService;
 import com.zademy.nekolu.service.TelegramService;
@@ -168,60 +169,30 @@ public class FileServiceImpl implements FileService {
             return refreshDownloadStatus(cached).thenCompose(metadataIndexService::enrich);
         }
 
-        CompletableFuture<FileInfoResponse> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException(TELEGRAM_CLIENT_NOT_INITIALIZED));
-            return future;
-        }
-
-        TdApi.GetFile getFile = new TdApi.GetFile();
-        getFile.fileId = (int) fileId;
-
-        client.send(getFile, result -> {
-            if (result instanceof TdApi.File file) {
-                FileInfoResponse response = mapTdFileToResponse(file);
-                future.complete(response);
-            } else if (result instanceof TdApi.Error error) {
-                future.completeExceptionally(new RuntimeException("Error getting file: " + error.message));
-            }
-        });
-
-        return future.thenCompose(metadataIndexService::enrich);
+        return telegramService.getFileState(fileId)
+            .thenApply(this::mapStateToFileInfo)
+            .thenCompose(metadataIndexService::enrich);
     }
 
     private CompletableFuture<FileInfoResponse> refreshDownloadStatus(FileInfoResponse cached) {
-        CompletableFuture<FileInfoResponse> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.complete(cached);
-            return future;
-        }
-
-        TdApi.GetFile getFile = new TdApi.GetFile();
-        getFile.fileId = (int) cached.fileId();
-
-        client.send(getFile, result -> {
-            if (result instanceof TdApi.File file) {
-                boolean downloaded = isFileActuallyDownloaded(file);
-                String localPath = file.local != null ? file.local.path : null;
+        return telegramService.getFileState(cached.fileId())
+            .exceptionally(_ex -> null)
+            .thenApply(state -> {
+                if (state == null) {
+                    return cached;
+                }
                 FileInfoResponse updated = new FileInfoResponse(
                     cached.messageId(), cached.chatId(), cached.fileId(),
-                    cached.fileName(), file.size > 0 ? file.size : cached.fileSize(),
+                    cached.fileName(), state.size() > 0 ? state.size() : cached.fileSize(),
                     cached.mimeType(), cached.type(),
                     cached.width(), cached.height(), cached.duration(),
                     cached.thumbnailPath(), cached.date(),
-                    downloaded,
-                    localPath != null && !localPath.isBlank() ? localPath : cached.localPath()
+                    state.downloaded(),
+                    state.localPath() != null && !state.localPath().isBlank() ? state.localPath() : cached.localPath()
                 );
                 fileMetadataCache.put(cached.fileId(), updated);
-                future.complete(updated);
-            } else {
-                future.complete(cached);
-            }
-        });
-
-        return future;
+                return updated;
+            });
     }
 
     private CompletableFuture<List<FileInfoResponse>> refreshDownloadStatuses(List<FileInfoResponse> files) {
@@ -240,78 +211,46 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
-     * Starts a file download and returns immediately with PENDING status.
+     * Starts a file download through the seam's single download contract and
+     * returns immediately with PENDING status.
      * The client should query GET /{fileId} to check progress.
      */
     @Override
     public CompletableFuture<DownloadResponse> downloadFile(long fileId) {
-        CompletableFuture<DownloadResponse> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException(TELEGRAM_CLIENT_NOT_INITIALIZED));
-            return future;
-        }
-
-        // Check whether it is already downloaded
-        getFileInfo(fileId).thenAccept(fileInfo -> {
+        return getFileInfo(fileId).<DownloadResponse>thenCompose(fileInfo -> {
+            // Check whether it is already downloaded
             if (fileInfo.isDownloaded() && fileInfo.localPath() != null) {
-                future.complete(new DownloadResponse(
+                return CompletableFuture.completedFuture(new DownloadResponse(
                     fileId,
                     DownloadResponse.STATUS_COMPLETED,
                     fileInfo.localPath(),
                     100,
                     "File already downloaded"
                 ));
-                return;
             }
 
-            Runnable startDownload = () -> {
-                TdApi.DownloadFile download = new TdApi.DownloadFile();
-                download.fileId = (int) fileId;
-                download.priority = 1;
-                download.offset = 0;
-                download.limit = 0;
-                download.synchronous = false;
+            // If the file is still uploading, wait for the staged source to
+            // be released before starting the download
+            CompletableFuture<Void> readyToDownload = telegramService.isUploadTracked((int) fileId)
+                ? telegramService.waitForUploadRelease((int) fileId)
+                : CompletableFuture.completedFuture(null);
 
-                client.send(download, result -> {
-                    if (result instanceof TdApi.Error error) {
-                        logger.error("[Download] Error starting download for {}: {}", fileId, error.message);
-                    }
-                });
-            };
-
-            if (telegramService.isUploadTracked((int) fileId)) {
-                telegramService.waitForUploadRelease((int) fileId)
-                    .thenRun(startDownload)
-                    .exceptionally(ex -> {
-                        logger.error("[Download] Error waiting for upload release for {}: {}", fileId, ex.getMessage());
-                        return null;
-                    });
-            } else {
-                startDownload.run();
-            }
-
-            // Return immediately with PENDING
-            future.complete(new DownloadResponse(
-                fileId,
-                DownloadResponse.STATUS_PENDING,
-                null,
-                0,
-                "Download started in background. Check GET /{fileId} for progress."
-            ));
-
-        }).exceptionally(ex -> {
-            future.complete(new DownloadResponse(
-                fileId,
-                DownloadResponse.STATUS_FAILED,
-                null,
-                0,
-                ex.getMessage()
-            ));
-            return null;
-        });
-
-        return future;
+            return readyToDownload
+                .thenCompose(_v -> telegramService.startDownload(fileId))
+                .thenApply(state -> new DownloadResponse(
+                    fileId,
+                    DownloadResponse.STATUS_PENDING,
+                    null,
+                    state.progressPercent(),
+                    "Download started in background. Check GET /{fileId} for progress."
+                ));
+        }).exceptionally(ex -> new DownloadResponse(
+            fileId,
+            DownloadResponse.STATUS_FAILED,
+            null,
+            0,
+            ex.getMessage()
+        ));
     }
 
     /**
@@ -564,17 +503,22 @@ public class FileServiceImpl implements FileService {
         return new java.io.File(file.local.path).exists();
     }
 
-    private FileInfoResponse mapTdFileToResponse(TdApi.File file) {
-        String localPath = file.local != null ? file.local.path : null;
+    /**
+     * Maps a seam file state to the workspace response view, deriving mime
+     * and type from the local path when the state carries no message
+     * context.
+     */
+    private FileInfoResponse mapStateToFileInfo(TelegramFileState state) {
+        String localPath = state.localPath();
         String mimeType = guessMimeTypeFromPath(localPath);
         String type = guessTypeFromMime(mimeType);
 
         return new FileInfoResponse(
             0,
             0,
-            file.id,
+            state.fileId(),
             null,
-            file.size,
+            state.size(),
             mimeType,
             type,
             null,
@@ -582,7 +526,7 @@ public class FileServiceImpl implements FileService {
             null,
             null,
             0,
-            isFileActuallyDownloaded(file),
+            state.downloaded(),
             localPath
         );
     }

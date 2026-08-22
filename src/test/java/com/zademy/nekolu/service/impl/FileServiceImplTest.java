@@ -15,8 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.zademy.nekolu.dto.DownloadResponse;
 import com.zademy.nekolu.dto.FileInfoResponse;
 import com.zademy.nekolu.model.TelegramFileMessage;
+import com.zademy.nekolu.model.TelegramFileState;
 import com.zademy.nekolu.service.FakeTelegramService;
 import com.zademy.nekolu.service.FakeTelegramService.SessionState;
 
@@ -139,6 +141,74 @@ class FileServiceImplTest {
         List<FileInfoResponse> result = fileService.searchFilesByType("photo", 10, "").get();
 
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void downloadFileReturnsCompletedWhenAlreadyDownloaded() throws Exception {
+        telegram.withFileState(new TelegramFileState(500, 2048, false, 2048, "/tmp/done.bin", true));
+
+        DownloadResponse response = fileService.downloadFile(500).get();
+
+        assertEquals(DownloadResponse.STATUS_COMPLETED, response.status());
+        assertEquals("/tmp/done.bin", response.localPath());
+        assertEquals(100, response.progress());
+    }
+
+    @Test
+    void downloadFileReturnsPendingAndStartsDownloadThroughSeam() throws Exception {
+        telegram.withFileState(new TelegramFileState(600, 2048, false, 512, null, false));
+
+        DownloadResponse response = fileService.downloadFile(600).get();
+
+        assertEquals(DownloadResponse.STATUS_PENDING, response.status());
+        assertEquals("Download started in background. Check GET /{fileId} for progress.", response.message());
+    }
+
+    @Test
+    void downloadFileWaitsForUploadReleaseBeforeStarting() throws Exception {
+        // Upload a file through the seam first: the fake registers the staged
+        // source as tracked. Downloading must consume the release.
+        telegram
+            .withUploadResult(message(77, 1, 700, "staged.pdf", 4096, "document", 1700000000))
+            .withFileState(new TelegramFileState(700, 4096, false, 0, null, false));
+        telegram.sendDocument(1, "/staging/staged.pdf", null).get();
+        assertTrue(telegram.isUploadTracked(700));
+
+        DownloadResponse response = fileService.downloadFile(700).get();
+
+        assertEquals(DownloadResponse.STATUS_PENDING, response.status());
+        // The release was consumed: the staged source is no longer tracked
+        assertTrue(telegram.trackedUploads().isEmpty());
+    }
+
+    @Test
+    void downloadFileReportsFailureWhenFileIsUnknown() throws Exception {
+        DownloadResponse response = fileService.downloadFile(404).get();
+
+        assertEquals(DownloadResponse.STATUS_FAILED, response.status());
+        assertTrue(response.message().contains("File not found"));
+    }
+
+    @Test
+    void downloadFilesReportsEachFileIndividually() throws Exception {
+        telegram.withFileState(new TelegramFileState(500, 2048, false, 2048, "/tmp/done.bin", true));
+
+        List<DownloadResponse> responses = fileService.downloadFiles(List.of(500L, 404L)).get();
+
+        assertEquals(2, responses.size());
+        assertEquals(DownloadResponse.STATUS_COMPLETED, responses.get(0).status());
+        assertEquals(DownloadResponse.STATUS_FAILED, responses.get(1).status());
+    }
+
+    @Test
+    void getFileInfoMapsSeamStateIntoResponse() throws Exception {
+        telegram.withFileState(new TelegramFileState(500, 2048, false, 2048, "/tmp/done.bin", true));
+
+        FileInfoResponse info = fileService.getFileInfo(500).get();
+
+        assertTrue(info.isDownloaded());
+        assertEquals("/tmp/done.bin", info.localPath());
+        assertEquals(2048, info.fileSize());
     }
 
     // ==================== HELPERS ====================
