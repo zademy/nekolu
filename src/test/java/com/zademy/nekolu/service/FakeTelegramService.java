@@ -219,20 +219,20 @@ public class FakeTelegramService implements TelegramService {
     }
 
     @Override
-    public void trackUpload(int fileId, String tempFilePath) {
-        trackedUploads.put(fileId, tempFilePath);
+    public void trackUpload(long fileId, String tempFilePath) {
+        trackedUploads.put((int) fileId, tempFilePath);
     }
 
     @Override
-    public boolean isUploadTracked(int fileId) {
-        return trackedUploads.containsKey(fileId);
+    public boolean isUploadTracked(long fileId) {
+        return trackedUploads.containsKey((int) fileId);
     }
 
     @Override
-    public CompletableFuture<Void> waitForUploadRelease(int fileId) {
+    public CompletableFuture<Void> waitForUploadRelease(long fileId) {
         // The real adapter releases when the upload completes; the fake
         // releases immediately, simulating an already-finished transfer.
-        trackedUploads.remove(fileId);
+        trackedUploads.remove((int) fileId);
         return CompletableFuture.completedFuture(null);
     }
 

@@ -149,7 +149,7 @@ public interface TelegramService {
      * @param fileId the file ID
      * @param tempFilePath the staged file path
      */
-    void trackUpload(int fileId, String tempFilePath);
+    void trackUpload(long fileId, String tempFilePath);
 
     /**
      * Returns whether the file is still using a local staged source for upload.
@@ -157,7 +157,7 @@ public interface TelegramService {
      * @param fileId the file ID
      * @return true when the upload source is still tracked locally
      */
-    boolean isUploadTracked(int fileId);
+    boolean isUploadTracked(long fileId);
 
     /**
      * Waits until the staged local upload source for a file is released.
@@ -165,7 +165,7 @@ public interface TelegramService {
      * @param fileId the file ID
      * @return a future completed when the local upload source is no longer tracked
      */
-    CompletableFuture<Void> waitForUploadRelease(int fileId);
+    CompletableFuture<Void> waitForUploadRelease(long fileId);
 
     // ==================== FOLDERS ====================
 

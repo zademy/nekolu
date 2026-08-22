@@ -247,7 +247,7 @@ public class TelegramServiceImpl implements TelegramService {
         if (fileMessage == null) {
             return CompletableFuture.failedFuture(new RuntimeException("Message contains no file"));
         }
-        trackUpload((int) fileMessage.fileId(), stagedFilePath);
+        trackUpload(fileMessage.fileId(), stagedFilePath);
         return CompletableFuture.completedFuture(fileMessage);
     }
 
@@ -588,21 +588,22 @@ public class TelegramServiceImpl implements TelegramService {
     }
 
     @Override
-    public void trackUpload(int fileId, String tempFilePath) {
-        pendingUploads.put(fileId, tempFilePath);
+    public void trackUpload(long fileId, String tempFilePath) {
+        pendingUploads.put((int) fileId, tempFilePath);
     }
 
     @Override
-    public boolean isUploadTracked(int fileId) {
-        return pendingUploads.containsKey(fileId);
+    public boolean isUploadTracked(long fileId) {
+        return pendingUploads.containsKey((int) fileId);
     }
 
     @Override
-    public CompletableFuture<Void> waitForUploadRelease(int fileId) {
-        if (!pendingUploads.containsKey(fileId)) {
+    public CompletableFuture<Void> waitForUploadRelease(long fileId) {
+        int id = (int) fileId;
+        if (!pendingUploads.containsKey(id)) {
             return CompletableFuture.completedFuture(null);
         }
-        return pendingUploadReleases.computeIfAbsent(fileId, _ignored -> new CompletableFuture<>());
+        return pendingUploadReleases.computeIfAbsent(id, _ignored -> new CompletableFuture<>());
     }
 
     private void handleUpdateFile(TdApi.UpdateFile update) {

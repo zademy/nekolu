@@ -63,6 +63,8 @@ class FileServiceImplTest {
 
         assertEquals(1, result.size());
         assertEquals("two.mp4", result.get(0).fileName());
+        // URL construction is part of the response contract
+        assertEquals("/api/telegram/files/200/stream", result.get(0).streamUrl());
     }
 
     @Test

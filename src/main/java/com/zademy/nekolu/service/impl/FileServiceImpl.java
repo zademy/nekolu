@@ -229,11 +229,7 @@ public class FileServiceImpl implements FileService {
 
             // If the file is still uploading, wait for the staged source to
             // be released before starting the download
-            CompletableFuture<Void> readyToDownload = telegramService.isUploadTracked((int) fileId)
-                ? telegramService.waitForUploadRelease((int) fileId)
-                : CompletableFuture.completedFuture(null);
-
-            return readyToDownload
+            return awaitUploadRelease(fileId)
                 .thenCompose(_v -> telegramService.startDownload(fileId))
                 .thenApply(state -> new DownloadResponse(
                     fileId,
@@ -366,6 +362,12 @@ public class FileServiceImpl implements FileService {
         return normalizedPath.substring(extensionStart);
     }
 
+    /**
+     * Fallback classification for file states that carry no message context
+     * (raw file lookups), derived from the local path's MIME type. The
+     * primary message-content classification lives once in the Telegram
+     * module; this only approximates when no message is available.
+     */
     private String guessTypeFromMime(String mimeType) {
         if (mimeType == null) return FileTypeConstants.FILE_KIND;
         if (mimeType.startsWith(MediaConstants.MIME_IMAGE_PREFIX)) return FileTypeConstants.PHOTO_KIND;
@@ -480,7 +482,7 @@ public class FileServiceImpl implements FileService {
         CompletableFuture<Resource> future = new CompletableFuture<>();
         long deadline = System.currentTimeMillis() + timeoutMs;
 
-        telegramService.waitForUploadRelease((int) fileId)
+        awaitUploadRelease(fileId)
             .thenCompose(_v -> telegramService.startDownload(fileId))
             .whenComplete((state, error) -> {
                 if (error != null) {
@@ -491,6 +493,16 @@ public class FileServiceImpl implements FileService {
             });
 
         return future;
+    }
+
+    /**
+     * Waits for a still-uploading file's staged source to be released; a
+     * future already complete when no staged source is tracked.
+     */
+    private CompletableFuture<Void> awaitUploadRelease(long fileId) {
+        return telegramService.isUploadTracked(fileId)
+            ? telegramService.waitForUploadRelease(fileId)
+            : CompletableFuture.completedFuture(null);
     }
 
     private void pollUntilDownloaded(long fileId, long deadline, CompletableFuture<Resource> future) {
