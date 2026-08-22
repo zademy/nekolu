@@ -139,6 +139,50 @@ public interface TelegramService {
     CompletableFuture<TelegramFileState> getFileState(long fileId);
 
     /**
+     * Uploads a local file to a chat as a document and returns the created
+     * file message. The staged local source is registered for upload
+     * tracking: it is cleaned up by the Telegram module when the upload
+     * completes.
+     *
+     * @param chatId the target chat (Saved Messages or a folder channel)
+     * @param filePath the absolute path of the staged local source
+     * @param caption the optional caption
+     * @return a future completed with the created file message
+     */
+    CompletableFuture<TelegramFileMessage> sendDocument(long chatId, String filePath, String caption);
+
+    /**
+     * Uploads a local image to a chat as a photo and returns the created
+     * file message, with the same staging contract as
+     * {@link #sendDocument(long, String, String)}.
+     *
+     * @param chatId the target chat
+     * @param filePath the absolute path of the staged local source
+     * @param caption the optional caption
+     * @return a future completed with the created file message
+     */
+    CompletableFuture<TelegramFileMessage> sendPhoto(long chatId, String filePath, String caption);
+
+    /**
+     * Deletes messages from a chat, locally or for everyone.
+     *
+     * @param chatId the chat that owns the messages
+     * @param messageIds the Telegram message IDs to delete
+     * @param revoke true to delete for everyone, false to delete only locally
+     * @return a future completed when the deletion is acknowledged
+     */
+    CompletableFuture<Void> deleteMessages(long chatId, List<Long> messageIds, boolean revoke);
+
+    /**
+     * Drops the local TDLib copy of a file, freeing disk space. Best effort:
+     * failures surface as a failed future callers may ignore.
+     *
+     * @param fileId the TDLib file identifier
+     * @return a future completed when the local copy is dropped
+     */
+    CompletableFuture<Void> deleteLocalFile(long fileId);
+
+    /**
      * Starts a file download and returns a CompletableFuture.
      *
      * @param fileId the ID of the file to download

@@ -178,6 +178,48 @@ class FakeTelegramServiceTest {
         assertTrue(thrown.getCause().getMessage().contains("File not found"));
     }
 
+    @Test
+    void sendDocumentReturnsProgrammedUploadResult() throws Exception {
+        TelegramFileMessage uploaded = message(77, 10, "report.pdf", "document");
+        FakeTelegramService telegram = new FakeTelegramService().withUploadResult(uploaded);
+
+        TelegramFileMessage result = telegram.sendDocument(10, "/staging/report.pdf", null).get();
+
+        assertEquals(77, result.messageId());
+        assertEquals("/staging/report.pdf", telegram.trackedUploads().get((int) result.fileId()));
+        assertTrue(telegram.isUploadTracked((int) result.fileId()));
+    }
+
+    @Test
+    void sendPhotoDefaultsToSynthesizedUploadResult() throws Exception {
+        FakeTelegramService telegram = new FakeTelegramService();
+
+        TelegramFileMessage result = telegram.sendPhoto(10, "/staging/cat.jpg", "hello").get();
+
+        assertEquals(10, result.chatId());
+        assertEquals("cat.jpg", result.fileName());
+        assertEquals("photo", result.type());
+        assertTrue(telegram.isUploadTracked((int) result.fileId()));
+    }
+
+    @Test
+    void deleteMessagesRecordsCallsForAssertion() throws Exception {
+        FakeTelegramService telegram = new FakeTelegramService();
+
+        telegram.deleteMessages(10, List.of(5L, 6L), true).get();
+
+        assertEquals(List.of("10:5:true", "10:6:true"), telegram.deletedMessages());
+    }
+
+    @Test
+    void deleteLocalFileRecordsCallsForAssertion() throws Exception {
+        FakeTelegramService telegram = new FakeTelegramService();
+
+        telegram.deleteLocalFile(500).get();
+
+        assertEquals(List.of(500L), telegram.deletedLocalFiles());
+    }
+
     // ==================== HELPERS ====================
 
     private static void assertUniformIllegalState(CompletableFuture<?>... futures) {

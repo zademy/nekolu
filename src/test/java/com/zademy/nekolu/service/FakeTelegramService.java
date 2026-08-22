@@ -39,6 +39,11 @@ public class FakeTelegramService implements TelegramService {
     private SessionState state = SessionState.READY;
     private final List<TelegramFileMessage> messages = new ArrayList<>();
     private final Map<Long, TelegramFileState> fileStates = new HashMap<>();
+    private final Map<Integer, String> trackedUploads = new HashMap<>();
+    private final List<String> deletedMessages = new ArrayList<>();
+    private final List<Long> deletedLocalFiles = new ArrayList<>();
+    private TelegramFileMessage uploadResult;
+    private long nextMessageId = 1000;
     private RuntimeException failure;
     private long ownChatId = 1L;
 
@@ -55,6 +60,23 @@ public class FakeTelegramService implements TelegramService {
     public FakeTelegramService withFileState(TelegramFileState fileState) {
         this.fileStates.put(fileState.fileId(), fileState);
         return this;
+    }
+
+    public FakeTelegramService withUploadResult(TelegramFileMessage uploadResult) {
+        this.uploadResult = uploadResult;
+        return this;
+    }
+
+    public List<String> deletedMessages() {
+        return List.copyOf(deletedMessages);
+    }
+
+    public List<Long> deletedLocalFiles() {
+        return List.copyOf(deletedLocalFiles);
+    }
+
+    public Map<Integer, String> trackedUploads() {
+        return Map.copyOf(trackedUploads);
     }
 
     public FakeTelegramService failingWith(RuntimeException failure) {
@@ -144,6 +166,49 @@ public class FakeTelegramService implements TelegramService {
         });
     }
 
+    // ==================== UPLOAD / DELETE OPERATIONS ====================
+
+    @Override
+    public CompletableFuture<TelegramFileMessage> sendDocument(long chatId, String filePath, String caption) {
+        return sendFile(chatId, filePath, "document");
+    }
+
+    @Override
+    public CompletableFuture<TelegramFileMessage> sendPhoto(long chatId, String filePath, String caption) {
+        return sendFile(chatId, filePath, "photo");
+    }
+
+    private CompletableFuture<TelegramFileMessage> sendFile(long chatId, String filePath, String type) {
+        return guarded(() -> {
+            TelegramFileMessage created = uploadResult != null
+                ? uploadResult
+                : new TelegramFileMessage(
+                    nextMessageId++, chatId, nextMessageId * 10,
+                    filePath.substring(filePath.lastIndexOf('/') + 1),
+                    4096, null, type, null, null, null, null, 1700000000, false, null);
+            trackedUploads.put((int) created.fileId(), filePath);
+            return created;
+        });
+    }
+
+    @Override
+    public CompletableFuture<Void> deleteMessages(long chatId, List<Long> messageIds, boolean revoke) {
+        return guarded(() -> {
+            for (Long messageId : messageIds) {
+                deletedMessages.add(chatId + ":" + messageId + ":" + revoke);
+            }
+            return null;
+        });
+    }
+
+    @Override
+    public CompletableFuture<Void> deleteLocalFile(long fileId) {
+        return guarded(() -> {
+            deletedLocalFiles.add(fileId);
+            return null;
+        });
+    }
+
     // ==================== SESSION / UPLOAD TRACKING ====================
 
     @Override
@@ -163,16 +228,19 @@ public class FakeTelegramService implements TelegramService {
 
     @Override
     public void trackUpload(int fileId, String tempFilePath) {
-        // no-op: upload tracking is real-adapter behavior
+        trackedUploads.put(fileId, tempFilePath);
     }
 
     @Override
     public boolean isUploadTracked(int fileId) {
-        return false;
+        return trackedUploads.containsKey(fileId);
     }
 
     @Override
     public CompletableFuture<Void> waitForUploadRelease(int fileId) {
+        // The real adapter releases when the upload completes; the fake
+        // releases immediately, simulating an already-finished transfer.
+        trackedUploads.remove(fileId);
         return CompletableFuture.completedFuture(null);
     }
 

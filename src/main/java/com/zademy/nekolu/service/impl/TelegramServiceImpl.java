@@ -308,6 +308,66 @@ public class TelegramServiceImpl implements TelegramService {
         );
     }
 
+    @Override
+    public CompletableFuture<TelegramFileMessage> sendDocument(long chatId, String filePath, String caption) {
+        TdApi.InputMessageDocument document = new TdApi.InputMessageDocument();
+        document.document = new TdApi.InputFileLocal(filePath);
+        document.thumbnail = null;
+        document.caption = caption != null ? new TdApi.FormattedText(caption, null) : null;
+
+        TdApi.SendMessage sendMessage = new TdApi.SendMessage();
+        sendMessage.chatId = chatId;
+        sendMessage.inputMessageContent = document;
+
+        return send(sendMessage).thenCompose(message -> trackedFileMessage(message, filePath));
+    }
+
+    @Override
+    public CompletableFuture<TelegramFileMessage> sendPhoto(long chatId, String filePath, String caption) {
+        TdApi.InputMessagePhoto photo = new TdApi.InputMessagePhoto();
+        photo.photo = new TdApi.InputFileLocal(filePath);
+        photo.thumbnail = null;
+        photo.caption = caption != null ? new TdApi.FormattedText(caption, null) : null;
+        photo.hasSpoiler = false;
+
+        TdApi.SendMessage sendMessage = new TdApi.SendMessage();
+        sendMessage.chatId = chatId;
+        sendMessage.inputMessageContent = photo;
+
+        return send(sendMessage).thenCompose(message -> trackedFileMessage(message, filePath));
+    }
+
+    /**
+     * Registers the staged local source for upload tracking and maps the
+     * created message to the domain view.
+     */
+    private CompletableFuture<TelegramFileMessage> trackedFileMessage(TdApi.Message message, String stagedFilePath) {
+        TelegramFileMessage fileMessage = toFileMessage(message);
+        if (fileMessage == null) {
+            return CompletableFuture.failedFuture(new RuntimeException("Message contains no file"));
+        }
+        trackUpload((int) fileMessage.fileId(), stagedFilePath);
+        return CompletableFuture.completedFuture(fileMessage);
+    }
+
+    @Override
+    public CompletableFuture<Void> deleteMessages(long chatId, List<Long> messageIds, boolean revoke) {
+        TdApi.DeleteMessages deleteMessages = new TdApi.DeleteMessages();
+        deleteMessages.chatId = chatId;
+        deleteMessages.messageIds = messageIds.stream().mapToLong(Long::longValue).toArray();
+        deleteMessages.revoke = revoke;
+
+        return send(deleteMessages).<Void>thenApply(_ok -> null);
+    }
+
+    @Override
+    public CompletableFuture<Void> deleteLocalFile(long fileId) {
+        TdApi.DeleteFile deleteFile = new TdApi.DeleteFile();
+        deleteFile.fileId = (int) fileId;
+
+        return send(deleteFile).<Void>thenApply(_ok -> null);
+    }
+
 
     @Override
     public CompletableFuture<List<TelegramFileMessage>> getFileMessages(long chatId, long fromMessageId, int limit) {
