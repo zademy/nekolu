@@ -32,6 +32,50 @@ public interface TelegramService {
      */
     boolean isAuthorized();
 
+    // ==================== FIRST-RUN AUTHENTICATION ====================
+
+    /** The wizard waits for the user's phone number. */
+    String AUTH_STATE_WAIT_PHONE_NUMBER = "WAIT_PHONE_NUMBER";
+    /** The wizard waits for the verification code. */
+    String AUTH_STATE_WAIT_CODE = "WAIT_CODE";
+    /** The wizard waits for the two-step-verification password (2FA). */
+    String AUTH_STATE_WAIT_PASSWORD = "WAIT_PASSWORD";
+    /** The session is authenticated and the workspace is usable. */
+    String AUTH_STATE_READY = "READY";
+
+    /**
+     * Current step of the first-run authentication wizard, driven by TDLib's
+     * authorization updates.
+     *
+     * @return one of the AUTH_STATE_* constants
+     */
+    String getAuthState();
+
+    /**
+     * Submits the user's phone number to start authentication.
+     *
+     * @param phoneNumber the phone number in international format
+     * @return a future completed when TDLib accepts the number
+     */
+    CompletableFuture<Void> submitPhoneNumber(String phoneNumber);
+
+    /**
+     * Submits the verification code sent to the user.
+     *
+     * @param code the verification code
+     * @return a future completed when TDLib accepts the code
+     */
+    CompletableFuture<Void> submitAuthCode(String code);
+
+    /**
+     * Submits the two-step-verification password, required only when the
+     * account has 2FA enabled.
+     *
+     * @param password the cloud password
+     * @return a future completed when TDLib accepts the password
+     */
+    CompletableFuture<Void> submitAuthPassword(String password);
+
     // ==================== FILE MESSAGE OPERATIONS (DOMAIN TYPES) ====================
 
     /**

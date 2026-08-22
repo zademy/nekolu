@@ -37,6 +37,8 @@ public class FakeTelegramService implements TelegramService {
     }
 
     private SessionState state = SessionState.READY;
+    private String authState = TelegramService.AUTH_STATE_READY;
+    private final List<String> authSubmissions = new ArrayList<>();
     private final List<TelegramFileMessage> messages = new ArrayList<>();
     private final Map<Long, TelegramFileState> fileStates = new HashMap<>();
     private final Map<Integer, String> trackedUploads = new HashMap<>();
@@ -82,6 +84,15 @@ public class FakeTelegramService implements TelegramService {
     public FakeTelegramService failingWith(RuntimeException failure) {
         this.failure = failure;
         return this;
+    }
+
+    public FakeTelegramService withAuthState(String authState) {
+        this.authState = authState;
+        return this;
+    }
+
+    public List<String> authSubmissions() {
+        return List.copyOf(authSubmissions);
     }
 
     public FakeTelegramService withOwnChatId(long ownChatId) {
@@ -213,6 +224,37 @@ public class FakeTelegramService implements TelegramService {
     @Override
     public boolean isAuthorized() {
         return state == SessionState.READY;
+    }
+
+    // ==================== FIRST-RUN AUTHENTICATION ====================
+
+    @Override
+    public String getAuthState() {
+        return authState;
+    }
+
+    @Override
+    public CompletableFuture<Void> submitPhoneNumber(String phoneNumber) {
+        return guarded(() -> {
+            authSubmissions.add("phone:" + phoneNumber);
+            return null;
+        });
+    }
+
+    @Override
+    public CompletableFuture<Void> submitAuthCode(String code) {
+        return guarded(() -> {
+            authSubmissions.add("code:" + code);
+            return null;
+        });
+    }
+
+    @Override
+    public CompletableFuture<Void> submitAuthPassword(String password) {
+        return guarded(() -> {
+            authSubmissions.add("password:" + password);
+            return null;
+        });
     }
 
     @Override

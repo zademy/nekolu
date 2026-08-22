@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.Test;
 
 import com.zademy.nekolu.exception.TelegramNotInitializedException;
+import com.zademy.nekolu.exception.TelegramOperationException;
 import com.zademy.nekolu.exception.TelegramUnauthorizedException;
 import com.zademy.nekolu.model.TelegramFileMessage;
 import com.zademy.nekolu.model.TelegramFileState;
@@ -141,6 +142,38 @@ class FakeTelegramServiceTest {
     @Test
     void getOwnChatIdIsProgrammable() throws Exception {
         assertEquals(42L, new FakeTelegramService().withOwnChatId(42).getOwnChatId().get());
+    }
+
+    @Test
+    void authWizardStateIsProgrammable() {
+        FakeTelegramService telegram = new FakeTelegramService()
+            .withAuthState(TelegramService.AUTH_STATE_WAIT_PHONE_NUMBER);
+
+        assertEquals(TelegramService.AUTH_STATE_WAIT_PHONE_NUMBER, telegram.getAuthState());
+        assertEquals(TelegramService.AUTH_STATE_READY, new FakeTelegramService().getAuthState());
+    }
+
+    @Test
+    void authSubmissionsRecordTheirPayloads() throws Exception {
+        FakeTelegramService telegram = new FakeTelegramService();
+
+        telegram.submitPhoneNumber("+52 55 0000 0000").get();
+        telegram.submitAuthCode("12345").get();
+        telegram.submitAuthPassword("cloud-secret").get();
+
+        assertEquals(List.of("phone:+52 55 0000 0000", "code:12345", "password:cloud-secret"),
+            telegram.authSubmissions());
+    }
+
+    @Test
+    void authSubmissionPropagatesTypedFailure() {
+        FakeTelegramService telegram = new FakeTelegramService()
+            .failingWith(new TelegramOperationException(400, "PHONE_NUMBER_INVALID"));
+
+        ExecutionException thrown = assertThrows(ExecutionException.class,
+            () -> telegram.submitPhoneNumber("123").get());
+
+        assertInstanceOf(TelegramOperationException.class, thrown.getCause());
     }
 
     @Test

@@ -47,6 +47,7 @@ public class TelegramServiceImpl implements TelegramService {
     private final TelegramRateLimiter rateLimiter;
     private Client client;
     private volatile boolean isAuthorized = false;
+    private volatile String authState = AUTH_STATE_WAIT_PHONE_NUMBER;
     private final ConcurrentHashMap<Integer, String> pendingUploads = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Integer, CompletableFuture<Void>> pendingUploadReleases = new ConcurrentHashMap<>();
     private volatile CompletableFuture<Long> ownChatIdFuture;
@@ -173,6 +174,41 @@ public class TelegramServiceImpl implements TelegramService {
                 logger.error("Error setting TDLib parameters: {}", error.message);
             }
         });
+    }
+
+    // ==================== FIRST-RUN AUTHENTICATION ====================
+
+    @Override
+    public String getAuthState() {
+        return authState;
+    }
+
+    /**
+     * Authentication submissions travel through the unguarded path: the
+     * readiness preconditions do not apply before a session exists, while
+     * the request timeout and typed error translation still do.
+     */
+    @Override
+    public CompletableFuture<Void> submitPhoneNumber(String phoneNumber) {
+        TdApi.SetAuthenticationPhoneNumber request = new TdApi.SetAuthenticationPhoneNumber();
+        request.phoneNumber = phoneNumber;
+        request.settings = new TdApi.PhoneNumberAuthenticationSettings();
+        request.settings.allowFlashCall = false;
+        request.settings.allowMissedCall = false;
+        request.settings.isCurrentPhoneNumber = false;
+        request.settings.allowSmsRetrieverApi = false;
+
+        return sendUnguarded(request).<Void>thenApply(_ok -> null);
+    }
+
+    @Override
+    public CompletableFuture<Void> submitAuthCode(String code) {
+        return sendUnguarded(new TdApi.CheckAuthenticationCode(code)).<Void>thenApply(_ok -> null);
+    }
+
+    @Override
+    public CompletableFuture<Void> submitAuthPassword(String password) {
+        return sendUnguarded(new TdApi.CheckAuthenticationPassword(password)).<Void>thenApply(_ok -> null);
     }
 
     // ==================== FILE MESSAGE OPERATIONS (DOMAIN TYPES) ====================
@@ -682,6 +718,7 @@ public class TelegramServiceImpl implements TelegramService {
 
     private void handleAuthorizationState(TdApi.AuthorizationState state) {
         if (state instanceof TdApi.AuthorizationStateReady) {
+            authState = AUTH_STATE_READY;
             isAuthorized = true;
             logger.info("TDLib ready and authorized");
             // Run off the TDLib callback thread: the cleanup performs
@@ -690,13 +727,18 @@ public class TelegramServiceImpl implements TelegramService {
         } else if (state instanceof TdApi.AuthorizationStateWaitTdlibParameters) {
             logger.info("Waiting for TDLib parameters...");
         } else if (state instanceof TdApi.AuthorizationStateWaitPhoneNumber) {
-            logger.warn("Telegram requires authentication:");
-            logger.warn("1. Run: java -cp lib/tdlib.jar org.drinkless.tdlib.example.Example");
-            logger.warn("2. Enter your phone number");
-            logger.warn("3. Enter the verification code");
-            logger.warn("4. Restart this application");
+            authState = AUTH_STATE_WAIT_PHONE_NUMBER;
+            logger.info("Waiting for the phone number — first-run wizard available at /setup");
         } else if (state instanceof TdApi.AuthorizationStateWaitCode) {
+            authState = AUTH_STATE_WAIT_CODE;
             logger.info("Waiting for verification code...");
+        } else if (state instanceof TdApi.AuthorizationStateWaitPassword) {
+            authState = AUTH_STATE_WAIT_PASSWORD;
+            logger.info("Waiting for the two-step-verification password...");
+        } else if (state instanceof TdApi.AuthorizationStateWaitRegistration) {
+            logger.warn("TDLib asks for account registration (new account); the wizard does not cover this — use the TDLib Example client");
+        } else if (state instanceof TdApi.AuthorizationStateWaitOtherDeviceConfirmation) {
+            logger.warn("TDLib waits for confirmation on another device...");
         } else if (state instanceof TdApi.AuthorizationStateClosed) {
             isAuthorized = false;
         }
