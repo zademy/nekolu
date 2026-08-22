@@ -31,7 +31,6 @@ import com.zademy.nekolu.exception.TelegramOperationException;
 import com.zademy.nekolu.service.FakeTelegramService;
 import com.zademy.nekolu.service.FakeTelegramService.SessionState;
 import com.zademy.nekolu.service.impl.FileServiceImpl;
-import com.zademy.nekolu.service.impl.MetadataIndexServiceImpl;
 import com.zademy.nekolu.service.impl.UploadStagingArea;
 
 /**
@@ -53,7 +52,6 @@ class FileControllerTest {
         telegram = new FakeTelegramService();
         FileServiceImpl fileService = new FileServiceImpl(
             telegram,
-            new MetadataIndexServiceImpl(),
             new UploadStagingArea(stagingDir.toPath()),
             Caffeine.newBuilder().build());
 

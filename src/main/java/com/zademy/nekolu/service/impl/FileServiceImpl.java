@@ -40,7 +40,6 @@ import com.zademy.nekolu.dto.BulkDeleteResponse;
 import com.zademy.nekolu.dto.DeleteMessageResponse;
 import com.zademy.nekolu.dto.DownloadJob;
 import com.zademy.nekolu.dto.DownloadResponse;
-import com.zademy.nekolu.dto.FileActionResponse;
 import com.zademy.nekolu.dto.FileExportResponse;
 import com.zademy.nekolu.dto.FileInfoResponse;
 import com.zademy.nekolu.dto.FileStatsResponse;
@@ -49,7 +48,6 @@ import com.zademy.nekolu.dto.UploadResponse;
 import com.zademy.nekolu.model.TelegramFileMessage;
 import com.zademy.nekolu.model.TelegramFileState;
 import com.zademy.nekolu.service.FileService;
-import com.zademy.nekolu.service.MetadataIndexService;
 import com.zademy.nekolu.service.TelegramService;
 
 /**
@@ -75,18 +73,15 @@ public class FileServiceImpl implements FileService {
             String filenameContains) {}
 
     private final TelegramService telegramService;
-    private final MetadataIndexService metadataIndexService;
     private final UploadStagingArea stagingArea;
     private final Cache<Long, FileInfoResponse> fileMetadataCache;
 
     public FileServiceImpl(
         TelegramService telegramService,
-        MetadataIndexService metadataIndexService,
         UploadStagingArea stagingArea,
         @Qualifier("fileInfoNativeCache") Cache<Long, FileInfoResponse> fileMetadataCache
     ) {
         this.telegramService = telegramService;
-        this.metadataIndexService = metadataIndexService;
         this.stagingArea = stagingArea;
         this.fileMetadataCache = fileMetadataCache;
     }
@@ -164,12 +159,11 @@ public class FileServiceImpl implements FileService {
     public CompletableFuture<FileInfoResponse> getFileInfo(long fileId) {
         FileInfoResponse cached = fileMetadataCache.getIfPresent(fileId);
         if (cached != null) {
-            return refreshDownloadStatus(cached).thenCompose(metadataIndexService::enrich);
+            return refreshDownloadStatus(cached);
         }
 
         return telegramService.getFileState(fileId)
-            .thenApply(this::mapStateToFileInfo)
-            .thenCompose(metadataIndexService::enrich);
+            .thenApply(this::mapStateToFileInfo);
     }
 
     private CompletableFuture<FileInfoResponse> refreshDownloadStatus(FileInfoResponse cached) {
@@ -679,9 +673,7 @@ public class FileServiceImpl implements FileService {
     }
 
     private CompletableFuture<List<FileInfoResponse>> enrichVisibleFiles(List<FileInfoResponse> files) {
-        return refreshDownloadStatuses(files)
-            .thenCompose(metadataIndexService::enrichAll)
-            .thenApply(enriched -> enriched.stream().filter(file -> !file.trashed()).toList());
+        return refreshDownloadStatuses(files);
     }
 
     /**
@@ -960,50 +952,6 @@ public class FileServiceImpl implements FileService {
         });
 
         return future;
-    }
-
-    @Override
-    public CompletableFuture<FileActionResponse> restoreFile(long fileId) {
-        return CompletableFuture.completedFuture(new FileActionResponse(
-            fileId,
-            FileActionResponse.STATUS_FAILED,
-            "Logical trash is disabled",
-            "/",
-            false,
-            false,
-            0
-        ));
-    }
-
-    @Override
-    public CompletableFuture<FileActionResponse> moveFile(long fileId, String virtualPath) {
-        return CompletableFuture.completedFuture(new FileActionResponse(
-            fileId,
-            FileActionResponse.STATUS_FAILED,
-            "Logical move is disabled",
-            "/",
-            false,
-            false,
-            0
-        ));
-    }
-
-    @Override
-    public CompletableFuture<FileActionResponse> archiveFile(long fileId, boolean archived) {
-        return CompletableFuture.completedFuture(new FileActionResponse(
-            fileId,
-            FileActionResponse.STATUS_FAILED,
-            "Logical archive is disabled",
-            "/",
-            false,
-            false,
-            0
-        ));
-    }
-
-    @Override
-    public CompletableFuture<List<FileInfoResponse>> listTrash() {
-        return CompletableFuture.completedFuture(List.of());
     }
 
     /**

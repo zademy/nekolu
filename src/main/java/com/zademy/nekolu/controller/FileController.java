@@ -32,13 +32,11 @@ import com.zademy.nekolu.dto.DeleteMessageResponse;
 import com.zademy.nekolu.dto.DownloadFilesRequest;
 import com.zademy.nekolu.dto.DownloadJob;
 import com.zademy.nekolu.dto.DownloadResponse;
-import com.zademy.nekolu.dto.FileActionResponse;
 import com.zademy.nekolu.dto.FileExportResponse;
 import com.zademy.nekolu.dto.FileInfoResponse;
 import com.zademy.nekolu.dto.FileStatsResponse;
 import com.zademy.nekolu.dto.FileStreamResponse;
 import com.zademy.nekolu.dto.FullStatsResponse;
-import com.zademy.nekolu.dto.MoveFileRequest;
 import com.zademy.nekolu.dto.UploadResponse;
 import com.zademy.nekolu.service.FileService;
 import com.zademy.nekolu.service.TelegramService;
@@ -612,70 +610,6 @@ public class FileController {
                     0, caption, "Error resolving chat: " + ex.getMessage())
             );
         });
-    }
-
-    @PostMapping("/{fileId}/restore")
-    @Operation(summary = "Restore file from trash", description = "Restores a file from the logical trash")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "File restored",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileActionResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Restore error")
-    })
-    public CompletableFuture<ResponseEntity<FileActionResponse>> restoreFile(
-            @PathVariable @Parameter(description = "File ID", example = "12345") long fileId) {
-        return fileService.restoreFile(fileId)
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.badRequest().body(
-                new FileActionResponse(fileId, FileActionResponse.STATUS_FAILED, ex.getMessage(), "/", false, false, 0)
-            ));
-    }
-
-    @PostMapping("/{fileId}/move")
-    @Operation(summary = "Move file logically", description = "Moves a file to a virtual path inside the drive")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "File moved",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileActionResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Move error")
-    })
-    public CompletableFuture<ResponseEntity<FileActionResponse>> moveFile(
-            @PathVariable @Parameter(description = "File ID", example = "12345") long fileId,
-            @RequestBody @Valid MoveFileRequest request) {
-        return fileService.moveFile(fileId, request.virtualPath())
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.badRequest().body(
-                new FileActionResponse(fileId, FileActionResponse.STATUS_FAILED, ex.getMessage(), "/", false, false, 0)
-            ));
-    }
-
-    @PostMapping("/{fileId}/archive")
-    @Operation(summary = "Archive or unarchive file", description = "Marks a file as archived or active in the logical index")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Archive state updated",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileActionResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Archive error")
-    })
-    public CompletableFuture<ResponseEntity<FileActionResponse>> archiveFile(
-            @PathVariable @Parameter(description = "File ID", example = "12345") long fileId,
-            @RequestParam(defaultValue = "true") boolean archived) {
-        return fileService.archiveFile(fileId, archived)
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.badRequest().body(
-                new FileActionResponse(fileId, FileActionResponse.STATUS_FAILED, ex.getMessage(), "/", false, false, 0)
-            ));
-    }
-
-    @GetMapping("/trash")
-    @Operation(
-        summary = "List logical trash",
-        description = "Returns files currently stored in the logical trash. If the query fails, the endpoint returns an empty list."
-    )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Logical trash retrieved",
-            content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = FileInfoResponse.class))))
-    })
-    public CompletableFuture<ResponseEntity<List<FileInfoResponse>>> listTrash() {
-        return fileService.listTrash()
-            .thenApply(ResponseEntity::ok);
     }
 
     @DeleteMapping("/message")

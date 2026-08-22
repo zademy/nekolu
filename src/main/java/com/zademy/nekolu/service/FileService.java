@@ -19,7 +19,6 @@ import com.zademy.nekolu.dto.BulkDeleteResponse;
 import com.zademy.nekolu.dto.DeleteMessageResponse;
 import com.zademy.nekolu.dto.DownloadJob;
 import com.zademy.nekolu.dto.DownloadResponse;
-import com.zademy.nekolu.dto.FileActionResponse;
 import com.zademy.nekolu.dto.FileExportResponse;
 import com.zademy.nekolu.dto.FileInfoResponse;
 import com.zademy.nekolu.dto.FileStatsResponse;
@@ -263,14 +262,6 @@ public interface FileService {
      * @return batch deletion response
      */
     CompletableFuture<BulkDeleteResponse> bulkDeleteMessages(BulkDeleteRequest request);
-
-    CompletableFuture<FileActionResponse> restoreFile(long fileId);
-
-    CompletableFuture<FileActionResponse> moveFile(long fileId, String virtualPath);
-
-    CompletableFuture<FileActionResponse> archiveFile(long fileId, boolean archived);
-
-    CompletableFuture<List<FileInfoResponse>> listTrash();
 
     /**
      * Gets the thumbnail resource for a file.

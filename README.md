@@ -35,7 +35,6 @@ The project exposes:
 - a REST API documented with OpenAPI / Swagger UI
 - a server-rendered Thymeleaf interface with i18n support
 - TDLib-backed file discovery, upload, download, and inline preview workflows
-- logical drive features such as virtual paths, archive state, and trash operations
 - folder management backed by private Telegram channels
 - download progress via polling: start the download and poll the file state
 - observability through Actuator, Micrometer metrics, and Prometheus
@@ -51,13 +50,6 @@ The project exposes:
 - View downloaded media inline in the browser
 - Generate thumbnails and stream metadata
 - Run batch downloads and inspect progress
-
-### Logical drive features
-- Assign virtual paths to files
-- Archive and restore files
-- Move files between logical paths
-- Send files to logical trash and restore them later
-- Keep logical metadata alongside raw Telegram metadata
 
 ### Folder management
 - Create folders backed by private Telegram channels
@@ -227,7 +219,7 @@ Once running, the API documentation is available at:
 
 | Area | Base path | Capabilities |
 |------|-----------|-------------|
-| Files | `/api/telegram/files` | List, download, upload, preview, thumbnails, batch operations, archive, move, trash, delete, export |
+| Files | `/api/telegram/files` | List, download, upload, preview, thumbnails, batch operations, delete, export |
 | Folders | `/api/telegram` | Create, list, delete folder channels |
 | Health | `/actuator/health` | TDLib authorization, disk space, directory accessibility |
 | Metrics | `/actuator/prometheus` | Prometheus-compatible metrics endpoint |

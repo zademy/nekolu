@@ -10,7 +10,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zademy.nekolu.dto.FileInfoResponse;
-import com.zademy.nekolu.model.LogicalFileMetadata;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
@@ -42,15 +41,6 @@ public class CacheConfig {
         return Caffeine.newBuilder()
                 .maximumSize(5000)
                 .expireAfterWrite(10, TimeUnit.MINUTES)
-                .recordStats()
-                .build();
-    }
-
-    @Bean("logicalMetadataNativeCache")
-    public Cache<String, LogicalFileMetadata> logicalMetadataNativeCache() {
-        return Caffeine.newBuilder()
-                .maximumSize(5000)
-                .expireAfterWrite(15, TimeUnit.MINUTES)
                 .recordStats()
                 .build();
     }

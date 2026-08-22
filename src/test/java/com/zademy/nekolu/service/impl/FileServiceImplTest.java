@@ -24,7 +24,6 @@ import com.zademy.nekolu.dto.BulkDeleteRequest;
 import com.zademy.nekolu.dto.BulkDeleteResponse;
 import com.zademy.nekolu.dto.DeleteMessageResponse;
 import com.zademy.nekolu.dto.DownloadResponse;
-import com.zademy.nekolu.dto.FileActionResponse;
 import com.zademy.nekolu.dto.FileInfoResponse;
 import com.zademy.nekolu.dto.UploadResponse;
 import com.zademy.nekolu.model.TelegramFileMessage;
@@ -53,7 +52,6 @@ class FileServiceImplTest {
         stagingArea = new UploadStagingArea(stagingDir.toPath());
         fileService = new FileServiceImpl(
             telegram,
-            new MetadataIndexServiceImpl(),
             stagingArea,
             Caffeine.newBuilder().build());
     }
@@ -323,17 +321,6 @@ class FileServiceImplTest {
         assertEquals(2, response.totalRequested());
         assertEquals(2, response.successCount());
         assertEquals(0, response.failedCount());
-    }
-
-    @Test
-    void logicalOperationsRemainDisabledByDesign() throws Exception {
-        // Characterization tests: the logical drive is not implemented. These
-        // operations must keep failing explicitly (and trash stay empty)
-        // rather than pretending to work.
-        assertEquals(FileActionResponse.STATUS_FAILED, fileService.restoreFile(1).get().status());
-        assertEquals(FileActionResponse.STATUS_FAILED, fileService.moveFile(1, "/x").get().status());
-        assertEquals(FileActionResponse.STATUS_FAILED, fileService.archiveFile(1, true).get().status());
-        assertTrue(fileService.listTrash().get().isEmpty());
     }
 
     // ==================== HELPERS ====================
