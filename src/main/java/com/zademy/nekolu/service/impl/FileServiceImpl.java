@@ -7,7 +7,6 @@
 package com.zademy.nekolu.service.impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -19,7 +18,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -31,7 +29,6 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.zademy.nekolu.constants.FileTypeConstants;
@@ -41,7 +38,6 @@ import com.zademy.nekolu.dto.BulkDeleteRequest;
 import com.zademy.nekolu.dto.BulkDeleteResponse;
 import com.zademy.nekolu.dto.DeleteMessageResponse;
 import com.zademy.nekolu.dto.DownloadJob;
-import com.zademy.nekolu.dto.DownloadProgress;
 import com.zademy.nekolu.dto.DownloadResponse;
 import com.zademy.nekolu.dto.FileActionResponse;
 import com.zademy.nekolu.dto.FileExportResponse;
@@ -379,7 +375,6 @@ public class FileServiceImpl implements FileService {
     // ==================== NEW V2 METHODS ====================
 
     private final ConcurrentHashMap<String, DownloadJob> batchJobs = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<Long, List<SseEmitter>> progressEmitters = new ConcurrentHashMap<>();
 
     /**
      * Advanced search with filters, sorting, and pagination.
@@ -541,53 +536,6 @@ public class FileServiceImpl implements FileService {
                 fileInfo.isDownloaded()
             )
         );
-    }
-
-    /**
-     * Subscribes to SSE progress updates.
-     */
-    @Override
-    public SseEmitter subscribeToProgress(long fileId) {
-        SseEmitter emitter = new SseEmitter(ServiceDefaults.SSE_TIMEOUT_MS);
-
-        progressEmitters.computeIfAbsent(fileId, k -> new CopyOnWriteArrayList<>()).add(emitter);
-
-        emitter.onCompletion(() -> removeEmitter(fileId, emitter));
-        emitter.onTimeout(() -> removeEmitter(fileId, emitter));
-        emitter.onError(e -> removeEmitter(fileId, emitter));
-
-        // Send initial status
-        try {
-            getFileInfo(fileId).thenAccept(fileInfo -> {
-                DownloadProgress progress = new DownloadProgress(
-                    fileId,
-                    fileInfo.isDownloaded() ? DownloadResponse.STATUS_COMPLETED : DownloadResponse.STATUS_PENDING,
-                    fileInfo.isDownloaded() ? fileInfo.fileSize() : 0,
-                    fileInfo.fileSize(),
-                    fileInfo.isDownloaded() ? 100 : 0,
-                    0,
-                    null,
-                    fileInfo.localPath(),
-                    System.currentTimeMillis()
-                );
-                try {
-                    emitter.send(progress);
-                } catch (IOException e) {
-                    emitter.completeWithError(e);
-                }
-            });
-        } catch (Exception e) {
-            emitter.completeWithError(e);
-        }
-
-        return emitter;
-    }
-
-    private void removeEmitter(long fileId, SseEmitter emitter) {
-        List<SseEmitter> emitters = progressEmitters.get(fileId);
-        if (emitters != null) {
-            emitters.remove(emitter);
-        }
     }
 
     /**

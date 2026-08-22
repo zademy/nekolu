@@ -37,7 +37,7 @@ The project exposes:
 - TDLib-backed file discovery, upload, download, and inline preview workflows
 - logical drive features such as virtual paths, archive state, and trash operations
 - folder management backed by private Telegram channels
-- real-time download progress via WebSocket
+- download progress via polling: start the download and poll the file state
 - observability through Actuator, Micrometer metrics, and Prometheus
 
 ---
@@ -93,7 +93,7 @@ The project exposes:
 | Validation | Jakarta Bean Validation |
 | Caching | Caffeine |
 | Metrics | Micrometer + Prometheus |
-| Real-time | WebSocket |
+| Progress | Polling (REST) |
 | Logging | Logback with JSON output (prod) + MDC correlation |
 | i18n | Spring MessageSource (English, Spanish) |
 | Build | Maven |
@@ -229,7 +229,6 @@ Once running, the API documentation is available at:
 |------|-----------|-------------|
 | Files | `/api/telegram/files` | List, download, upload, preview, thumbnails, batch operations, archive, move, trash, delete, export |
 | Folders | `/api/telegram` | Create, list, delete folder channels |
-| Progress | `/ws/download-progress` | WebSocket endpoint for real-time download progress |
 | Health | `/actuator/health` | TDLib authorization, disk space, directory accessibility |
 | Metrics | `/actuator/prometheus` | Prometheus-compatible metrics endpoint |
 
@@ -281,8 +280,7 @@ src/main/java/com/zademy/nekolu/
 │   ├── RequestCorrelationFilter.java
 │   ├── TelegramConfig.java
 │   ├── TelegramHealthIndicator.java
-│   ├── WebConfig.java
-│   └── WebSocketConfig.java
+│   └── WebConfig.java
 ├── constants/
 │   ├── FileTypeConstants.java
 │   ├── MediaConstants.java
@@ -308,8 +306,6 @@ src/main/java/com/zademy/nekolu/
 │   ├── TelegramRateLimiter.java
 │   ├── TelegramServiceImpl.java
 │   └── TemporaryUploadJanitor.java
-└── websocket/
-    └── DownloadProgressWebSocketHandler.java
 
 src/main/resources/
 ├── application.example.properties

@@ -12,7 +12,6 @@ import java.util.concurrent.CompletableFuture;
 
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.zademy.nekolu.dto.BulkDeleteRequest;
 import com.zademy.nekolu.dto.BulkDeleteResponse;
@@ -111,14 +110,6 @@ public interface FileService {
      * @return streaming information
      */
     CompletableFuture<FileStreamResponse> getStreamInfo(long fileId);
-
-    /**
-     * Subscribes to download progress through SSE.
-     *
-     * @param fileId file ID
-     * @return SseEmitter for receiving updates
-     */
-    SseEmitter subscribeToProgress(long fileId);
 
     /**
      * Creates a batch download job.

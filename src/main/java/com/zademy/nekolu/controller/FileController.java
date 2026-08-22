@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
 import jakarta.validation.Valid;
 
 import com.zademy.nekolu.dto.BulkDeleteRequest;
@@ -33,7 +31,6 @@ import com.zademy.nekolu.dto.DeleteMessageRequest;
 import com.zademy.nekolu.dto.DeleteMessageResponse;
 import com.zademy.nekolu.dto.DownloadFilesRequest;
 import com.zademy.nekolu.dto.DownloadJob;
-import com.zademy.nekolu.dto.DownloadProgress;
 import com.zademy.nekolu.dto.DownloadResponse;
 import com.zademy.nekolu.dto.FileActionResponse;
 import com.zademy.nekolu.dto.FileExportResponse;
@@ -326,18 +323,6 @@ public class FileController {
         return fileService.getStreamInfo(fileId)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping(value = "/{fileId}/progress", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @Operation(summary = "Download progress (SSE)",
-        description = "Server-Sent Events stream with real-time download progress")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Progress stream in text/event-stream format",
-            content = @Content(mediaType = "text/event-stream", schema = @Schema(implementation = DownloadProgress.class)))
-    })
-    public SseEmitter downloadProgress(
-            @PathVariable @Parameter(description = "File ID", example = "12345") long fileId) {
-        return fileService.subscribeToProgress(fileId);
     }
 
     @PostMapping("/{fileId}/download")
