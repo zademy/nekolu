@@ -28,6 +28,7 @@ import com.zademy.nekolu.dto.NetworkStatsResponse;
 import com.zademy.nekolu.dto.StorageStatsResponse;
 import com.zademy.nekolu.dto.TelegramLimitsResponse;
 import com.zademy.nekolu.model.TelegramFileMessage;
+import com.zademy.nekolu.model.TelegramFileState;
 import com.zademy.nekolu.service.TelegramService;
 
 import jakarta.annotation.PostConstruct;
@@ -273,6 +274,40 @@ public class TelegramServiceImpl implements TelegramService {
     }
 
     // ==================== FILE MESSAGE OPERATIONS (DOMAIN TYPES) ====================
+
+    @Override
+    public CompletableFuture<TelegramFileState> startDownload(long fileId) {
+        TdApi.DownloadFile download = new TdApi.DownloadFile();
+        download.fileId = (int) fileId;
+        download.priority = 1;
+        download.offset = 0;
+        download.limit = 0;
+        download.synchronous = false;
+
+        // Non-blocking by contract: the initial response carries the state as
+        // the download begins; completion is observed via getFileState.
+        return send(download).thenApply(this::toFileState);
+    }
+
+    @Override
+    public CompletableFuture<TelegramFileState> getFileState(long fileId) {
+        TdApi.GetFile getFile = new TdApi.GetFile();
+        getFile.fileId = (int) fileId;
+
+        return send(getFile).thenApply(this::toFileState);
+    }
+
+    private TelegramFileState toFileState(TdApi.File file) {
+        return new TelegramFileState(
+            file.id,
+            file.size,
+            file.local != null && file.local.isDownloadingActive,
+            file.local != null ? file.local.downloadedPrefixSize : 0,
+            file.local != null ? file.local.path : null,
+            isFileActuallyDownloaded(file)
+        );
+    }
+
 
     @Override
     public CompletableFuture<List<TelegramFileMessage>> getFileMessages(long chatId, long fromMessageId, int limit) {

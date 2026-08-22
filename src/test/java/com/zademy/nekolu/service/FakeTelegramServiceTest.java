@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 import org.junit.jupiter.api.Test;
 
 import com.zademy.nekolu.model.TelegramFileMessage;
+import com.zademy.nekolu.model.TelegramFileState;
 import com.zademy.nekolu.service.FakeTelegramService.SessionState;
 
 /**
@@ -134,6 +135,47 @@ class FakeTelegramServiceTest {
     @Test
     void getOwnChatIdIsProgrammable() throws Exception {
         assertEquals(42L, new FakeTelegramService().withOwnChatId(42).getOwnChatId().get());
+    }
+
+    @Test
+    void startDownloadReturnsInitialProgrammedState() throws Exception {
+        FakeTelegramService telegram = new FakeTelegramService()
+            .withFileState(new TelegramFileState(500, 2048, true, 512, "/tmp/partial.bin", false));
+
+        TelegramFileState initial = telegram.startDownload(500).get();
+
+        assertTrue(initial.downloadActive());
+        assertEquals(512, initial.downloadedBytes());
+        assertEquals(25, initial.progressPercent());
+    }
+
+    @Test
+    void startDownloadOnUnknownFileDefaultsToActiveEmptyState() throws Exception {
+        TelegramFileState initial = new FakeTelegramService().startDownload(999).get();
+
+        assertTrue(initial.downloadActive());
+        assertEquals(0, initial.downloadedBytes());
+    }
+
+    @Test
+    void getFileStateReflectsProgrammedCompletion() throws Exception {
+        FakeTelegramService telegram = new FakeTelegramService()
+            .withFileState(new TelegramFileState(500, 2048, false, 2048, "/tmp/done.bin", true));
+
+        TelegramFileState state = telegram.getFileState(500).get();
+
+        assertTrue(state.downloaded());
+        assertEquals(100, state.progressPercent());
+    }
+
+    @Test
+    void getFileStateFailsForUnknownFile() {
+        FakeTelegramService telegram = new FakeTelegramService();
+
+        ExecutionException thrown = assertThrows(ExecutionException.class,
+            () -> telegram.getFileState(404).get());
+
+        assertTrue(thrown.getCause().getMessage().contains("File not found"));
     }
 
     // ==================== HELPERS ====================

@@ -17,6 +17,7 @@ import com.zademy.nekolu.dto.NetworkStatsResponse;
 import com.zademy.nekolu.dto.StorageStatsResponse;
 import com.zademy.nekolu.dto.TelegramLimitsResponse;
 import com.zademy.nekolu.model.TelegramFileMessage;
+import com.zademy.nekolu.model.TelegramFileState;
 
 /**
  * Defines the TDLib-backed Telegram operations used by the web and REST layers.
@@ -114,6 +115,28 @@ public interface TelegramService {
      *         message does not exist or carries no file
      */
     CompletableFuture<TelegramFileMessage> getFileMessage(long chatId, long messageId);
+
+    /**
+     * Single download contract: starts a background download and returns the
+     * initial state immediately, without waiting for the transfer. Completion
+     * is observed later through {@link #getFileState(long)}; this is the only
+     * way to start a download through the seam.
+     *
+     * @param fileId the TDLib file identifier
+     * @return a future completed with the file state right after the download
+     *         request was accepted
+     */
+    CompletableFuture<TelegramFileState> startDownload(long fileId);
+
+    /**
+     * Consults the current local state of a file: size, progress, local path,
+     * and whether a complete local copy exists on disk.
+     *
+     * @param fileId the TDLib file identifier
+     * @return a future completed with the current file state, or failed when
+     *         the file is unknown to Telegram
+     */
+    CompletableFuture<TelegramFileState> getFileState(long fileId);
 
     /**
      * Starts a file download and returns a CompletableFuture.

@@ -7,7 +7,9 @@
 package com.zademy.nekolu.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import org.drinkless.tdlib.Client;
@@ -19,6 +21,7 @@ import com.zademy.nekolu.dto.NetworkStatsResponse;
 import com.zademy.nekolu.dto.StorageStatsResponse;
 import com.zademy.nekolu.dto.TelegramLimitsResponse;
 import com.zademy.nekolu.model.TelegramFileMessage;
+import com.zademy.nekolu.model.TelegramFileState;
 
 /**
  * In-memory adapter for the TelegramService seam, used by unit tests of the
@@ -35,6 +38,7 @@ public class FakeTelegramService implements TelegramService {
 
     private SessionState state = SessionState.READY;
     private final List<TelegramFileMessage> messages = new ArrayList<>();
+    private final Map<Long, TelegramFileState> fileStates = new HashMap<>();
     private RuntimeException failure;
     private long ownChatId = 1L;
 
@@ -45,6 +49,11 @@ public class FakeTelegramService implements TelegramService {
 
     public FakeTelegramService withMessages(TelegramFileMessage... fileMessages) {
         this.messages.addAll(List.of(fileMessages));
+        return this;
+    }
+
+    public FakeTelegramService withFileState(TelegramFileState fileState) {
+        this.fileStates.put(fileState.fileId(), fileState);
         return this;
     }
 
@@ -114,6 +123,25 @@ public class FakeTelegramService implements TelegramService {
             return true;
         }
         return type.equalsIgnoreCase(message.type());
+    }
+
+    // ==================== DOWNLOAD CONTRACT ====================
+
+    @Override
+    public CompletableFuture<TelegramFileState> startDownload(long fileId) {
+        return guarded(() -> fileStates.getOrDefault(fileId,
+            new TelegramFileState(fileId, 0, true, 0, null, false)));
+    }
+
+    @Override
+    public CompletableFuture<TelegramFileState> getFileState(long fileId) {
+        return guarded(() -> {
+            TelegramFileState state = fileStates.get(fileId);
+            if (state == null) {
+                throw new RuntimeException("File not found: " + fileId);
+            }
+            return state;
+        });
     }
 
     // ==================== SESSION / UPLOAD TRACKING ====================
