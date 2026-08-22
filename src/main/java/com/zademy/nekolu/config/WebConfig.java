@@ -16,11 +16,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
+import com.zademy.nekolu.service.TelegramService;
+
 /**
- * Web MVC configuration for internationalization support.
+ * Web MVC configuration for internationalization support and the first-run
+ * setup redirect.
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    private final TelegramService telegramService;
+
+    public WebConfig(TelegramService telegramService) {
+        this.telegramService = telegramService;
+    }
 
     @Bean
     public LocaleResolver localeResolver() {
@@ -39,5 +48,17 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
+        registry.addInterceptor(new SetupRedirectInterceptor(telegramService))
+            .addPathPatterns("/**")
+            .excludePathPatterns(
+                "/setup",
+                "/setup/**",
+                "/css/**",
+                "/js/**",
+                "/vendors/**",
+                "/api/**",
+                "/actuator/**",
+                "/error",
+                "/favicon.ico");
     }
 }

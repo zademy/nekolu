@@ -150,6 +150,8 @@ java --enable-native-access=ALL-UNNAMED -Djava.library.path=lib -cp lib/tdlib.ja
 
 Follow the interactive prompts to complete authentication (phone number, verification code, and 2FA password if enabled). After successful login, quit the example client before starting Nekolu.
 
+**Easier alternative — first-run wizard:** start Nekolu directly and open it in your browser. Without an authenticated session every page redirects to `/setup`, a three-step wizard (phone number → verification code → two-step password if enabled) that authenticates inside the app. Progress persists with TDLib: leave and come back, and the wizard resumes at the right step. The CLI example above remains a valid alternative.
+
 ### 4. Run the application
 
 **With Maven:**
@@ -369,7 +371,7 @@ If Telegram operations fail because the client is not authorized, authenticate T
 java --enable-native-access=ALL-UNNAMED -Djava.library.path=lib -cp lib/tdlib.jar org.drinkless.tdlib.example.Example
 ```
 
-After successful authentication, quit the TDLib example client, ensure the same `tdlib/` directory is configured, and restart Nekolu.
+After successful authentication, quit the TDLib example client, ensure the same `tdlib/` directory is configured, and restart Nekolu. Alternatively, skip this step and use the built-in `/setup` wizard on first run.
 
 ### `PHONE_NUMBER_INVALID`
 Re-enter the phone number in international format with the leading `+` and country code.
