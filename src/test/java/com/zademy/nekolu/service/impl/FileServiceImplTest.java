@@ -164,6 +164,9 @@ class FileServiceImplTest {
         assertEquals(DownloadResponse.STATUS_COMPLETED, response.status());
         assertEquals("/tmp/done.bin", response.localPath());
         assertEquals(100, response.progress());
+        // Contract messages frozen: the polling path is the documented way
+        assertEquals("File already downloaded", response.message());
+        assertEquals("/api/telegram/files/500/content", response.downloadUrl());
     }
 
     @Test

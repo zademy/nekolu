@@ -105,9 +105,9 @@ public class MetadataIndexServiceImpl implements MetadataIndexService {
     }
 
     private FileInfoResponse applyDefaults(FileInfoResponse fileInfo) {
-        String downloadUrl = fileInfo.isDownloaded() ? "/api/telegram/files/" + fileInfo.fileId() + "/content" : null;
+        String downloadUrl = fileInfo.isDownloaded() ? FileInfoResponse.contentUrl(fileInfo.fileId()) : null;
         String thumbnailUrl = fileInfo.thumbnailPath() != null && !fileInfo.thumbnailPath().isBlank()
-            ? "/api/telegram/files/" + fileInfo.fileId() + "/thumbnail"
+            ? FileInfoResponse.thumbnailUrl(fileInfo.fileId())
             : null;
 
         return new FileInfoResponse(
@@ -127,7 +127,7 @@ public class MetadataIndexServiceImpl implements MetadataIndexService {
             fileInfo.localPath(),
             fileInfo.isDownloaded(),
             downloadUrl,
-            "/api/telegram/files/" + fileInfo.fileId() + "/stream",
+            FileInfoResponse.streamUrl(fileInfo.fileId()),
             thumbnailUrl,
             "telegram-" + fileInfo.fileId(),
             DEFAULT_PATH,

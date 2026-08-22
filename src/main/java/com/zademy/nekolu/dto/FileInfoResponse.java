@@ -130,9 +130,9 @@ public record FileInfoResponse(
             isDownloaded,
             localPath,
             isDownloaded,
-            isDownloaded ? "/api/telegram/files/" + fileId + "/content" : null,
-            "/api/telegram/files/" + fileId + "/stream",
-            thumbnailPath != null && !thumbnailPath.isBlank() ? "/api/telegram/files/" + fileId + "/thumbnail" : null,
+            isDownloaded ? contentUrl(fileId) : null,
+            streamUrl(fileId),
+            thumbnailPath != null && !thumbnailPath.isBlank() ? thumbnailUrl(fileId) : null,
             "telegram-" + fileId,
             "/",
             List.of(),
@@ -143,5 +143,21 @@ public record FileInfoResponse(
             false,
             false
         );
+    }
+
+    /**
+     * Single construction point for the workspace file URLs. Every DTO and
+     * service that shows one of these URLs delegates here.
+     */
+    public static String contentUrl(long fileId) {
+        return "/api/telegram/files/" + fileId + "/content";
+    }
+
+    public static String streamUrl(long fileId) {
+        return "/api/telegram/files/" + fileId + "/stream";
+    }
+
+    public static String thumbnailUrl(long fileId) {
+        return "/api/telegram/files/" + fileId + "/thumbnail";
     }
 }

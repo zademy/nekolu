@@ -532,7 +532,7 @@ public class FileServiceImpl implements FileService {
                 fileInfo.fileName(),
                 fileInfo.mimeType(),
                 fileInfo.fileSize(),
-                "/api/telegram/files/" + fileId + "/content",
+                FileInfoResponse.contentUrl(fileId),
                 fileInfo.isDownloaded()
             )
         );

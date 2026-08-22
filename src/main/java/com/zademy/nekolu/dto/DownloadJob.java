@@ -42,6 +42,12 @@ public record DownloadJob(
     @Schema(description = "Error message if it failed", example = "Connection timeout", nullable = true)
     String errorMessage
 ) {
+    /**
+     * Lifecycle of a batch download job — a separate concept from the
+     * individual file download lifecycle: jobs aggregate several files and
+     * can be in progress or cancelled while individual files move through
+     * their own states.
+     */
     public static final String STATUS_PENDING = "PENDING";
     public static final String STATUS_IN_PROGRESS = "IN_PROGRESS";
     public static final String STATUS_COMPLETED = "COMPLETED";
