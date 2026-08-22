@@ -232,7 +232,10 @@ public class TelegramServiceImpl implements TelegramService {
         TdApi.GetFile getFile = new TdApi.GetFile();
         getFile.fileId = (int) fileId;
 
-        return send(getFile).thenApply(this::toFileState);
+        // GetFile is a local TDLib lookup (no network round-trip in the
+        // common case) and list-refresh fans out one per file; rate-limiting
+        // that fan-out starved the limiter and timed out whole listings.
+        return sendUnguarded(getFile).thenApply(this::toFileState);
     }
 
     private TelegramFileState toFileState(TdApi.File file) {
@@ -619,28 +622,29 @@ public class TelegramServiceImpl implements TelegramService {
 
         CompletableFuture<Long> future = ownChatIdFuture;
 
-        if (telegramConfig.getUserId() == 0) {
-            future.completeExceptionally(new IllegalStateException("telegram.user.id is not configured in properties"));
-            synchronized (this) {
-                ownChatIdFuture = null;
-            }
-            return future;
-        }
+        // The owner's user id comes from configuration when present and is
+        // resolved through TDLib otherwise — no manual setup required.
+        CompletableFuture<Long> userIdFuture = telegramConfig.getUserId() != 0
+            ? CompletableFuture.completedFuture(telegramConfig.getUserId())
+            : send(new TdApi.GetMe()).thenApply(me -> me.id);
 
-        TdApi.CreatePrivateChat createChat = new TdApi.CreatePrivateChat();
-        createChat.userId = telegramConfig.getUserId();
-        createChat.force = false;
-
-        send(createChat).whenComplete((chat, error) -> {
-            if (error != null) {
-                future.completeExceptionally(unwrap(error));
-                synchronized (this) {
-                    ownChatIdFuture = null;
+        userIdFuture
+            .thenCompose(userId -> {
+                TdApi.CreatePrivateChat createChat = new TdApi.CreatePrivateChat();
+                createChat.userId = userId;
+                createChat.force = false;
+                return send(createChat);
+            })
+            .whenComplete((chat, error) -> {
+                if (error != null) {
+                    future.completeExceptionally(unwrap(error));
+                    synchronized (this) {
+                        ownChatIdFuture = null;
+                    }
+                } else {
+                    future.complete(chat.id);
                 }
-            } else {
-                future.complete(chat.id);
-            }
-        });
+            });
 
         return future;
     }

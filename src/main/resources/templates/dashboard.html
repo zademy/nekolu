@@ -172,7 +172,12 @@
 
         // Load recent files
         try {
-            const files = await TelegramAPI.listFiles({ limit: 10, sort: 'date_desc' });
+            // Bounded wait: the spinner must never spin forever, even if the
+            // backend stalls
+            const files = await Promise.race([
+                TelegramAPI.listFiles({ limit: 10, sort: 'date_desc' }),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('request timeout')), 45000))
+            ]);
             const loading = document.getElementById('recentFilesLoading');
             const empty = document.getElementById('recentFilesEmpty');
             const table = document.getElementById('recentFilesTable');
