@@ -7,16 +7,25 @@
 package com.zademy.nekolu.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.zademy.nekolu.dto.BulkDeleteRequest;
+import com.zademy.nekolu.dto.BulkDeleteResponse;
+import com.zademy.nekolu.dto.DeleteMessageResponse;
 import com.zademy.nekolu.dto.DownloadResponse;
 import com.zademy.nekolu.dto.FileInfoResponse;
+import com.zademy.nekolu.dto.UploadResponse;
 import com.zademy.nekolu.model.TelegramFileMessage;
 import com.zademy.nekolu.model.TelegramFileState;
 import com.zademy.nekolu.service.FakeTelegramService;
@@ -209,6 +218,69 @@ class FileServiceImplTest {
         assertTrue(info.isDownloaded());
         assertEquals("/tmp/done.bin", info.localPath());
         assertEquals(2048, info.fileSize());
+    }
+
+    @Test
+    void uploadFileReturnsCompletedResponse(@TempDir File tempDir) throws Exception {
+        File staged = Files.writeString(tempDir.toPath().resolve("report.pdf"), "payload").toFile();
+        telegram.withUploadResult(message(77, 1, 700, null, 0, "document", 1700000000));
+
+        UploadResponse response = fileService.uploadFile(staged, 1, "caption").get();
+
+        assertEquals(UploadResponse.STATUS_COMPLETED, response.status());
+        assertEquals(77, response.messageId());
+        assertEquals("report.pdf", response.fileName());
+        assertEquals("payload".length(), response.fileSize());
+        assertEquals("telegram-700", response.logicalFileId());
+        assertTrue(telegram.isUploadTracked(700));
+    }
+
+    @Test
+    void uploadFileFailsForMissingLocalFile() {
+        telegram.withUploadResult(message(77, 1, 700, "x.pdf", 10, "document", 1700000000));
+
+        ExecutionException thrown = assertThrows(ExecutionException.class,
+            () -> fileService.uploadFile(new File("/nonexistent/report.pdf"), 1, null).get());
+
+        assertTrue(thrown.getCause() instanceof IllegalArgumentException);
+    }
+
+    @Test
+    void deleteMessageSucceedsAndResolvesFileThroughSeam() throws Exception {
+        telegram.withMessages(message(55, 10, 550, "gone.pdf", 100, "document", 1700000000));
+
+        DeleteMessageResponse response = fileService.deleteMessage(55, 10, true).get();
+
+        assertEquals(DeleteMessageResponse.STATUS_SUCCESS, response.status());
+        assertEquals("Message deleted permanently", response.message());
+        assertEquals(List.of("10:55:true"), telegram.deletedMessages());
+    }
+
+    @Test
+    void deleteMessageReportsFailureWhenSeamFails() throws Exception {
+        telegram.failingWith(new RuntimeException("Telegram error 400: MESSAGE_ID_INVALID"));
+
+        DeleteMessageResponse response = fileService.deleteMessage(55, 10, false).get();
+
+        assertEquals(DeleteMessageResponse.STATUS_FAILED, response.status());
+        assertTrue(response.message().startsWith("Error deleting message:"));
+    }
+
+    @Test
+    void bulkDeleteCountsSuccessesAndFailures() throws Exception {
+        telegram
+            .withMessages(message(1, 10, 100, "a.pdf", 10, "document", 1700000000))
+            .withMessages(message(2, 10, 200, "b.pdf", 10, "document", 1700000001));
+
+        BulkDeleteResponse response = fileService.bulkDeleteMessages(new BulkDeleteRequest(
+            List.of(
+                new BulkDeleteRequest.DeleteItem(1, 10, 100, "a.pdf"),
+                new BulkDeleteRequest.DeleteItem(2, 10, 200, "b.pdf")),
+            false)).get();
+
+        assertEquals(2, response.totalRequested());
+        assertEquals(2, response.successCount());
+        assertEquals(0, response.failedCount());
     }
 
     // ==================== HELPERS ====================

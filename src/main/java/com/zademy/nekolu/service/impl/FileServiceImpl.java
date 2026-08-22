@@ -17,12 +17,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import org.drinkless.tdlib.Client;
-import org.drinkless.tdlib.TdApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -57,12 +57,13 @@ import com.zademy.nekolu.service.TelegramService;
 
 /**
  * Implementation of the Telegram file management service.
+ * Every Telegram interaction crosses the TelegramService seam in domain
+ * types; this module owns workspace logic: search shaping, download
+ * orchestration, upload responses, deletions, and logical enrichment.
  */
 @Service
 public class FileServiceImpl implements FileService {
     private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
-    private static final String TELEGRAM_CLIENT_NOT_INITIALIZED = "Telegram client not initialized";
-    private static final String TELEGRAM_AUTH_REQUIRED = "Unauthorized. Telegram requires authentication.";
     private static final String CACHE_CONTROL_HEADER = "Cache-Control";
     private static final String CACHE_CONTROL_PUBLIC_MAX_AGE = "public, max-age=3600";
 
@@ -78,7 +79,6 @@ public class FileServiceImpl implements FileService {
 
     private final TelegramService telegramService;
     private final MetadataIndexService metadataIndexService;
-    private final Client client;
     private final Cache<Long, FileInfoResponse> fileMetadataCache;
 
     public FileServiceImpl(
@@ -88,7 +88,6 @@ public class FileServiceImpl implements FileService {
     ) {
         this.telegramService = telegramService;
         this.metadataIndexService = metadataIndexService;
-        this.client = telegramService.getClient();
         this.fileMetadataCache = fileMetadataCache;
     }
 
@@ -96,8 +95,7 @@ public class FileServiceImpl implements FileService {
 
     /**
      * Searches files inside a specific chat/folder.
-     * Uses SearchChatMessages to search INSIDE the chat, not globally.
-     * This allows finding files in private channels (folders).
+     * Uses the seam's chat history so private channels (folders) are covered.
      *
      * @param chatId chat/folder ID to search in
      * @param type file type (photo, video, audio, document, voice, video_note, all)
@@ -196,7 +194,7 @@ public class FileServiceImpl implements FileService {
     }
 
     private CompletableFuture<List<FileInfoResponse>> refreshDownloadStatuses(List<FileInfoResponse> files) {
-        if (files == null || files.isEmpty() || client == null) {
+        if (files == null || files.isEmpty()) {
             return CompletableFuture.completedFuture(files != null ? files : List.of());
         }
 
@@ -249,7 +247,7 @@ public class FileServiceImpl implements FileService {
             DownloadResponse.STATUS_FAILED,
             null,
             0,
-            ex.getMessage()
+            causeMessage(ex)
         ));
     }
 
@@ -307,200 +305,6 @@ public class FileServiceImpl implements FileService {
         );
         fileMetadataCache.put(fileInfo.fileId(), fileInfo);
         return fileInfo;
-    }
-
-    /**
-     * Extracts file information from a message based on its type.
-     */
-    private FileInfoResponse extractFileFromMessage(TdApi.Message message) {
-        if (message.content == null) return null;
-
-        return switch (message.content) {
-            case TdApi.MessagePhoto photo -> extractPhotoInfo(message, photo);
-            case TdApi.MessageVideo video -> extractVideoInfo(message, video);
-            case TdApi.MessageAudio audio -> extractAudioInfo(message, audio);
-            case TdApi.MessageDocument doc -> extractDocumentInfo(message, doc);
-            case TdApi.MessageVoiceNote voice -> extractVoiceInfo(message, voice);
-            case TdApi.MessageVideoNote videoNote -> extractVideoNoteInfo(message, videoNote);
-            default -> null;
-        };
-    }
-
-    private FileInfoResponse extractPhotoInfo(TdApi.Message message, TdApi.MessagePhoto photo) {
-        if (photo.photo == null || photo.photo.sizes == null || photo.photo.sizes.length == 0) {
-            return null;
-        }
-        // Use the largest size for the main file
-        TdApi.PhotoSize largest = photo.photo.sizes[photo.photo.sizes.length - 1];
-        TdApi.File file = largest.photo;
-
-        // Use the smallest size for the thumbnail
-        TdApi.PhotoSize smallest = photo.photo.sizes[0];
-        String thumbnailPath = extractThumbnailPath(smallest.photo);
-
-        return new FileInfoResponse(
-            message.id,
-            message.chatId,
-            file.id,
-            MediaConstants.FILE_PREFIX_PHOTO + file.id + MediaConstants.EXTENSION_JPG,
-            file.size,
-            MediaConstants.MIME_IMAGE_JPEG,
-            FileTypeConstants.PHOTO_KIND,
-            largest.width,
-            largest.height,
-            null,
-            thumbnailPath,
-            message.date,
-            isFileActuallyDownloaded(file),
-            file.local != null ? file.local.path : null
-        );
-    }
-
-    /**
-     * Extracts the thumbnail path when it is available locally.
-     * It does not force a download and only returns the path if it is already downloaded.
-     */
-    private String extractThumbnailPath(TdApi.File thumbnailFile) {
-        if (thumbnailFile == null || thumbnailFile.local == null) {
-            return null;
-        }
-        if (thumbnailFile.local.isDownloadingCompleted && thumbnailFile.local.path != null
-                && !thumbnailFile.local.path.isBlank()) {
-            return thumbnailFile.local.path;
-        }
-        return null;
-    }
-
-    private FileInfoResponse extractVideoInfo(TdApi.Message message, TdApi.MessageVideo video) {
-        if (video.video == null) return null;
-        TdApi.File file = video.video.video;
-
-        // Extract the video thumbnail if present
-        String thumbnailPath = null;
-        if (video.video.thumbnail != null && video.video.thumbnail.file != null) {
-            thumbnailPath = extractThumbnailPath(video.video.thumbnail.file);
-        }
-
-        return new FileInfoResponse(
-            message.id,
-            message.chatId,
-            file.id,
-            video.video.fileName != null ? video.video.fileName
-                : MediaConstants.FILE_PREFIX_VIDEO + file.id + MediaConstants.EXTENSION_MP4,
-            file.size,
-            video.video.mimeType != null ? video.video.mimeType : MediaConstants.MIME_VIDEO_MP4,
-            FileTypeConstants.VIDEO_KIND,
-            video.video.width,
-            video.video.height,
-            video.video.duration,
-            thumbnailPath,
-            message.date,
-            isFileActuallyDownloaded(file),
-            file.local != null ? file.local.path : null
-        );
-    }
-
-    private FileInfoResponse extractAudioInfo(TdApi.Message message, TdApi.MessageAudio audio) {
-        if (audio.audio == null) return null;
-        TdApi.File file = audio.audio.audio;
-
-        return new FileInfoResponse(
-            message.id,
-            message.chatId,
-            file.id,
-            audio.audio.fileName != null ? audio.audio.fileName
-                : MediaConstants.FILE_PREFIX_AUDIO + file.id + MediaConstants.EXTENSION_MP3,
-            file.size,
-            audio.audio.mimeType != null ? audio.audio.mimeType : MediaConstants.MIME_AUDIO_MPEG,
-            FileTypeConstants.AUDIO_KIND,
-            null,
-            null,
-            audio.audio.duration,
-            null,
-            message.date,
-            isFileActuallyDownloaded(file),
-            file.local != null ? file.local.path : null
-        );
-    }
-
-    private FileInfoResponse extractDocumentInfo(TdApi.Message message, TdApi.MessageDocument doc) {
-        if (doc.document == null) return null;
-        TdApi.File file = doc.document.document;
-
-        return new FileInfoResponse(
-            message.id,
-            message.chatId,
-            file.id,
-            doc.document.fileName != null ? doc.document.fileName
-                : MediaConstants.FILE_PREFIX_DOCUMENT + file.id,
-            file.size,
-            doc.document.mimeType != null ? doc.document.mimeType : MediaConstants.MIME_APPLICATION_OCTET_STREAM,
-            FileTypeConstants.DOCUMENT_KIND,
-            null,
-            null,
-            null,
-            null,
-            message.date,
-            isFileActuallyDownloaded(file),
-            file.local != null ? file.local.path : null
-        );
-    }
-
-    private FileInfoResponse extractVoiceInfo(TdApi.Message message, TdApi.MessageVoiceNote voice) {
-        if (voice.voiceNote == null) return null;
-        TdApi.File file = voice.voiceNote.voice;
-
-        return new FileInfoResponse(
-            message.id,
-            message.chatId,
-            file.id,
-            MediaConstants.FILE_PREFIX_VOICE + file.id + MediaConstants.EXTENSION_OGA,
-            file.size,
-            MediaConstants.MIME_AUDIO_OGG,
-            FileTypeConstants.VOICE_KIND,
-            null,
-            null,
-            voice.voiceNote.duration,
-            null,
-            message.date,
-            isFileActuallyDownloaded(file),
-            file.local != null ? file.local.path : null
-        );
-    }
-
-    private FileInfoResponse extractVideoNoteInfo(TdApi.Message message, TdApi.MessageVideoNote videoNote) {
-        if (videoNote.videoNote == null) return null;
-        TdApi.File file = videoNote.videoNote.video;
-
-        return new FileInfoResponse(
-            message.id,
-            message.chatId,
-            file.id,
-            MediaConstants.FILE_PREFIX_VIDEO_NOTE + file.id + MediaConstants.EXTENSION_MP4,
-            file.size,
-            MediaConstants.MIME_VIDEO_MP4,
-            FileTypeConstants.VIDEO_NOTE_KIND,
-            videoNote.videoNote.length,
-            videoNote.videoNote.length,
-            videoNote.videoNote.duration,
-            null,
-            message.date,
-            isFileActuallyDownloaded(file),
-            file.local != null ? file.local.path : null
-        );
-    }
-
-    private boolean isFileActuallyDownloaded(TdApi.File file) {
-        if (telegramService.isUploadTracked(file.id)) {
-            return false;
-        }
-        if (file.local == null || !file.local.isDownloadingCompleted) {
-            return false;
-        }
-        if (file.local.path == null || file.local.path.isBlank()) {
-            return false;
-        }
-        return new java.io.File(file.local.path).exists();
     }
 
     /**
@@ -674,7 +478,7 @@ public class FileServiceImpl implements FileService {
     private CompletableFuture<Resource> downloadAndWait(long fileId, long timeoutMs) {
         return telegramService.waitForUploadRelease((int) fileId)
             .thenCompose(_ignored -> telegramService.downloadFile((int) fileId))
-            .orTimeout(timeoutMs, java.util.concurrent.TimeUnit.MILLISECONDS)
+            .orTimeout(timeoutMs, TimeUnit.MILLISECONDS)
             .thenCompose(file -> getFileInfo(fileId))
             .thenApply(updatedInfo -> {
                 if (updatedInfo.localPath() != null) {
@@ -872,7 +676,7 @@ public class FileServiceImpl implements FileService {
 
     /**
      * Gets the latest files from the user's own chat (Saved Messages).
-     * This allows seeing recently uploaded files that do not yet appear in SearchMessages.
+     * This allows seeing recently uploaded files that do not yet appear in global search.
      */
     @Override
     public CompletableFuture<List<FileInfoResponse>> getRecentFilesFromOwnChat(int limit) {
@@ -920,23 +724,6 @@ public class FileServiceImpl implements FileService {
                name.endsWith(MediaConstants.EXTENSION_PNG) || name.endsWith(MediaConstants.EXTENSION_GIF) ||
                name.endsWith(MediaConstants.EXTENSION_WEBP) || name.endsWith(MediaConstants.EXTENSION_BMP);
     }
-    /**
-     * Extracts the fileId from a message based on its content type.
-     */
-    private int extractFileIdFromMessage(TdApi.Message message) {
-        if (message.content == null) return 0;
-
-        return switch (message.content) {
-            case TdApi.MessageDocument doc when doc.document != null && doc.document.document != null -> doc.document.document.id;
-            case TdApi.MessagePhoto photo when photo.photo != null && photo.photo.sizes.length > 0 ->
-                photo.photo.sizes[photo.photo.sizes.length - 1].photo.id;
-            case TdApi.MessageVideo video when video.video != null && video.video.video != null -> video.video.video.id;
-            case TdApi.MessageAudio audio when audio.audio != null && audio.audio.audio != null -> audio.audio.audio.id;
-            case TdApi.MessageVoiceNote voice when voice.voiceNote != null && voice.voiceNote.voice != null -> voice.voiceNote.voice.id;
-            case TdApi.MessageVideoNote videoNote when videoNote.videoNote != null && videoNote.videoNote.video != null -> videoNote.videoNote.video.id;
-            default -> 0;
-        };
-    }
 
     @Override
     public CompletableFuture<UploadResponse> uploadPhoto(java.io.File file, long chatId, String caption) {
@@ -967,6 +754,10 @@ public class FileServiceImpl implements FileService {
         return uploadManaged(file, chatId, caption, virtualPath, tags, true);
     }
 
+    /**
+     * Uploads through the seam, which registers the staged source for
+     * tracking and returns the created file message in domain types.
+     */
     private CompletableFuture<UploadResponse> uploadManaged(
             File file,
             long chatId,
@@ -974,14 +765,6 @@ public class FileServiceImpl implements FileService {
             String virtualPath,
             List<String> tags,
             boolean photoMode) {
-        if (client == null) {
-            return CompletableFuture.failedFuture(new IllegalStateException(TELEGRAM_CLIENT_NOT_INITIALIZED));
-        }
-
-        if (!telegramService.isAuthorized()) {
-            return CompletableFuture.failedFuture(new IllegalStateException(TELEGRAM_AUTH_REQUIRED));
-        }
-
         if (file == null || !file.exists() || !file.canRead()) {
             return CompletableFuture.failedFuture(new IllegalArgumentException("File does not exist or is not readable"));
         }
@@ -990,126 +773,25 @@ public class FileServiceImpl implements FileService {
         List<String> normalizedTags = tags != null ? tags : List.of();
         String normalizedPath = virtualPath != null && !virtualPath.isBlank() ? virtualPath : "/";
 
-        return (photoMode ? sendPhotoToTelegram(file, chatId, caption) : sendDocumentToTelegram(file, chatId, caption))
-            .thenApply(baseInfo -> new UploadResponse(
-                baseInfo.messageId(),
-                baseInfo.chatId(),
-                UploadResponse.STATUS_COMPLETED,
-                file.getName(),
-                file.length(),
-                caption,
-                photoMode ? "Photo uploaded successfully" : "File uploaded successfully",
-                false,
-                "telegram-" + baseInfo.fileId(),
-                1,
-                checksum,
-                normalizedPath,
-                normalizedTags
-            ));
-    }
+        CompletableFuture<TelegramFileMessage> sendFuture = photoMode
+            ? telegramService.sendPhoto(chatId, file.getAbsolutePath(), caption)
+            : telegramService.sendDocument(chatId, file.getAbsolutePath(), caption);
 
-    private CompletableFuture<FileInfoResponse> sendDocumentToTelegram(File file, long chatId, String caption) {
-        CompletableFuture<FileInfoResponse> future = new CompletableFuture<>();
-
-        TdApi.InputMessageDocument document = new TdApi.InputMessageDocument();
-        document.document = new TdApi.InputFileLocal(file.getAbsolutePath());
-        document.thumbnail = null;
-        document.caption = caption != null ? new TdApi.FormattedText(caption, null) : null;
-
-        TdApi.SendMessage sendMessage = new TdApi.SendMessage();
-        sendMessage.chatId = chatId;
-        sendMessage.inputMessageContent = document;
-
-        client.send(sendMessage, result -> handleUploadResult(result, file, future));
-        return future;
-    }
-
-    private CompletableFuture<FileInfoResponse> sendPhotoToTelegram(File file, long chatId, String caption) {
-        CompletableFuture<FileInfoResponse> future = new CompletableFuture<>();
-
-        TdApi.InputMessagePhoto photo = new TdApi.InputMessagePhoto();
-        photo.photo = new TdApi.InputFileLocal(file.getAbsolutePath());
-        photo.thumbnail = null;
-        photo.caption = caption != null ? new TdApi.FormattedText(caption, null) : null;
-        photo.hasSpoiler = false;
-
-        TdApi.SendMessage sendMessage = new TdApi.SendMessage();
-        sendMessage.chatId = chatId;
-        sendMessage.inputMessageContent = photo;
-
-        client.send(sendMessage, result -> handleUploadResult(result, file, future));
-        return future;
-    }
-
-    private void handleUploadResult(TdApi.Object result, File file, CompletableFuture<FileInfoResponse> future) {
-        if (result instanceof TdApi.Message message) {
-            int fileId = extractFileIdFromMessage(message);
-            if (fileId != 0) {
-                telegramService.trackUpload(fileId, file.getAbsolutePath());
-            }
-            FileInfoResponse extracted = extractFileFromMessage(message);
-            if (extracted != null) {
-                FileInfoResponse normalized = normalizeUploadedFileInfo(extracted, file);
-                fileMetadataCache.put(normalized.fileId(), normalized);
-                future.complete(normalized);
-                return;
-            }
-
-            future.complete(buildFallbackUploadedFileInfo(message, file, fileId));
-            return;
-        }
-
-        if (result instanceof TdApi.Error error) {
-            future.completeExceptionally(new RuntimeException("Telegram error: " + error.message));
-            return;
-        }
-
-        future.completeExceptionally(new RuntimeException("Unexpected TDLib response"));
-    }
-
-    private FileInfoResponse normalizeUploadedFileInfo(FileInfoResponse extracted, File file) {
-        long normalizedFileSize = extracted.fileSize() > 0 ? extracted.fileSize() : file.length();
-        String normalizedFileName = (extracted.fileName() != null && !extracted.fileName().isBlank())
-            ? extracted.fileName()
-            : file.getName();
-
-        // Important: "uploaded" does not mean "downloaded locally from Telegram".
-        // New uploads must start as pending until the user explicitly downloads them.
-        return new FileInfoResponse(
-            extracted.messageId(),
-            extracted.chatId(),
-            extracted.fileId(),
-            normalizedFileName,
-            normalizedFileSize,
-            extracted.mimeType(),
-            extracted.type(),
-            extracted.width(),
-            extracted.height(),
-            extracted.duration(),
-            extracted.thumbnailPath(),
-            extracted.date(),
+        return sendFuture.thenApply(uploaded -> new UploadResponse(
+            uploaded.messageId(),
+            uploaded.chatId(),
+            UploadResponse.STATUS_COMPLETED,
+            uploaded.fileName() != null && !uploaded.fileName().isBlank() ? uploaded.fileName() : file.getName(),
+            uploaded.fileSize() > 0 ? uploaded.fileSize() : file.length(),
+            caption,
+            photoMode ? "Photo uploaded successfully" : "File uploaded successfully",
             false,
-            null
-        );
-    }
-
-    private FileInfoResponse buildFallbackUploadedFileInfo(TdApi.Message message, File file, int fileId) {
-        return new FileInfoResponse(
-            message.id,
-            message.chatId,
-            fileId,
-            file.getName(),
-            file.length(),
-            null,
-            isImageFile(file) ? FileTypeConstants.PHOTO_KIND : FileTypeConstants.DOCUMENT_KIND,
-            null,
-            null,
-            null,
-            null,
-            message.date,
-            false,
-            null
-        );
+            "telegram-" + uploaded.fileId(),
+            1,
+            checksum,
+            normalizedPath,
+            normalizedTags
+        ));
     }
 
     private String calculateSha256(File file) {
@@ -1140,50 +822,21 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public CompletableFuture<DeleteMessageResponse> deleteMessage(long messageId, long chatId, boolean permanent) {
-        CompletableFuture<DeleteMessageResponse> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException(TELEGRAM_CLIENT_NOT_INITIALIZED));
-            return future;
-        }
-
-        if (!telegramService.isAuthorized()) {
-            future.completeExceptionally(new IllegalStateException(TELEGRAM_AUTH_REQUIRED));
-            return future;
-        }
-
-        resolveFileIdByMessage(chatId, messageId).thenAccept(resolvedFileId -> {
-            TdApi.DeleteMessages deleteMessages = new TdApi.DeleteMessages();
-            deleteMessages.chatId = chatId;
-            deleteMessages.messageIds = new long[] { messageId };
-            deleteMessages.revoke = permanent;
-
-            client.send(deleteMessages, result -> {
-                switch (result) {
-                    case TdApi.Ok _ -> {
-                        if (resolvedFileId != null && resolvedFileId > 0) {
-                            clearLocalDownloadStateForFileId(resolvedFileId);
-                        }
-                        clearLocalDownloadStateForMessage(messageId);
-                        invalidateCachedMessage(messageId);
-                        future.complete(buildDeleteMessageResponse(messageId, chatId, permanent, true, "Message deleted"));
+        return resolveFileIdByMessage(chatId, messageId)
+            .thenCompose(resolvedFileId -> telegramService
+                .deleteMessages(chatId, List.of(messageId), permanent)
+                .<DeleteMessageResponse>thenApply(_ok -> {
+                    if (resolvedFileId != null && resolvedFileId > 0) {
+                        clearLocalDownloadStateForFileId(resolvedFileId);
                     }
-                    case TdApi.Error error -> future.complete(
-                        buildDeleteMessageResponse(messageId, chatId, permanent, false, "Error deleting message: " + error.message)
-                    );
-                    default -> future.complete(
-                        buildDeleteMessageResponse(messageId, chatId, permanent, false, "Unexpected TDLib response")
-                    );
-                }
-            });
-        }).exceptionally(ex -> {
-            future.complete(buildDeleteMessageResponse(
-                messageId, chatId, permanent, false, "Error resolving file to delete: " + ex.getMessage()
-            ));
-            return null;
-        });
-
-        return future;
+                    clearLocalDownloadStateForMessage(messageId);
+                    invalidateCachedMessage(messageId);
+                    return buildDeleteMessageResponse(messageId, chatId, permanent, true, "Message deleted");
+                })
+                .exceptionally(ex -> buildDeleteMessageResponse(
+                    messageId, chatId, permanent, false, "Error deleting message: " + causeMessage(ex))))
+            .exceptionally(ex -> buildDeleteMessageResponse(
+                messageId, chatId, permanent, false, "Error resolving file to delete: " + causeMessage(ex)));
     }
 
     /**
@@ -1195,23 +848,11 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public CompletableFuture<BulkDeleteResponse> bulkDeleteMessages(BulkDeleteRequest request) {
-        CompletableFuture<BulkDeleteResponse> future = new CompletableFuture<>();
-
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException(TELEGRAM_CLIENT_NOT_INITIALIZED));
-            return future;
-        }
-
-        if (!telegramService.isAuthorized()) {
-            future.completeExceptionally(new IllegalStateException(TELEGRAM_AUTH_REQUIRED));
-            return future;
-        }
-
         if (request.items() == null || request.items().isEmpty()) {
-            future.complete(new BulkDeleteResponse(0, 0, 0, List.of()));
-            return future;
+            return CompletableFuture.completedFuture(new BulkDeleteResponse(0, 0, 0, List.of()));
         }
 
+        CompletableFuture<BulkDeleteResponse> future = new CompletableFuture<>();
         List<BulkDeleteResponse.DeleteResult> results = new ArrayList<>();
         int[] successCount = {0};
         int[] failedCount = {0};
@@ -1342,11 +983,6 @@ public class FileServiceImpl implements FileService {
     public CompletableFuture<ResponseEntity<Resource>> getThumbnailResource(long fileId) {
         CompletableFuture<ResponseEntity<Resource>> future = new CompletableFuture<>();
 
-        if (client == null) {
-            future.complete(ResponseEntity.notFound().build());
-            return future;
-        }
-
         FileInfoResponse cached = fileMetadataCache.getIfPresent(fileId);
         ResponseEntity<Resource> cachedThumbnailResponse = resolveThumbnailFileResponse(cached);
         if (cachedThumbnailResponse != null) {
@@ -1406,17 +1042,8 @@ public class FileServiceImpl implements FileService {
             fileMetadataCache.invalidate(fileId);
         }
 
-        if (client != null) {
-            try {
-                TdApi.DeleteFile deleteFile = new TdApi.DeleteFile();
-                deleteFile.fileId = (int) fileId;
-                client.send(deleteFile, _result -> {
-                    // Best effort TDLib cache cleanup.
-                });
-            } catch (Exception ignored) {
-                // Best effort cleanup if TDLib version does not support DeleteFile.
-            }
-        }
+        // Best effort TDLib cache cleanup through the seam.
+        telegramService.deleteLocalFile(fileId).exceptionally(_ex -> null);
     }
 
     private CompletableFuture<Long> resolveFileIdByMessage(long chatId, long messageId) {
@@ -1429,19 +1056,9 @@ public class FileServiceImpl implements FileService {
             return CompletableFuture.completedFuture(cachedFileId);
         }
 
-        CompletableFuture<Long> future = new CompletableFuture<>();
-        TdApi.GetMessage getMessage = new TdApi.GetMessage();
-        getMessage.chatId = chatId;
-        getMessage.messageId = messageId;
-        client.send(getMessage, result -> {
-            if (result instanceof TdApi.Message tdMessage) {
-                FileInfoResponse extracted = extractFileFromMessage(tdMessage);
-                future.complete(extracted != null ? extracted.fileId() : null);
-                return;
-            }
-            future.complete(null);
-        });
-        return future;
+        return telegramService.getFileMessage(chatId, messageId)
+            .thenApply(fileMessage -> fileMessage != null ? fileMessage.fileId() : null)
+            .exceptionally(_ex -> null);
     }
 
     private DeleteMessageResponse buildDeleteMessageResponse(
@@ -1461,6 +1078,12 @@ public class FileServiceImpl implements FileService {
 
     private String buildDeleteSuccessMessage(boolean permanent) {
         return permanent ? "Message deleted permanently" : "Message deleted locally";
+    }
+
+    private static String causeMessage(Throwable error) {
+        return error instanceof CompletionException && error.getCause() != null
+            ? error.getCause().getMessage()
+            : error.getMessage();
     }
 
     private ResponseEntity<Resource> resolveThumbnailFileResponse(FileInfoResponse fileInfo) {
