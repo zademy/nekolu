@@ -24,6 +24,8 @@ import com.zademy.nekolu.constants.MediaConstants;
 import com.zademy.nekolu.constants.ServiceDefaults;
 import com.zademy.nekolu.config.TelegramConfig;
 import com.zademy.nekolu.dto.FolderInfo;
+import com.zademy.nekolu.exception.TelegramNotFoundException;
+import com.zademy.nekolu.exception.TelegramOperationException;
 import com.zademy.nekolu.dto.NetworkStatsResponse;
 import com.zademy.nekolu.dto.StorageStatsResponse;
 import com.zademy.nekolu.dto.TelegramLimitsResponse;
@@ -117,8 +119,7 @@ public class TelegramServiceImpl implements TelegramService {
         try {
             client.send(request, result -> {
                 if (result instanceof TdApi.Error error) {
-                    target.completeExceptionally(new RuntimeException(
-                        "Telegram error %d: %s".formatted(error.code, error.message)));
+                    target.completeExceptionally(new TelegramOperationException(error.code, error.message));
                 } else {
                     try {
                         target.complete((T) result);
@@ -305,7 +306,7 @@ public class TelegramServiceImpl implements TelegramService {
         return send(getMessage).thenCompose(message -> {
             TelegramFileMessage fileMessage = toFileMessage(message);
             if (fileMessage == null) {
-                return CompletableFuture.failedFuture(new RuntimeException("Message contains no file"));
+                return CompletableFuture.failedFuture(new TelegramNotFoundException("Message contains no file"));
             }
             return CompletableFuture.completedFuture(fileMessage);
         });

@@ -21,6 +21,10 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.zademy.nekolu.dto.ApiErrorResponse;
+import com.zademy.nekolu.exception.TelegramNotInitializedException;
+import com.zademy.nekolu.exception.TelegramNotFoundException;
+import com.zademy.nekolu.exception.TelegramOperationException;
+import com.zademy.nekolu.exception.TelegramUnauthorizedException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -44,15 +48,44 @@ public class GlobalExceptionHandler {
                 ApiErrorResponse.of(400, "Validation Error", details, request.getRequestURI()));
     }
 
+    @ExceptionHandler(TelegramUnauthorizedException.class)
+    public ResponseEntity<ApiErrorResponse> handleUnauthorized(TelegramUnauthorizedException ex,
+                                                               HttpServletRequest request) {
+        logger.warn("Unauthorized on {}: {}", request.getRequestURI(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                ApiErrorResponse.of(401, "Unauthorized", ex.getMessage(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler(TelegramNotInitializedException.class)
+    public ResponseEntity<ApiErrorResponse> handleNotInitialized(TelegramNotInitializedException ex,
+                                                                 HttpServletRequest request) {
+        logger.warn("Telegram module not initialized on {}: {}", request.getRequestURI(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(
+                ApiErrorResponse.of(503, "Service Unavailable", ex.getMessage(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler(TelegramOperationException.class)
+    public ResponseEntity<ApiErrorResponse> handleTelegramOperation(TelegramOperationException ex,
+                                                                    HttpServletRequest request) {
+        logger.warn("Telegram operation failed on {} [{}]: {}", request.getRequestURI(), ex.code(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(
+                ApiErrorResponse.of(502, "Bad Gateway", ex.getMessage(), request.getRequestURI()));
+    }
+
+    @ExceptionHandler(TelegramNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleTelegramNotFound(TelegramNotFoundException ex,
+                                                                  HttpServletRequest request) {
+        logger.warn("Telegram resource not found on {}: {}", request.getRequestURI(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ApiErrorResponse.of(404, "Not Found", ex.getMessage(), request.getRequestURI()));
+    }
+
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ApiErrorResponse> handleIllegalState(IllegalStateException ex,
                                                                 HttpServletRequest request) {
         logger.warn("Illegal state on {}: {}", request.getRequestURI(), ex.getMessage());
-        HttpStatus status = ex.getMessage() != null && ex.getMessage().contains("Unauthorized")
-                ? HttpStatus.UNAUTHORIZED
-                : HttpStatus.BAD_REQUEST;
-        return ResponseEntity.status(status).body(
-                ApiErrorResponse.of(status.value(), status.getReasonPhrase(), ex.getMessage(), request.getRequestURI()));
+        return ResponseEntity.badRequest().body(
+                ApiErrorResponse.of(400, "Bad Request", ex.getMessage(), request.getRequestURI()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -76,6 +109,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleCompletionException(CompletionException ex,
                                                                        HttpServletRequest request) {
         Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+        if (cause instanceof TelegramUnauthorizedException e) {
+            return handleUnauthorized(e, request);
+        }
+        if (cause instanceof TelegramNotInitializedException e) {
+            return handleNotInitialized(e, request);
+        }
+        if (cause instanceof TelegramOperationException e) {
+            return handleTelegramOperation(e, request);
+        }
+        if (cause instanceof TelegramNotFoundException e) {
+            return handleTelegramNotFound(e, request);
+        }
         if (cause instanceof IllegalStateException ise) {
             return handleIllegalState(ise, request);
         }

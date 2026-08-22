@@ -17,6 +17,9 @@ import com.zademy.nekolu.dto.FolderInfo;
 import com.zademy.nekolu.dto.NetworkStatsResponse;
 import com.zademy.nekolu.dto.StorageStatsResponse;
 import com.zademy.nekolu.dto.TelegramLimitsResponse;
+import com.zademy.nekolu.exception.TelegramNotInitializedException;
+import com.zademy.nekolu.exception.TelegramNotFoundException;
+import com.zademy.nekolu.exception.TelegramUnauthorizedException;
 import com.zademy.nekolu.model.TelegramFileMessage;
 import com.zademy.nekolu.model.TelegramFileState;
 
@@ -88,11 +91,10 @@ public class FakeTelegramService implements TelegramService {
 
     private <T> CompletableFuture<T> guarded(Callable<T> answer) {
         if (state == SessionState.UNINITIALIZED) {
-            return CompletableFuture.failedFuture(new IllegalStateException("Telegram client not initialized"));
+            return CompletableFuture.failedFuture(new TelegramNotInitializedException());
         }
         if (state == SessionState.UNAUTHORIZED) {
-            return CompletableFuture.failedFuture(new IllegalStateException(
-                "Unauthorized. Telegram requires authentication. Use the TDLib CLI client to authenticate first."));
+            return CompletableFuture.failedFuture(new TelegramUnauthorizedException());
         }
         if (failure != null) {
             return CompletableFuture.failedFuture(failure);
@@ -134,7 +136,7 @@ public class FakeTelegramService implements TelegramService {
         return guarded(() -> messages.stream()
             .filter(message -> message.chatId() == chatId && message.messageId() == messageId)
             .findFirst()
-            .orElseThrow(() -> new RuntimeException("Message not found")));
+            .orElseThrow(() -> new TelegramNotFoundException("Message not found")));
     }
 
     private boolean matchesType(TelegramFileMessage message, String type) {
@@ -157,7 +159,7 @@ public class FakeTelegramService implements TelegramService {
         return guarded(() -> {
             TelegramFileState state = fileStates.get(fileId);
             if (state == null) {
-                throw new RuntimeException("File not found: " + fileId);
+                throw new TelegramNotFoundException("File not found: " + fileId);
             }
             return state;
         });

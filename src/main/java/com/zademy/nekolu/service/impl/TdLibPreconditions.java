@@ -10,15 +10,14 @@ import java.util.concurrent.CompletableFuture;
 
 import org.drinkless.tdlib.Client;
 
+import com.zademy.nekolu.exception.TelegramNotInitializedException;
+import com.zademy.nekolu.exception.TelegramUnauthorizedException;
+
 /**
  * Centralizes TDLib precondition checks that are repeated across service methods.
  * Provides helpers for both CompletableFuture-returning and direct-throw scenarios.
  */
 final class TdLibPreconditions {
-
-    private static final String CLIENT_NOT_INITIALIZED = "Telegram client not initialized";
-    private static final String NOT_AUTHORIZED = "Unauthorized. Telegram requires authentication. "
-            + "Use the TDLib CLI client to authenticate first.";
 
     private TdLibPreconditions() {}
 
@@ -32,10 +31,10 @@ final class TdLibPreconditions {
      */
     static <T> CompletableFuture<T> requireReady(Client client, boolean isAuthorized) {
         if (client == null) {
-            return CompletableFuture.failedFuture(new IllegalStateException(CLIENT_NOT_INITIALIZED));
+            return CompletableFuture.failedFuture(new TelegramNotInitializedException());
         }
         if (!isAuthorized) {
-            return CompletableFuture.failedFuture(new IllegalStateException(NOT_AUTHORIZED));
+            return CompletableFuture.failedFuture(new TelegramUnauthorizedException());
         }
         return null;
     }
@@ -46,10 +45,10 @@ final class TdLibPreconditions {
      */
     static void requireReadyOrThrow(Client client, boolean isAuthorized) {
         if (client == null) {
-            throw new IllegalStateException(CLIENT_NOT_INITIALIZED);
+            throw new TelegramNotInitializedException();
         }
         if (!isAuthorized) {
-            throw new IllegalStateException(NOT_AUTHORIZED);
+            throw new TelegramUnauthorizedException();
         }
     }
 }

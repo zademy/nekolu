@@ -18,6 +18,8 @@ import java.util.concurrent.ExecutionException;
 
 import org.junit.jupiter.api.Test;
 
+import com.zademy.nekolu.exception.TelegramNotInitializedException;
+import com.zademy.nekolu.exception.TelegramUnauthorizedException;
 import com.zademy.nekolu.model.TelegramFileMessage;
 import com.zademy.nekolu.model.TelegramFileState;
 import com.zademy.nekolu.service.FakeTelegramService.SessionState;
@@ -93,23 +95,27 @@ class FakeTelegramServiceTest {
     }
 
     @Test
-    void unauthorizedSessionFailsEveryOperationWithTheStandardMessage() {
+    void unauthorizedSessionFailsEveryOperationWithTheTypedException() {
         FakeTelegramService telegram = new FakeTelegramService().inState(SessionState.UNAUTHORIZED);
 
-        assertUniformIllegalState(
+        assertUniformType(TelegramUnauthorizedException.class,
             telegram.getFileMessages(1, 0, 10),
             telegram.searchFileMessages("", null, "", 10),
-            telegram.getFileMessage(1, 1));
+            telegram.getFileMessage(1, 1),
+            telegram.startDownload(1),
+            telegram.getFileState(1));
     }
 
     @Test
-    void uninitializedSessionFailsEveryOperationWithTheStandardMessage() {
+    void uninitializedSessionFailsEveryOperationWithTheTypedException() {
         FakeTelegramService telegram = new FakeTelegramService().inState(SessionState.UNINITIALIZED);
 
-        assertUniformIllegalState(
+        assertUniformType(TelegramNotInitializedException.class,
             telegram.getFileMessages(1, 0, 10),
             telegram.searchFileMessages("", null, "", 10),
-            telegram.getFileMessage(1, 1));
+            telegram.getFileMessage(1, 1),
+            telegram.startDownload(1),
+            telegram.getFileState(1));
     }
 
     @Test
@@ -226,6 +232,13 @@ class FakeTelegramServiceTest {
         for (CompletableFuture<?> future : futures) {
             ExecutionException thrown = assertThrows(ExecutionException.class, future::get);
             assertInstanceOf(IllegalStateException.class, thrown.getCause());
+        }
+    }
+
+    private static void assertUniformType(Class<? extends Throwable> expected, CompletableFuture<?>... futures) {
+        for (CompletableFuture<?> future : futures) {
+            ExecutionException thrown = assertThrows(ExecutionException.class, future::get);
+            assertInstanceOf(expected, thrown.getCause());
         }
     }
 
