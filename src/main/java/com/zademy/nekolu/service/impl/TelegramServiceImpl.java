@@ -9,6 +9,7 @@ package com.zademy.nekolu.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -58,6 +59,81 @@ public class TelegramServiceImpl implements TelegramService {
         setTdlibParameters();
     }
 
+    // ==================== TDLIB REQUEST GUARD ====================
+
+    /**
+     * Single point through which every public operation sends its TDLib request:
+     * readiness preconditions, rate limiting, error translation, and a request
+     * timeout. The permit is held until the returned future completes.
+     */
+    private <T extends TdApi.Object> CompletableFuture<T> send(TdApi.Function<T> request) {
+        CompletableFuture<T> failed = TdLibPreconditions.requireReady(client, isAuthorized);
+        if (failed != null) return failed;
+
+        CompletableFuture<T> future = new CompletableFuture<>();
+        try {
+            holdPermitUntil(future);
+        } catch (RuntimeException e) {
+            // The limiter throws synchronously; surface it through the future
+            // so asynchronous callers see a failed operation instead of an
+            // exception escaping the service call.
+            return CompletableFuture.failedFuture(e);
+        }
+        dispatch(request, future);
+        return future.orTimeout(ServiceDefaults.TDLIB_REQUEST_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Acquires a rate-limiter permit that is released exactly once when the
+     * given future completes, successfully or not.
+     */
+    private void holdPermitUntil(CompletableFuture<?> future) {
+        rateLimiter.acquire();
+        future.whenComplete((result, error) -> rateLimiter.release());
+    }
+
+    /**
+     * Sends a TDLib request without readiness preconditions or rate limiting,
+     * but still bounded by the request timeout. Reserved for sub-requests of
+     * an operation already holding a permit (folder listing fan-out) and
+     * best-effort cleanup, where blocking on the limiter could stall TDLib
+     * callbacks.
+     */
+    private <T extends TdApi.Object> CompletableFuture<T> sendUnguarded(TdApi.Function<T> request) {
+        CompletableFuture<T> future = new CompletableFuture<>();
+        dispatch(request, future);
+        return future.orTimeout(ServiceDefaults.TDLIB_REQUEST_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Core error translation shared by every outgoing request: a TDLib error
+     * becomes a failed future carrying the Telegram message; any other
+     * response completes the future with its typed value.
+     */
+    @SuppressWarnings("unchecked")
+    private <T extends TdApi.Object> void dispatch(TdApi.Function<T> request, CompletableFuture<T> target) {
+        try {
+            client.send(request, result -> {
+                if (result instanceof TdApi.Error error) {
+                    target.completeExceptionally(new RuntimeException(
+                        "Telegram error %d: %s".formatted(error.code, error.message)));
+                } else {
+                    try {
+                        target.complete((T) result);
+                    } catch (ClassCastException e) {
+                        target.completeExceptionally(new RuntimeException("Unexpected TDLib response"));
+                    }
+                }
+            });
+        } catch (RuntimeException e) {
+            target.completeExceptionally(e);
+        }
+    }
+
+    private static Throwable unwrap(Throwable error) {
+        return error instanceof CompletionException && error.getCause() != null ? error.getCause() : error;
+    }
+
     /**
      * Gets the TDLib client for use by other services.
      */
@@ -74,6 +150,11 @@ public class TelegramServiceImpl implements TelegramService {
         return isAuthorized;
     }
 
+    /**
+     * Bootstrap request sent before authorization exists, deliberately outside
+     * the request guard: readiness preconditions do not apply yet and a
+     * failure here is only logged, not surfaced to callers.
+     */
     private void setTdlibParameters() {
         TdApi.SetTdlibParameters params = new TdApi.SetTdlibParameters();
         params.useTestDc = telegramConfig.isUseTestDc();
@@ -101,62 +182,28 @@ public class TelegramServiceImpl implements TelegramService {
 
     @Override
     public CompletableFuture<TdApi.Message> sendTextMessage(long chatId, String message) {
-        CompletableFuture<TdApi.Message> failed = TdLibPreconditions.requireReady(client, isAuthorized);
-        if (failed != null) return failed;
-        rateLimiter.acquire();
-
-        CompletableFuture<TdApi.Message> future = new CompletableFuture<>();
-        future.whenComplete((r, ex) -> rateLimiter.release());
         TdApi.FormattedText formattedText = new TdApi.FormattedText(message, null);
         TdApi.InputMessageText messageText = new TdApi.InputMessageText(formattedText, null, false);
         TdApi.SendMessage sendMessage = new TdApi.SendMessage();
         sendMessage.chatId = chatId;
         sendMessage.inputMessageContent = messageText;
 
-        client.send(sendMessage, object -> {
-            if (object instanceof TdApi.Message tdMessage) {
-                future.complete(tdMessage);
-            } else if (object instanceof TdApi.Error error) {
-                future.completeExceptionally(new RuntimeException("Telegram error: " + error.message));
-            } else {
-                future.completeExceptionally(new RuntimeException("Unexpected TDLib response"));
-            }
-        });
-
-        return future;
+        return send(sendMessage);
     }
 
     @Override
     public CompletableFuture<TdApi.Message> editTextMessage(long chatId, long messageId, String message) {
-        CompletableFuture<TdApi.Message> failed = TdLibPreconditions.requireReady(client, isAuthorized);
-        if (failed != null) return failed;
-
-        CompletableFuture<TdApi.Message> future = new CompletableFuture<>();
         TdApi.EditMessageText editMessageText = new TdApi.EditMessageText();
         editMessageText.chatId = chatId;
         editMessageText.messageId = messageId;
         editMessageText.replyMarkup = null;
         editMessageText.inputMessageContent = new TdApi.InputMessageText(new TdApi.FormattedText(message, null), null, false);
 
-        client.send(editMessageText, object -> {
-            if (object instanceof TdApi.Message tdMessage) {
-                future.complete(tdMessage);
-            } else if (object instanceof TdApi.Error error) {
-                future.completeExceptionally(new RuntimeException("Telegram error: " + error.message));
-            } else {
-                future.completeExceptionally(new RuntimeException("Unexpected TDLib response"));
-            }
-        });
-
-        return future;
+        return send(editMessageText);
     }
 
     @Override
     public CompletableFuture<List<TdApi.Message>> searchChatMessages(long chatId, String query, long fromMessageId, int limit) {
-        CompletableFuture<List<TdApi.Message>> failed = TdLibPreconditions.requireReady(client, isAuthorized);
-        if (failed != null) return failed;
-
-        CompletableFuture<List<TdApi.Message>> future = new CompletableFuture<>();
         TdApi.SearchChatMessages search = new TdApi.SearchChatMessages();
         search.chatId = chatId;
         search.query = query != null ? query : "";
@@ -166,40 +213,21 @@ public class TelegramServiceImpl implements TelegramService {
         search.limit = Math.max(1, Math.min(limit, 100));
         search.filter = null;
 
-        client.send(search, result -> {
-            if (result instanceof TdApi.FoundChatMessages foundMessages) {
-                future.complete(List.of(foundMessages.messages));
-            } else if (result instanceof TdApi.Error error) {
-                future.completeExceptionally(new RuntimeException("Telegram error: " + error.message));
-            } else {
-                future.complete(List.of());
-            }
-        });
-
-        return future;
+        return send(search).thenApply(foundMessages -> List.of(foundMessages.messages));
     }
 
     @Override
     public CompletableFuture<TdApi.Message> getMessage(long chatId, long messageId) {
-        CompletableFuture<TdApi.Message> failed = TdLibPreconditions.requireReady(client, isAuthorized);
-        if (failed != null) return failed;
-
-        CompletableFuture<TdApi.Message> future = new CompletableFuture<>();
         TdApi.GetMessages getMessages = new TdApi.GetMessages();
         getMessages.chatId = chatId;
         getMessages.messageIds = new long[] { messageId };
 
-        client.send(getMessages, result -> {
-            if (result instanceof TdApi.Messages messages && messages.messages.length > 0 && messages.messages[0] != null) {
-                future.complete(messages.messages[0]);
-            } else if (result instanceof TdApi.Error error) {
-                future.completeExceptionally(new RuntimeException("Telegram error: " + error.message));
-            } else {
-                future.completeExceptionally(new RuntimeException("Message not found"));
+        return send(getMessages).thenCompose(messages -> {
+            if (messages.messages.length > 0 && messages.messages[0] != null) {
+                return CompletableFuture.completedFuture(messages.messages[0]);
             }
+            return CompletableFuture.failedFuture(new RuntimeException("Message not found"));
         });
-
-        return future;
     }
 
     /**
@@ -209,11 +237,16 @@ public class TelegramServiceImpl implements TelegramService {
     public CompletableFuture<TdApi.File> downloadFile(int fileId) {
         CompletableFuture<TdApi.File> failed = TdLibPreconditions.requireReady(client, isAuthorized);
         if (failed != null) return failed;
-        rateLimiter.acquire();
 
-        CompletableFuture<TdApi.File> future = new CompletableFuture<>();
-        future.whenComplete((r, ex) -> rateLimiter.release());
-        pendingDownloads.put(fileId, future);
+        // The download cycle holds its permit until UpdateFile completes it,
+        // exactly one permit per download as before the guard existed.
+        CompletableFuture<TdApi.File> downloadFuture = new CompletableFuture<>();
+        try {
+            holdPermitUntil(downloadFuture);
+        } catch (RuntimeException e) {
+            return CompletableFuture.failedFuture(e);
+        }
+        pendingDownloads.put(fileId, downloadFuture);
 
         TdApi.DownloadFile download = new TdApi.DownloadFile();
         download.fileId = fileId;
@@ -222,15 +255,19 @@ public class TelegramServiceImpl implements TelegramService {
         download.limit = 0;
         download.synchronous = false;
 
-        client.send(download, object -> {
-            if (object instanceof TdApi.Error error) {
-                pendingDownloads.remove(fileId);
-                future.completeExceptionally(new RuntimeException("Error starting download: " + error.message));
-            }
-            // If it is OK, wait for UpdateFile to complete the future
-        });
+        // Only the initial request is bounded by the request timeout; the
+        // cycle itself completes via UpdateFile no matter how long the
+        // transfer takes.
+        sendUnguarded(download)
+            .orTimeout(ServiceDefaults.TDLIB_REQUEST_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            .whenComplete((initial, error) -> {
+                if (error != null) {
+                    pendingDownloads.remove(fileId);
+                    downloadFuture.completeExceptionally(unwrap(error));
+                }
+            });
 
-        return future;
+        return downloadFuture;
     }
 
     @Override
@@ -249,14 +286,6 @@ public class TelegramServiceImpl implements TelegramService {
 
         CompletableFuture<Long> future = ownChatIdFuture;
 
-        if (client == null) {
-            future.completeExceptionally(new IllegalStateException("Telegram client not initialized"));
-            synchronized (this) {
-                ownChatIdFuture = null;
-            }
-            return future;
-        }
-
         if (telegramConfig.getUserId() == 0) {
             future.completeExceptionally(new IllegalStateException("telegram.user.id is not configured in properties"));
             synchronized (this) {
@@ -269,19 +298,14 @@ public class TelegramServiceImpl implements TelegramService {
         createChat.userId = telegramConfig.getUserId();
         createChat.force = false;
 
-        client.send(createChat, chatResult -> {
-            if (chatResult instanceof TdApi.Chat chat) {
-                future.complete(chat.id);
-            } else if (chatResult instanceof TdApi.Error error) {
-                future.completeExceptionally(new RuntimeException("Error creating chat: " + error.message));
+        send(createChat).whenComplete((chat, error) -> {
+            if (error != null) {
+                future.completeExceptionally(unwrap(error));
                 synchronized (this) {
                     ownChatIdFuture = null;
                 }
             } else {
-                future.completeExceptionally(new RuntimeException("Unexpected TDLib response"));
-                synchronized (this) {
-                    ownChatIdFuture = null;
-                }
+                future.complete(chat.id);
             }
         });
 
@@ -337,10 +361,9 @@ public class TelegramServiceImpl implements TelegramService {
                 try {
                     TdApi.DeleteFile deleteFile = new TdApi.DeleteFile();
                     deleteFile.fileId = file.id;
-                    client.send(deleteFile, result -> {
-                        if (result instanceof TdApi.Error error) {
-                            logger.debug("[Upload] Could not clear local TDLib file state for {}: {}", file.id, error.message);
-                        }
+                    sendUnguarded(deleteFile).exceptionally(result -> {
+                        logger.debug("[Upload] Could not clear local TDLib file state for {}: {}", file.id, result.getMessage());
+                        return null;
                     });
                 } catch (Exception e) {
                     logger.debug("[Upload] Could not request local TDLib cleanup for {}: {}", file.id, e.getMessage());
@@ -384,7 +407,9 @@ public class TelegramServiceImpl implements TelegramService {
         if (state instanceof TdApi.AuthorizationStateReady) {
             isAuthorized = true;
             logger.info("TDLib ready and authorized");
-            cleanupLegacyInternalIndexChat();
+            // Run off the TDLib callback thread: the cleanup performs
+            // rate-limited requests that must never stall update delivery.
+            CompletableFuture.runAsync(this::cleanupLegacyInternalIndexChat);
         } else if (state instanceof TdApi.AuthorizationStateWaitTdlibParameters) {
             logger.info("Waiting for TDLib parameters...");
         } else if (state instanceof TdApi.AuthorizationStateWaitPhoneNumber) {
@@ -405,12 +430,6 @@ public class TelegramServiceImpl implements TelegramService {
      */
     @Override
     public CompletableFuture<TdApi.Chat> createFolder(String title, String description) {
-        CompletableFuture<TdApi.Chat> failed = TdLibPreconditions.requireReady(client, isAuthorized);
-        if (failed != null) return failed;
-        rateLimiter.acquire();
-
-        CompletableFuture<TdApi.Chat> future = new CompletableFuture<>();
-        future.whenComplete((r, ex) -> rateLimiter.release());
         TdApi.CreateNewSupergroupChat request = new TdApi.CreateNewSupergroupChat();
         request.title = title;
         request.isChannel = true;
@@ -419,17 +438,10 @@ public class TelegramServiceImpl implements TelegramService {
         request.messageAutoDeleteTime = 0;
         request.forImport = false;
 
-        client.send(request, result -> {
-            if (result instanceof TdApi.Chat chat) {
-                logger.info("Folder created: {} (ID: {})", chat.title, chat.id);
-                future.complete(chat);
-            } else if (result instanceof TdApi.Error error) {
-                logger.error("Error creating folder: {}", error.message);
-                future.completeExceptionally(new RuntimeException("Telegram error: " + error.message));
-            }
+        return send(request).thenApply(chat -> {
+            logger.info("Folder created: {} (ID: {})", chat.title, chat.id);
+            return chat;
         });
-
-        return future;
     }
 
     /**
@@ -437,29 +449,13 @@ public class TelegramServiceImpl implements TelegramService {
      */
     @Override
     public CompletableFuture<List<FolderInfo>> listFolders() {
-        CompletableFuture<List<FolderInfo>> failed = TdLibPreconditions.requireReady(client, isAuthorized);
-        if (failed != null) return failed;
-
-        CompletableFuture<List<FolderInfo>> future = new CompletableFuture<>();
         TdApi.GetChats getChats = new TdApi.GetChats();
         getChats.chatList = new TdApi.ChatListMain();
         getChats.limit = ServiceDefaults.DEFAULT_CHAT_LIST_LIMIT;
 
-        client.send(getChats, result -> {
-            if (result instanceof TdApi.Error error) {
-                logger.error("Error getting chats: {}", error.message);
-                future.completeExceptionally(new RuntimeException("Telegram error: " + error.message));
-                return;
-            }
-
-            if (!(result instanceof TdApi.Chats chats)) {
-                future.completeExceptionally(new RuntimeException("Unexpected response while fetching chats"));
-                return;
-            }
-
+        return send(getChats).thenCompose(chats -> {
             if (chats.chatIds.length == 0) {
-                future.complete(new ArrayList<>());
-                return;
+                return CompletableFuture.completedFuture(new ArrayList<FolderInfo>());
             }
 
             List<FolderInfo> folders = new ArrayList<>();
@@ -481,97 +477,49 @@ public class TelegramServiceImpl implements TelegramService {
                 chatFutures.add(chatFuture);
             }
 
-            CompletableFuture.allOf(chatFutures.toArray(new CompletableFuture[0]))
-                .thenAccept(v -> future.complete(folders))
-                .exceptionally(ex -> {
-                    future.completeExceptionally(ex);
-                    return null;
-                });
+            return CompletableFuture.allOf(chatFutures.toArray(new CompletableFuture[0]))
+                .thenApply(v -> folders);
         });
-
-        return future;
     }
 
     /**
      * Gets chat information if it is a channel (folder).
+     * Sub-requests run unguarded: the enclosing listFolders operation already
+     * holds a permit, and rate-limiting a fan-out from TDLib callback threads
+     * could stall the client.
      */
     private CompletableFuture<FolderInfo> getChatInfo(long chatId) {
-        CompletableFuture<FolderInfo> future = new CompletableFuture<>();
-
-        client.send(new TdApi.GetChat(chatId), result -> {
-            if (result instanceof TdApi.Error error) {
-                future.completeExceptionally(new RuntimeException("Error fetching chat: " + error.message));
-                return;
-            }
-
-            if (!(result instanceof TdApi.Chat chat)) {
-                future.complete(null);
-                return;
-            }
-
-            // Check whether it is a supergroup (channel)
-            if (!(chat.type instanceof TdApi.ChatTypeSupergroup supergroupType)) {
-                future.complete(null);
-                return;
-            }
-
-            // Only channels (not groups)
-            if (!supergroupType.isChannel) {
-                future.complete(null);
-                return;
-            }
-
-            // Get supergroup details
-            client.send(new TdApi.GetSupergroup(supergroupType.supergroupId), superResult -> {
-                if (superResult instanceof TdApi.Error error) {
-                    future.completeExceptionally(new RuntimeException("Error fetching supergroup: " + error.message));
-                    return;
+        return sendUnguarded(new TdApi.GetChat(chatId))
+            .thenCompose(chat -> {
+                // Only channels (not groups) are folders
+                if (!(chat.type instanceof TdApi.ChatTypeSupergroup supergroupType) || !supergroupType.isChannel) {
+                    return CompletableFuture.completedFuture(null);
                 }
 
-                if (!(superResult instanceof TdApi.Supergroup supergroup)) {
-                    future.complete(null);
-                    return;
-                }
-
-                // Get full information for the description
-                client.send(new TdApi.GetSupergroupFullInfo(supergroupType.supergroupId), fullInfoResult -> {
-                    String description = "";
-                    if (fullInfoResult instanceof TdApi.SupergroupFullInfo fullInfo) {
-                        description = fullInfo.description != null ? fullInfo.description : "";
-                    }
-
-                    FolderInfo folderInfo = new FolderInfo(
-                        chat.id,
-                        chat.title,
-                        description,
-                        supergroup.memberCount,
-                        supergroup.date
-                    );
-
-                    future.complete(folderInfo);
-                });
+                return sendUnguarded(new TdApi.GetSupergroup(supergroupType.supergroupId))
+                    .thenCompose(supergroup -> sendUnguarded(new TdApi.GetSupergroupFullInfo(supergroupType.supergroupId))
+                        .thenApply(fullInfo -> new FolderInfo(
+                            chat.id,
+                            chat.title,
+                            fullInfo.description != null ? fullInfo.description : "",
+                            supergroup.memberCount,
+                            supergroup.date
+                        )));
             });
-        });
-
-        return future;
     }
 
+    /**
+     * Best-effort legacy cleanup, unguarded for the same reason as the folder
+     * listing fan-out: it must never block TDLib callback threads.
+     */
     private CompletableFuture<Long> findInternalIndexChatId() {
-        CompletableFuture<Long> future = new CompletableFuture<>();
-
         TdApi.GetChats getChats = new TdApi.GetChats();
         getChats.chatList = new TdApi.ChatListMain();
         getChats.limit = ServiceDefaults.DEFAULT_CHAT_LIST_LIMIT;
 
-        client.send(getChats, result -> {
-            if (result instanceof TdApi.Error error) {
-                future.completeExceptionally(new RuntimeException("Telegram error: " + error.message));
-                return;
-            }
-
-            if (!(result instanceof TdApi.Chats chats) || chats.chatIds.length == 0) {
-                future.complete(0L);
-                return;
+        return sendUnguarded(getChats).thenCompose(chats -> {
+            if (chats.chatIds.length == 0) {
+                return CompletableFuture.completedFuture(0L);
             }
 
             List<CompletableFuture<Long>> futures = new ArrayList<>();
@@ -579,38 +527,21 @@ public class TelegramServiceImpl implements TelegramService {
                 futures.add(getChatIfInternalIndex(chatId).exceptionally(ex -> 0L));
             }
 
-            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+            return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
                 .thenApply(v -> futures.stream()
                     .map(CompletableFuture::join)
                     .filter(foundChatId -> foundChatId != null && foundChatId != 0L)
                     .findFirst()
-                    .orElse(0L))
-                .whenComplete((chatId, error) -> {
-                    if (error != null) {
-                        future.completeExceptionally(error);
-                    } else {
-                        future.complete(chatId);
-                    }
-                });
+                    .orElse(0L));
         });
-
-        return future;
     }
 
     private CompletableFuture<Long> getChatIfInternalIndex(long chatId) {
-        CompletableFuture<Long> future = new CompletableFuture<>();
-
-        client.send(new TdApi.GetChat(chatId), result -> {
-            if (result instanceof TdApi.Chat chat && chat.type instanceof TdApi.ChatTypeSupergroup supergroupType && supergroupType.isChannel) {
-                if (isInternalIndexChat(chat.title)) {
-                    future.complete(chat.id);
-                    return;
-                }
-            }
-            future.complete(0L);
-        });
-
-        return future;
+        return sendUnguarded(new TdApi.GetChat(chatId)).thenApply(chat ->
+            chat.type instanceof TdApi.ChatTypeSupergroup supergroupType
+                && supergroupType.isChannel
+                && isInternalIndexChat(chat.title)
+            ? chat.id : 0L);
     }
 
     private boolean isInternalIndexChat(String title) {
@@ -643,31 +574,14 @@ public class TelegramServiceImpl implements TelegramService {
      */
     @Override
     public CompletableFuture<Void> deleteFolder(long chatId) {
-        CompletableFuture<Void> failed = TdLibPreconditions.requireReady(client, isAuthorized);
-        if (failed != null) return failed;
-
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        // First leave the chat
-        client.send(new TdApi.LeaveChat(chatId), leaveResult -> {
-            if (leaveResult instanceof TdApi.Error error) {
-                logger.warn("Error leaving chat (it may no longer be a member): {}", error.message);
+        return send(new TdApi.LeaveChat(chatId))
+            .exceptionally(ex -> {
+                logger.warn("Error leaving chat (it may no longer be a member): {}", ex.getMessage());
                 // Continue trying to delete the chat locally
-            }
-
-            // Then delete the chat locally
-            client.send(new TdApi.DeleteChat(chatId), deleteResult -> {
-                if (deleteResult instanceof TdApi.Error error) {
-                    logger.error("Error deleting folder: {}", error.message);
-                    future.completeExceptionally(new RuntimeException("Telegram error: " + error.message));
-                    return;
-                }
-
-                logger.info("Folder deleted: ID {}", chatId);
-                future.complete(null);
-            });
-        });
-
-        return future;
+                return null;
+            })
+            .thenCompose(v -> send(new TdApi.DeleteChat(chatId)))
+            .thenRun(() -> logger.info("Folder deleted: ID {}", chatId));
     }
 
     // ==================== STATISTICS METHODS ====================
@@ -677,27 +591,13 @@ public class TelegramServiceImpl implements TelegramService {
      */
     @Override
     public CompletableFuture<StorageStatsResponse> getStorageStatisticsFast() {
-        CompletableFuture<StorageStatsResponse> failed = TdLibPreconditions.requireReady(client, isAuthorized);
-        if (failed != null) return failed;
-
-        CompletableFuture<StorageStatsResponse> future = new CompletableFuture<>();
-        client.send(new TdApi.GetStorageStatisticsFast(), result -> {
-            if (result instanceof TdApi.StorageStatisticsFast stats) {
-                future.complete(new StorageStatsResponse(
-                    stats.filesSize,
-                    stats.fileCount,
-                    stats.databaseSize,
-                    stats.languagePackDatabaseSize,
-                    stats.logSize
-                ));
-            } else if (result instanceof TdApi.Error error) {
-                logger.error("Error getting storage stats [{}]: {}", error.code, error.message);
-                future.completeExceptionally(new RuntimeException(
-                    "TDLib error %d: %s".formatted(error.code, error.message)));
-            }
-        });
-
-        return future.orTimeout(ServiceDefaults.TDLIB_REQUEST_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        return send(new TdApi.GetStorageStatisticsFast()).thenApply(stats -> new StorageStatsResponse(
+            stats.filesSize,
+            stats.fileCount,
+            stats.databaseSize,
+            stats.languagePackDatabaseSize,
+            stats.logSize
+        ));
     }
 
     /**
@@ -707,41 +607,29 @@ public class TelegramServiceImpl implements TelegramService {
      */
     @Override
     public CompletableFuture<NetworkStatsResponse> getNetworkStatistics(boolean onlyCurrent) {
-        CompletableFuture<NetworkStatsResponse> failed = TdLibPreconditions.requireReady(client, isAuthorized);
-        if (failed != null) return failed;
+        return send(new TdApi.GetNetworkStatistics(onlyCurrent)).thenApply(stats -> {
+            List<NetworkStatsResponse.NetworkFileEntry> fileEntries = new ArrayList<>();
+            List<NetworkStatsResponse.NetworkCallEntry> callEntries = new ArrayList<>();
 
-        CompletableFuture<NetworkStatsResponse> future = new CompletableFuture<>();
-        client.send(new TdApi.GetNetworkStatistics(onlyCurrent), result -> {
-            if (result instanceof TdApi.NetworkStatistics stats) {
-                List<NetworkStatsResponse.NetworkFileEntry> fileEntries = new ArrayList<>();
-                List<NetworkStatsResponse.NetworkCallEntry> callEntries = new ArrayList<>();
-
-                for (TdApi.NetworkStatisticsEntry entry : stats.entries) {
-                    if (entry instanceof TdApi.NetworkStatisticsEntryFile fileEntry) {
-                        fileEntries.add(new NetworkStatsResponse.NetworkFileEntry(
-                            mapFileType(fileEntry.fileType),
-                            mapNetworkType(fileEntry.networkType),
-                            fileEntry.sentBytes,
-                            fileEntry.receivedBytes
-                        ));
-                    } else if (entry instanceof TdApi.NetworkStatisticsEntryCall callEntry) {
-                        callEntries.add(new NetworkStatsResponse.NetworkCallEntry(
-                            mapNetworkType(callEntry.networkType),
-                            callEntry.sentBytes,
-                            callEntry.receivedBytes
-                        ));
-                    }
+            for (TdApi.NetworkStatisticsEntry entry : stats.entries) {
+                if (entry instanceof TdApi.NetworkStatisticsEntryFile fileEntry) {
+                    fileEntries.add(new NetworkStatsResponse.NetworkFileEntry(
+                        mapFileType(fileEntry.fileType),
+                        mapNetworkType(fileEntry.networkType),
+                        fileEntry.sentBytes,
+                        fileEntry.receivedBytes
+                    ));
+                } else if (entry instanceof TdApi.NetworkStatisticsEntryCall callEntry) {
+                    callEntries.add(new NetworkStatsResponse.NetworkCallEntry(
+                        mapNetworkType(callEntry.networkType),
+                        callEntry.sentBytes,
+                        callEntry.receivedBytes
+                    ));
                 }
-
-                future.complete(new NetworkStatsResponse(stats.sinceDate, fileEntries, callEntries));
-            } else if (result instanceof TdApi.Error error) {
-                logger.error("Error getting network stats [{}]: {}", error.code, error.message);
-                future.completeExceptionally(new RuntimeException(
-                    "TDLib error %d: %s".formatted(error.code, error.message)));
             }
-        });
 
-        return future.orTimeout(ServiceDefaults.TDLIB_REQUEST_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            return new NetworkStatsResponse(stats.sinceDate, fileEntries, callEntries);
+        });
     }
 
     /**
@@ -749,9 +637,6 @@ public class TelegramServiceImpl implements TelegramService {
      */
     @Override
     public CompletableFuture<TelegramLimitsResponse> getTelegramLimits() {
-        CompletableFuture<TelegramLimitsResponse> failed = TdLibPreconditions.requireReady(client, isAuthorized);
-        if (failed != null) return failed;
-
         CompletableFuture<Long> maxUpload = getOptionLong("upload_max_fileparts")
             .thenApply(parts -> parts > 0 ? parts * 524288L : 2147483648L) // 512KB per part, default 2GB
             .exceptionally(ex -> 2147483648L);
@@ -765,26 +650,18 @@ public class TelegramServiceImpl implements TelegramService {
                 maxBasicGroup.join(),
                 maxSupergroup.join(),
                 maxFolders.join()
-            ))
-            .orTimeout(ServiceDefaults.TDLIB_REQUEST_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            ));
     }
 
     // ==================== PRIVATE HELPER METHODS ====================
 
     private CompletableFuture<Long> getOptionLong(String name) {
-        CompletableFuture<Long> future = new CompletableFuture<>();
-        client.send(new TdApi.GetOption(name), result -> {
+        return send(new TdApi.GetOption(name)).thenApply(result -> {
             if (result instanceof TdApi.OptionValueInteger opt) {
-                future.complete(opt.value);
-            } else if (result instanceof TdApi.OptionValueEmpty) {
-                future.complete(0L);
-            } else if (result instanceof TdApi.Error error) {
-                future.completeExceptionally(new RuntimeException(error.message));
-            } else {
-                future.complete(0L);
+                return opt.value;
             }
+            return 0L;
         });
-        return future;
     }
 
     private CompletableFuture<Integer> getOptionInt(String name) {
