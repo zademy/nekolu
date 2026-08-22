@@ -38,6 +38,7 @@ import com.zademy.nekolu.dto.FileStreamResponse;
 import com.zademy.nekolu.dto.FullStatsResponse;
 import com.zademy.nekolu.dto.UploadResponse;
 import com.zademy.nekolu.exception.Exceptions;
+import com.zademy.nekolu.exception.StagingException;
 import com.zademy.nekolu.exception.TelegramOperationException;
 import com.zademy.nekolu.service.FileService;
 import com.zademy.nekolu.service.TelegramService;
@@ -333,10 +334,7 @@ public class FileController {
     public CompletableFuture<ResponseEntity<DownloadResponse>> downloadFile(
             @PathVariable @Parameter(description = "File ID", example = "12345") long fileId) {
         return fileService.downloadFile(fileId)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().body(
-                        new DownloadResponse(fileId, DownloadResponse.STATUS_FAILED, null, 0, ex.getMessage())
-                ));
+                .thenApply(ResponseEntity::ok);
     }
 
     @PostMapping("/download")
@@ -577,6 +575,10 @@ public class FileController {
                     return ResponseEntity.ok(response);
                 }).exceptionally(ex -> failedUpload(ex, file, targetChatId, caption));
 
+            } catch (StagingException e) {
+                // Server-side disk failure: must reach the global handler
+                // as 500, not be masked as a client error.
+                throw e;
             } catch (Exception e) {
                 logger.error("[UploadController] Error processing file", e);
                 return CompletableFuture.completedFuture(

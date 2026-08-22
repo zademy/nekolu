@@ -100,7 +100,10 @@ public class FileServiceImpl implements FileService {
     @Override
     public CompletableFuture<List<FileInfoResponse>> searchFilesInChat(long chatId, String type, int limit) {
         return telegramService.getFileMessages(chatId, 0, Math.max(limit * 4, 100))
-            .exceptionally(_ex -> List.of())
+            .exceptionally(_ex -> {
+                logger.debug("[SearchInChat] History query failed for chat {}: {}", chatId, _ex.getMessage());
+                return List.of();
+            })
             .thenApply(files -> files.stream()
                 .map(this::toFileInfo)
                 .filter(file -> matchesRequestedType(file, type))
@@ -148,7 +151,10 @@ public class FileServiceImpl implements FileService {
 
     private CompletableFuture<List<FileInfoResponse>> searchSingleType(String type, int limit, String offset) {
         return telegramService.searchFileMessages("", type, offset, limit)
-            .exceptionally(_ex -> List.of())
+            .exceptionally(_ex -> {
+                logger.debug("[Search] Type query failed for {}: {}", type, _ex.getMessage());
+                return List.of();
+            })
             .thenApply(found -> found.stream().map(this::toFileInfo).toList());
     }
 
@@ -168,7 +174,10 @@ public class FileServiceImpl implements FileService {
 
     private CompletableFuture<FileInfoResponse> refreshDownloadStatus(FileInfoResponse cached) {
         return telegramService.getFileState(cached.fileId())
-            .exceptionally(_ex -> null)
+            .exceptionally(_ex -> {
+                logger.debug("[FileInfo] State refresh failed for {}: {}", cached.fileId(), _ex.getMessage());
+                return null;
+            })
             .thenApply(state -> {
                 if (state == null) {
                     return cached;
@@ -372,6 +381,8 @@ public class FileServiceImpl implements FileService {
 
     // ==================== NEW V2 METHODS ====================
 
+    private static final long DOWNLOAD_POLL_INTERVAL_MS = 250L;
+
     private final ConcurrentHashMap<String, DownloadJob> batchJobs = new ConcurrentHashMap<>();
 
     /**
@@ -514,7 +525,7 @@ public class FileServiceImpl implements FileService {
                 future.completeExceptionally(new IllegalStateException("Could not download the file"));
                 return;
             }
-            CompletableFuture.delayedExecutor(250, TimeUnit.MILLISECONDS)
+            CompletableFuture.delayedExecutor(DOWNLOAD_POLL_INTERVAL_MS, TimeUnit.MILLISECONDS)
                 .execute(() -> pollUntilDownloaded(fileId, deadline, future));
         });
     }
@@ -663,7 +674,10 @@ public class FileServiceImpl implements FileService {
     public CompletableFuture<List<FileInfoResponse>> getRecentFilesFromOwnChat(int limit) {
         return getOwnChatId()
             .thenCompose(chatId -> telegramService.getFileMessages(chatId, 0, limit)
-                .exceptionally(_ex -> List.of()))
+                .exceptionally(_ex -> {
+                    logger.debug("[RecentFiles] History query failed: {}", _ex.getMessage());
+                    return List.of();
+                }))
             .thenApply(files -> {
                 List<FileInfoResponse> mapped = files.stream().map(this::toFileInfo).toList();
                 logger.info("[RecentFiles] Retrieved {} files from own chat", mapped.size());

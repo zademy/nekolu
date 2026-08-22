@@ -241,14 +241,13 @@ public class TelegramServiceImpl implements TelegramService {
 
     /**
      * Registers the staged local source for upload tracking and maps the
-     * created message to the domain view.
-     */
-    /**
-     * Registers the staged local source for upload tracking and maps the
      * created message to the domain view. Guards against the
      * upload-completion update racing ahead of registration: if the transfer
      * already finished, the staged source is cleaned eagerly instead of
-     * leaving an orphan entry nobody completes.
+     * leaving an orphan entry nobody completes. A nanosecond-scale window
+     * remains between this check and the registration; its worst case (a
+     * leftover staged file plus an orphan release entry) is bounded by the
+     * staging area's startup purge.
      */
     private CompletableFuture<TelegramFileMessage> trackedFileMessage(TdApi.Message message, String stagedFilePath) {
         TdApi.File file = fileOf(message);

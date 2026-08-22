@@ -8,16 +8,21 @@ package com.zademy.nekolu.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import com.zademy.nekolu.exception.StagingException;
 
 /**
  * Unit tests for the upload staging area against a real temporary
@@ -76,5 +81,21 @@ class UploadStagingAreaTest {
 
         assertTrue(fresh.toFile().exists());
         assertFalse(old.toFile().exists());
+    }
+
+    @Test
+    void stageSurfacesDiskFailuresAsStagingException() {
+        InputStream broken = new InputStream() {
+            @Override
+            public int read() throws IOException {
+                throw new IOException("disk on fire");
+            }
+        };
+
+        StagingException thrown = assertThrows(StagingException.class,
+            () -> stagingArea.stage("any.bin", broken));
+
+        assertTrue(thrown.getMessage().contains("any.bin"));
+        assertEquals("disk on fire", thrown.getCause().getMessage());
     }
 }

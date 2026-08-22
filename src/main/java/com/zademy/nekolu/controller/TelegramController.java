@@ -6,7 +6,6 @@
 
 package com.zademy.nekolu.controller;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -115,8 +114,7 @@ public class TelegramController {
     })
     public CompletableFuture<ResponseEntity<List<FolderInfo>>> listFolders() {
         return telegramService.listFolders()
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().body(Collections.emptyList()));
+                .thenApply(ResponseEntity::ok);
     }
 
     @DeleteMapping("/folders/{chatId}")
