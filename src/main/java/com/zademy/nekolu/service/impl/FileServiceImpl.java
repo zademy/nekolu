@@ -49,6 +49,7 @@ import com.zademy.nekolu.dto.FileInfoResponse;
 import com.zademy.nekolu.dto.FileStatsResponse;
 import com.zademy.nekolu.dto.FileStreamResponse;
 import com.zademy.nekolu.dto.UploadResponse;
+import com.zademy.nekolu.model.TelegramFileMessage;
 import com.zademy.nekolu.service.FileService;
 import com.zademy.nekolu.service.MetadataIndexService;
 import com.zademy.nekolu.service.TelegramService;
@@ -104,41 +105,15 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public CompletableFuture<List<FileInfoResponse>> searchFilesInChat(long chatId, String type, int limit) {
-        if (client == null) {
-            return CompletableFuture.completedFuture(List.of());
-        }
-
-        if (!telegramService.isAuthorized()) {
-            return CompletableFuture.completedFuture(List.of());
-        }
-        CompletableFuture<List<FileInfoResponse>> future = new CompletableFuture<>();
-
-        TdApi.GetChatHistory getHistory = new TdApi.GetChatHistory();
-        getHistory.chatId = chatId;
-        getHistory.fromMessageId = 0;
-        getHistory.offset = 0;
-        getHistory.limit = Math.max(limit * 4, 100);
-        getHistory.onlyLocal = false;
-
-        client.send(getHistory, result -> {
-            switch (result) {
-                case TdApi.Messages messages -> {
-                    List<FileInfoResponse> files = extractFilesFromMessages(messages.messages).stream()
-                        .filter(file -> matchesRequestedType(file, type))
-                        .sorted(Comparator.comparingLong(FileInfoResponse::date).reversed())
-                        .limit(limit)
-                        .toList();
-                    future.complete(files);
-                }
-                case TdApi.Error error -> {
-                    logger.error("[SearchInChat] Error retrieving history for chat {}: {}", chatId, error.message);
-                    future.complete(List.of());
-                }
-                default -> future.complete(List.of());
-            }
-        });
-
-        return future.thenCompose(this::enrichVisibleFiles);
+        return telegramService.getFileMessages(chatId, 0, Math.max(limit * 4, 100))
+            .exceptionally(_ex -> List.of())
+            .thenApply(files -> files.stream()
+                .map(this::toFileInfo)
+                .filter(file -> matchesRequestedType(file, type))
+                .sorted(Comparator.comparingLong(FileInfoResponse::date).reversed())
+                .limit(limit)
+                .toList())
+            .thenCompose(this::enrichVisibleFiles);
     }
 
     private boolean matchesRequestedType(FileInfoResponse file, String type) {
@@ -154,14 +129,6 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public CompletableFuture<List<FileInfoResponse>> searchFilesByType(String type, int limit, String offset) {
-        if (client == null) {
-            return CompletableFuture.failedFuture(new IllegalStateException(TELEGRAM_CLIENT_NOT_INITIALIZED));
-        }
-
-        if (!telegramService.isAuthorized()) {
-            return CompletableFuture.failedFuture(new IllegalStateException(TELEGRAM_AUTH_REQUIRED));
-        }
-
         if (type == null || FileTypeConstants.ALL.equalsIgnoreCase(type)) {
             return searchAllTypes(limit);
         }
@@ -186,29 +153,9 @@ public class FileServiceImpl implements FileService {
     }
 
     private CompletableFuture<List<FileInfoResponse>> searchSingleType(String type, int limit, String offset) {
-        CompletableFuture<List<FileInfoResponse>> future = new CompletableFuture<>();
-
-        TdApi.SearchMessagesFilter filter = createFilterForType(type);
-
-        TdApi.SearchMessages search = new TdApi.SearchMessages();
-        search.chatList = null;
-        search.query = "";
-        search.offset = offset != null ? offset : "";
-        search.limit = limit;
-        search.filter = filter;
-        search.minDate = 0;
-        search.maxDate = 0;
-
-        client.send(search, result -> {
-            if (result instanceof TdApi.FoundMessages foundMessages) {
-                List<FileInfoResponse> files = extractFilesFromMessages(foundMessages.messages);
-                future.complete(files);
-            } else if (result instanceof TdApi.Error) {
-                future.complete(List.of());
-            }
-        });
-
-        return future;
+        return telegramService.searchFileMessages("", type, offset, limit)
+            .exceptionally(_ex -> List.of())
+            .thenApply(found -> found.stream().map(this::toFileInfo).toList());
     }
 
     /**
@@ -399,37 +346,28 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
-     * Creates the search filter for the given type.
+     * Maps a seam file message to the workspace response view. URL
+     * construction and logical defaults happen inside the response record.
      */
-    private TdApi.SearchMessagesFilter createFilterForType(String type) {
-        if (type == null) return null;
-
-        return switch (type.toLowerCase()) {
-            case FileTypeConstants.PHOTO -> new TdApi.SearchMessagesFilterPhoto();
-            case FileTypeConstants.VIDEO -> new TdApi.SearchMessagesFilterVideo();
-            case FileTypeConstants.AUDIO -> new TdApi.SearchMessagesFilterAudio();
-            case FileTypeConstants.DOCUMENT -> new TdApi.SearchMessagesFilterDocument();
-            case FileTypeConstants.VOICE -> new TdApi.SearchMessagesFilterVoiceNote();
-            case FileTypeConstants.VIDEO_NOTE -> new TdApi.SearchMessagesFilterVideoNote();
-            default -> null; // No filter = all
-        };
-    }
-
-    /**
-     * Extracts file information from messages.
-     */
-    private List<FileInfoResponse> extractFilesFromMessages(TdApi.Message[] messages) {
-        List<FileInfoResponse> files = new ArrayList<>();
-
-        for (TdApi.Message message : messages) {
-            FileInfoResponse fileInfo = extractFileFromMessage(message);
-            if (fileInfo != null) {
-                files.add(fileInfo);
-                fileMetadataCache.put(fileInfo.fileId(), fileInfo);
-            }
-        }
-
-        return files;
+    private FileInfoResponse toFileInfo(TelegramFileMessage message) {
+        FileInfoResponse fileInfo = new FileInfoResponse(
+            message.messageId(),
+            message.chatId(),
+            message.fileId(),
+            message.fileName(),
+            message.fileSize(),
+            message.mimeType(),
+            message.type(),
+            message.width(),
+            message.height(),
+            message.duration(),
+            message.thumbnailPath(),
+            message.date(),
+            message.downloaded(),
+            message.localPath()
+        );
+        fileMetadataCache.put(fileInfo.fileId(), fileInfo);
+        return fileInfo;
     }
 
     /**
@@ -994,29 +932,15 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public CompletableFuture<List<FileInfoResponse>> getRecentFilesFromOwnChat(int limit) {
-        return getOwnChatId().thenCompose(chatId -> {
-            CompletableFuture<List<FileInfoResponse>> future = new CompletableFuture<>();
-
-            TdApi.GetChatHistory getHistory = new TdApi.GetChatHistory();
-            getHistory.chatId = chatId;
-            getHistory.fromMessageId = 0;
-            getHistory.offset = 0;
-            getHistory.limit = limit;
-            getHistory.onlyLocal = false;
-
-            client.send(getHistory, result -> {
-                if (result instanceof TdApi.Messages messages) {
-                    List<FileInfoResponse> files = extractFilesFromMessages(messages.messages);
-                    logger.info("[RecentFiles] Retrieved {} files from own chat ({})", files.size(), chatId);
-                    future.complete(files);
-                } else if (result instanceof TdApi.Error error) {
-                    logger.error("[RecentFiles] Error: {}", error.message);
-                    future.complete(List.of());
-                }
-            });
-
-            return future;
-        }).thenCompose(this::enrichVisibleFiles);
+        return getOwnChatId()
+            .thenCompose(chatId -> telegramService.getFileMessages(chatId, 0, limit)
+                .exceptionally(_ex -> List.of()))
+            .thenApply(files -> {
+                List<FileInfoResponse> mapped = files.stream().map(this::toFileInfo).toList();
+                logger.info("[RecentFiles] Retrieved {} files from own chat", mapped.size());
+                return mapped;
+            })
+            .thenCompose(this::enrichVisibleFiles);
     }
 
     private CompletableFuture<List<FileInfoResponse>> enrichVisibleFiles(List<FileInfoResponse> files) {
