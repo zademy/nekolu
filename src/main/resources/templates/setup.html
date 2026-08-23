@@ -24,7 +24,7 @@
       body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
     </style>
   </head>
-  <body class="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-200 flex items-center justify-center p-6">
+  <body class="min-h-screen bg-canvas flex items-center justify-center p-6">
     <main class="w-full max-w-md">
 
       <div class="text-center mb-8">
@@ -33,37 +33,37 @@
             <path d="M9.04 15.51l-.38 5.35c.54 0 .78-.23 1.06-.5l2.55-2.44 5.28 3.87c.97.53 1.66.25 1.92-.9L23.9 4.6c.31-1.42-.51-1.98-1.46-1.63L1.7 11.2c-1.39.54-1.37 1.32-.24 1.67l5.31 1.66L19.53 6.9c.58-.38 1.11-.17.68.21L9.04 15.51z"/>
           </svg>
         </div>
-        <h1 class="text-2xl font-extrabold text-slate-800">Nekolu</h1>
-        <p class="text-sm text-slate-500 mt-1" th:text="#{setup.tagline}">Your Telegram-backed file workspace</p>
+        <h1 class="text-2xl font-extrabold text-default">Nekolu</h1>
+        <p class="text-sm text-muted mt-1" th:text="#{setup.tagline}">Your Telegram-backed file workspace</p>
       </div>
 
       <!-- Step indicator -->
       <div class="flex items-center justify-center gap-2 mb-6" aria-hidden="true">
-        <span th:classappend="${step >= 1} ? 'bg-[var(--bgColor-accent-emphasis)] text-white' : 'bg-white text-slate-400'"
-              class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-sm font-bold">1</span>
-        <span class="w-8 h-0.5 rounded" th:classappend="${step >= 2} ? 'bg-[var(--bgColor-accent-emphasis)]' : 'bg-slate-300'"></span>
-        <span th:classappend="${step >= 2} ? 'bg-[var(--bgColor-accent-emphasis)] text-white' : 'bg-white text-slate-400'"
-              class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-sm font-bold">2</span>
-        <span class="w-8 h-0.5 rounded" th:classappend="${step >= 3} ? 'bg-[var(--bgColor-accent-emphasis)]' : 'bg-slate-300'"></span>
-        <span th:classappend="${step >= 3} ? 'bg-[var(--bgColor-accent-emphasis)] text-white' : 'bg-white text-slate-400'"
-              class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-sm font-bold">3</span>
+        <span th:classappend="${step >= 1} ? 'bg-[var(--bgColor-accent-emphasis)] text-white' : 'bg-canvas text-subtle'"
+              class="w-8 h-8 rounded-full bg-canvas shadow-sm flex items-center justify-center text-sm font-bold">1</span>
+        <span class="w-8 h-0.5 rounded" th:classappend="${step >= 2} ? 'bg-[var(--bgColor-accent-emphasis)]' : 'bg-inactive'"></span>
+        <span th:classappend="${step >= 2} ? 'bg-[var(--bgColor-accent-emphasis)] text-white' : 'bg-canvas text-subtle'"
+              class="w-8 h-8 rounded-full bg-canvas shadow-sm flex items-center justify-center text-sm font-bold">2</span>
+        <span class="w-8 h-0.5 rounded" th:classappend="${step >= 3} ? 'bg-[var(--bgColor-accent-emphasis)]' : 'bg-inactive'"></span>
+        <span th:classappend="${step >= 3} ? 'bg-[var(--bgColor-accent-emphasis)] text-white' : 'bg-canvas text-subtle'"
+              class="w-8 h-8 rounded-full bg-canvas shadow-sm flex items-center justify-center text-sm font-bold">3</span>
       </div>
 
-      <section class="bg-white rounded-2xl shadow-xl shadow-slate-200/60 p-8">
+      <section class="bg-canvas rounded-2xl shadow-xl shadow-slate-200/60 p-8">
 
         <!-- Step 1: phone number -->
         <div th:if="${step == 1}">
-          <h2 class="text-lg font-bold text-slate-800 mb-1" th:text="#{setup.heading.phone}">Sign in</h2>
-          <p class="text-sm text-slate-500 mb-6" th:text="#{setup.subtitle.phone}">
+          <h2 class="text-lg font-bold text-default mb-1" th:text="#{setup.heading.phone}">Sign in</h2>
+          <p class="text-sm text-muted mb-6" th:text="#{setup.subtitle.phone}">
             Enter your phone number to continue.
           </p>
           <form method="post" action="/setup/phone" class="space-y-4">
             <label class="block">
-              <span class="text-xs font-semibold uppercase tracking-wide text-slate-500" th:text="#{setup.label.phone}">Phone number</span>
+              <span class="text-xs font-semibold uppercase tracking-wide text-muted" th:text="#{setup.label.phone}">Phone number</span>
               <input type="tel" name="phoneNumber" required autocomplete="tel"
                      placeholder="+1 555 000 0000"
                      th:placeholder="#{setup.hint.phone}"
-                     class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-[var(--borderColor-accent-emphasis)] focus:border-transparent" />
+                     class="mt-1 w-full rounded-xl border border-default px-4 py-3 text-default focus:outline-none focus:ring-2 focus:ring-[var(--borderColor-accent-emphasis)] focus:border-transparent" />
             </label>
             <button type="submit"
                     class="w-full rounded-xl bg-[var(--bgColor-accent-emphasis)] hover:opacity-90 text-white font-semibold py-3 transition-colors"
@@ -73,16 +73,16 @@
 
         <!-- Step 2: verification code -->
         <div th:if="${step == 2}">
-          <h2 class="text-lg font-bold text-slate-800 mb-1" th:text="#{setup.heading.code}">Verification code</h2>
-          <p class="text-sm text-slate-500 mb-6" th:text="#{setup.subtitle.code}">
+          <h2 class="text-lg font-bold text-default mb-1" th:text="#{setup.heading.code}">Verification code</h2>
+          <p class="text-sm text-muted mb-6" th:text="#{setup.subtitle.code}">
             We sent a code to your phone.
           </p>
           <form method="post" action="/setup/code" class="space-y-4">
             <label class="block">
-              <span class="text-xs font-semibold uppercase tracking-wide text-slate-500" th:text="#{setup.label.code}">Code</span>
+              <span class="text-xs font-semibold uppercase tracking-wide text-muted" th:text="#{setup.label.code}">Code</span>
               <input type="text" name="code" required inputmode="numeric" autocomplete="one-time-code"
                      placeholder="12345"
-                     class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-center text-2xl tracking-[0.4em] font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[var(--borderColor-accent-emphasis)] focus:border-transparent" />
+                     class="mt-1 w-full rounded-xl border border-default px-4 py-3 text-center text-2xl tracking-[0.4em] font-semibold text-default focus:outline-none focus:ring-2 focus:ring-[var(--borderColor-accent-emphasis)] focus:border-transparent" />
             </label>
             <button type="submit"
                     class="w-full rounded-xl bg-[var(--bgColor-accent-emphasis)] hover:opacity-90 text-white font-semibold py-3 transition-colors"
@@ -92,15 +92,15 @@
 
         <!-- Step 3: two-step verification password -->
         <div th:if="${step == 3}">
-          <h2 class="text-lg font-bold text-slate-800 mb-1" th:text="#{setup.heading.password}">Two-step verification</h2>
-          <p class="text-sm text-slate-500 mb-6" th:text="#{setup.subtitle.password}">
+          <h2 class="text-lg font-bold text-default mb-1" th:text="#{setup.heading.password}">Two-step verification</h2>
+          <p class="text-sm text-muted mb-6" th:text="#{setup.subtitle.password}">
             Your account is protected with a password.
           </p>
           <form method="post" action="/setup/password" class="space-y-4">
             <label class="block">
-              <span class="text-xs font-semibold uppercase tracking-wide text-slate-500" th:text="#{setup.label.password}">Password</span>
+              <span class="text-xs font-semibold uppercase tracking-wide text-muted" th:text="#{setup.label.password}">Password</span>
               <input type="password" name="password" required autocomplete="current-password"
-                     class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-[var(--borderColor-accent-emphasis)] focus:border-transparent" />
+                     class="mt-1 w-full rounded-xl border border-default px-4 py-3 text-default focus:outline-none focus:ring-2 focus:ring-[var(--borderColor-accent-emphasis)] focus:border-transparent" />
             </label>
             <button type="submit"
                     class="w-full rounded-xl bg-[var(--bgColor-accent-emphasis)] hover:opacity-90 text-white font-semibold py-3 transition-colors"
@@ -110,7 +110,7 @@
 
         <!-- Error banner -->
         <div th:if="${error}"
-             class="mt-6 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 flex items-start gap-2">
+             class="mt-6 rounded-xl bg-danger-muted border border-danger px-4 py-3 text-sm text-danger flex items-start gap-2">
           <svg viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 shrink-0 mt-0.5">
             <path fill-rule="evenodd" d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
           </svg>
@@ -118,7 +118,7 @@
         </div>
       </section>
 
-      <p class="text-center text-xs text-slate-400 mt-6" th:text="#{setup.footer}">Your session stays on this device.</p>
+      <p class="text-center text-xs text-subtle mt-6" th:text="#{setup.footer}">Your session stays on this device.</p>
     </main>
   </body>
 </html>
