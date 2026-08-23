@@ -36,6 +36,7 @@ import com.zademy.nekolu.dto.FileInfoResponse;
 import com.zademy.nekolu.dto.FileStatsResponse;
 import com.zademy.nekolu.dto.FileStreamResponse;
 import com.zademy.nekolu.dto.FullStatsResponse;
+import com.zademy.nekolu.dto.UploadCommand;
 import com.zademy.nekolu.dto.UploadResponse;
 import com.zademy.nekolu.exception.Exceptions;
 import com.zademy.nekolu.exception.StagingException;
@@ -559,7 +560,7 @@ public class FileController {
             try (java.io.InputStream content = file.getInputStream()) {
                 java.util.List<String> parsedTags = parseTags(tags);
 
-                com.zademy.nekolu.dto.UploadCommand uploadCommand = new com.zademy.nekolu.dto.UploadCommand(
+                UploadCommand uploadCommand = new UploadCommand(
                     file.getOriginalFilename(), content, targetChatId, caption,
                     virtualPath, parsedTags, origin, archived,
                     "photo".equalsIgnoreCase(type));

@@ -302,7 +302,7 @@ public class TelegramServiceImpl implements TelegramService {
      */
     private CompletableFuture<TelegramFileMessage> trackedFileMessage(TdApi.Message message, String stagedFilePath) {
         MessageContent content = message.content != null ? contentOf(message.content) : null;
-        TelegramFileMessage fileMessage = toFileMessage(message);
+        TelegramFileMessage fileMessage = toFileMessage(message, content);
         if (content == null || fileMessage == null) {
             return CompletableFuture.failedFuture(new TelegramNotFoundException("Message contains no file"));
         }
@@ -407,8 +407,11 @@ public class TelegramServiceImpl implements TelegramService {
      */
     private TelegramFileMessage toFileMessage(TdApi.Message message) {
         if (message.content == null) return null;
+        return toFileMessage(message, contentOf(message.content));
+    }
 
-        MessageContent content = contentOf(message.content);
+    /** Building from an already-extracted content; null content means no file. */
+    private TelegramFileMessage toFileMessage(TdApi.Message message, MessageContent content) {
         if (content == null) return null;
 
         TdApi.File file = content.file();
