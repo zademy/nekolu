@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.zademy.nekolu.exception.StagingException;
@@ -38,18 +39,14 @@ public class UploadStagingArea {
     private static final Duration LEFTOVER_RETENTION = Duration.ofHours(12);
     private static final String FALLBACK_NAME = "upload.bin";
 
-    static final Path DEFAULT_DIRECTORY = Path.of("tdlib", "upload-staging");
-
     private final Path directory;
 
-    public UploadStagingArea() {
-        this(DEFAULT_DIRECTORY);
-    }
-
     /**
-     * Testing seam: staging against an explicit directory.
+     * The staging directory is configurable; the default keeps the
+     * historical location. Tests inject an explicit directory through the
+     * same constructor.
      */
-    public UploadStagingArea(Path directory) {
+    public UploadStagingArea(@Value("${nekolu.upload-staging-directory:tdlib/upload-staging}") Path directory) {
         this.directory = directory;
     }
 
