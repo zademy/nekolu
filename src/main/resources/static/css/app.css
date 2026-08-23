@@ -2326,8 +2326,8 @@ a { color: var(--fgColor-accent); }
 .gridjs-td .badge-failed { background: var(--bgColor-danger-muted); color: var(--fgColor-danger); }
 
 /* Links en Grid.js */
-.gridjs-td a { color: var(--fgColor-accent); text-decoration: none; }
-.gridjs-td a:hover { text-decoration: underline; }
+.gridjs-td a:not(.btn) { color: var(--fgColor-accent); text-decoration: none; }
+.gridjs-td a:not(.btn):hover { text-decoration: underline; }
 
 /* Checkbox */
 .gridjs-td input[type="checkbox"] {
