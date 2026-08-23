@@ -1,0 +1,6 @@
+docker/
+.git
+.env
+tdlib/
+target
+*.md
