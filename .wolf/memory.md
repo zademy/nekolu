@@ -300,3 +300,7 @@ description: chronological action log per session, consolidated weekly
 | 22:07 | Created Dockerfile | — | ~182 |
 | 22:32 | Created Dockerfile | — | ~202 |
 | 23:35 | Created Dockerfile | — | ~219 |
+| 23:47 | Edited src/main/java/com/zademy/nekolu/service/impl/UploadStagingArea.java | modified stage() | ~252 |
+| 23:47 | Edited src/main/java/com/zademy/nekolu/service/impl/UploadStagingArea.java | added error handling | ~294 |
+| 23:47 | Edited src/main/java/com/zademy/nekolu/service/impl/UploadStagingArea.java | added error handling | ~311 |
+| 23:50 | Edited src/test/java/com/zademy/nekolu/service/impl/UploadStagingAreaTest.java | 7→7 lines | ~105 |

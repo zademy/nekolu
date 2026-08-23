@@ -1,13 +1,13 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-08-23T05:35:18.183Z",
+    "lastScanned": "2026-08-23T05:50:27.737Z",
     "fileCount": 153,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "a1c6483ff4e3b4af8f368b9c1ad1227d7fac813e47ff33a9d99df0ece7b80e27",
-    "storeUpdatedAt": "2026-08-23T05:35:18.190Z",
-    "rootHash": "2a7b03256877af08"
+    "renderedHash": "0dfaa1ea1bccc26b86f9e0506566ebaa17dcda905ac978943124ea00a22771e4",
+    "storeUpdatedAt": "2026-08-23T05:50:27.747Z",
+    "rootHash": "3f1abfa42f447400"
   },
   "files": {
     ".classpath": {
@@ -1556,11 +1556,11 @@
     },
     "src/main/java/com/zademy/nekolu/service/impl/UploadStagingArea.java": {
       "description": "Deep module owning the staged-upload cycle: materializing an incoming",
-      "tokens": 1011,
-      "hash": "9d486a8d88ddd12b",
-      "size": 3788,
-      "mtimeMs": 1787445129691.0203,
-      "updatedAt": "2026-08-23T00:32:09.731Z",
+      "tokens": 1408,
+      "hash": "2b5c8aaf517529b2",
+      "size": 5282,
+      "mtimeMs": 1787464069168.6624,
+      "updatedAt": "2026-08-23T05:47:49.225Z",
       "source": "hook"
     },
     "src/main/java/com/zademy/nekolu/service/TelegramService.java": {
@@ -2552,64 +2552,12 @@
     },
     "src/test/java/com/zademy/nekolu/service/impl/UploadStagingAreaTest.java": {
       "description": "Unit tests for the upload staging area against a real temporary",
-      "tokens": 931,
-      "hash": "437bd7d78bd79ca6",
-      "size": 3260,
-      "mtimeMs": 1787436915269.7422,
-      "updatedAt": "2026-08-23T00:00:00.289Z",
-      "source": "scan",
-      "symbols": [
-        {
-          "name": "UploadStagingAreaTest",
-          "kind": "class",
-          "startLine": 32,
-          "endLine": 101,
-          "tokens": 670
-        },
-        {
-          "name": "UploadStagingAreaTest.setUp",
-          "kind": "method",
-          "startLine": 39,
-          "endLine": 42,
-          "tokens": 30
-        },
-        {
-          "name": "UploadStagingAreaTest.stageMaterializesContentWithASanitizedName",
-          "kind": "method",
-          "startLine": 44,
-          "endLine": 54,
-          "tokens": 167
-        },
-        {
-          "name": "UploadStagingAreaTest.stageFallsBackToAGenericNameWhenMissing",
-          "kind": "method",
-          "startLine": 56,
-          "endLine": 62,
-          "tokens": 73
-        },
-        {
-          "name": "UploadStagingAreaTest.discardRemovesTheStagedFile",
-          "kind": "method",
-          "startLine": 64,
-          "endLine": 71,
-          "tokens": 66
-        },
-        {
-          "name": "UploadStagingAreaTest.purgeExpiredRemovesOnlyOldLeftovers",
-          "kind": "method",
-          "startLine": 73,
-          "endLine": 84,
-          "tokens": 150
-        },
-        {
-          "name": "UploadStagingAreaTest.stageSurfacesDiskFailuresAsStagingException",
-          "kind": "method",
-          "startLine": 86,
-          "endLine": 100,
-          "tokens": 153
-        }
-      ],
-      "symbolSource": "ts"
+      "tokens": 908,
+      "hash": "507e517fafcac7a2",
+      "size": 3404,
+      "mtimeMs": 1787464227686.8303,
+      "updatedAt": "2026-08-23T05:50:27.736Z",
+      "source": "hook"
     },
     "tdlib/db.sqlite-shm": {
       "description": "",

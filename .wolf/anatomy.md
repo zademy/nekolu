@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-23T05:35:18.183Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-23T05:50:27.737Z
 > Files: 153 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
@@ -179,7 +179,7 @@
 - `TdLibPreconditions.java` — Centralizes TDLib precondition checks that are repeated across service methods. (~481 tok)
 - `TelegramRateLimiter.java` — Token-bucket-style rate limiter that protects the TDLib client from (~644 tok)
 - `TelegramServiceImpl.java` — TDLib-backed implementation of Telegram operations such as authorization, downloads, folders, and te (~11191 tok)
-- `UploadStagingArea.java` — Deep module owning the staged-upload cycle: materializing an incoming (~1011 tok)
+- `UploadStagingArea.java` — Deep module owning the staged-upload cycle: materializing an incoming (~1408 tok)
 
 ## src/main/resources/
 
@@ -237,7 +237,7 @@
 
 - `FileServiceImplTest.java` — Unit tests for the file-management module through the TelegramService seam, (~3782 tok)
 - `TdLibPreconditionsTest.java` — Unit tests for the centralized TDLib readiness preconditions used by the (~669 tok)
-- `UploadStagingAreaTest.java` — Unit tests for the upload staging area against a real temporary (~931 tok)
+- `UploadStagingAreaTest.java` — Unit tests for the upload staging area against a real temporary (~908 tok)
 
 ## tdlib/
 
