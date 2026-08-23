@@ -820,7 +820,7 @@ textarea {
 .filter-select:focus,
 .form-control:focus,
 textarea:focus {
-  border-color: var(--fgColor-subtle);
+  border-color: var(--borderColor-default);
   box-shadow: 0 0 0 4px var(--bgColor-accent-muted);
 }
 
@@ -919,7 +919,7 @@ textarea:focus {
   font-weight: 800;
   white-space: nowrap;
   background: linear-gradient(180deg, var(--bgColor-muted), var(--bgColor-muted));
-  border-bottom: 1px solid var(--fgColor-default);
+  border-bottom: 1px solid var(--borderColor-default);
 }
 
 .file-table tbody tr {
@@ -929,7 +929,7 @@ textarea:focus {
 .file-table tbody td {
   padding: 15px 16px;
   background: var(--bgColor-default);
-  border-bottom: 1px solid var(--fgColor-default);
+  border-bottom: 1px solid var(--borderColor-default);
   color: var(--tg-text);
 }
 
@@ -1045,7 +1045,7 @@ textarea:focus {
 
 .btn-icon:hover {
   color: var(--fgColor-accent);
-  border-color: var(--fgColor-subtle);
+  border-color: var(--borderColor-default);
 }
 
 .btn-icon.text-success {
@@ -1646,7 +1646,7 @@ div.dt-container .dt-paging button:hover {
   padding: 14px 16px;
   border: 0 !important;
   background: linear-gradient(180deg, var(--bgColor-muted), var(--bgColor-muted)) !important;
-  border-bottom: 1px solid var(--fgColor-default) !important;
+  border-bottom: 1px solid var(--borderColor-default) !important;
   color: var(--tg-text-soft);
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -1657,7 +1657,7 @@ div.dt-container .dt-paging button:hover {
 .tg-grid-wrapper tbody td {
   padding: 15px 16px;
   border-top: 0 !important;
-  border-bottom: 1px solid var(--fgColor-default) !important;
+  border-bottom: 1px solid var(--borderColor-default) !important;
   background: var(--bgColor-default);
 }
 
@@ -1947,14 +1947,14 @@ div.dt-container .dt-paging button:hover {
 .form-control::placeholder { color: var(--fgColor-subtle); }
 
 /* Tablas: cabecera muted, filas hover subtle */
-.table { color: var(--fgColor-default); }
-.table thead th {
+.table, .file-table { color: var(--fgColor-default); }
+.table thead th, .file-table thead th {
   background: var(--bgColor-muted);
   color: var(--fgColor-muted);
   border-bottom: 1px solid var(--borderColor-default);
 }
-.table td { border-bottom: 1px solid var(--borderColor-default); }
-.table tbody tr:hover td { background: var(--bgColor-muted); }
+.table td, .file-table td { border-bottom: 1px solid var(--borderColor-default); }
+.table tbody tr:hover td, .file-table tbody tr:hover td { background: var(--bgColor-muted); }
 
 /* Badges de estado: success/attention/danger según significado */
 .badge-status { border: 1px solid var(--borderColor-default); }
@@ -2028,3 +2028,137 @@ a { color: var(--fgColor-accent); }
 .bg-danger-muted { background: var(--bgColor-danger-muted); }
 .border-default { border-color: var(--borderColor-default); }
 .border-danger { border-color: var(--fgColor-danger); }
+
+/* ==================== TABLAS — patrón GitHub Primer ==================== */
+
+/* Contenedor: borde sutil, esquinas 8px, sin scroll horizontal innecesario */
+.table-responsive {
+  border-radius: 8px;
+  border: 1px solid var(--borderColor-default);
+  background: var(--bgColor-default);
+}
+
+/* La tabla llena el contenedor sin margen extra */
+.table, .file-table {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--fgColor-default);
+  border-collapse: collapse;
+  width: 100%;
+}
+
+/* Cabecera: mayúsculas pequeñas, texto muted, fondo sutil, SIN borde vertical */
+.table thead th, .file-table thead th {
+  background: var(--bgColor-muted);
+  color: var(--fgColor-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 10px 16px;
+  border: none;
+  border-bottom: 1px solid var(--borderColor-default);
+  white-space: nowrap;
+}
+
+/* Celdas: padding cómodo, SOLO borde horizontal inferior */
+.table td, .file-table td {
+  padding: 12px 16px;
+  border: none;
+  border-bottom: 1px solid var(--borderColor-default);
+  vertical-align: middle;
+  color: var(--fgColor-default);
+}
+
+/* Última fila sin borde inferior (el contenedor ya cierra) */
+.table tbody tr:last-child td, .file-table tbody tr:last-child td { border-bottom: none; }
+
+/* Hover: sutil, solo la fila */
+.table tbody tr:hover td, .file-table tbody tr:hover td { background: var(--bgColor-muted); }
+
+/* ===== Botones dentro de tablas ===== */
+
+/* Compactos, sin borde por defecto (aparece al hover) */
+.table .btn-icon, .file-table .btn-icon,
+.table a.btn-icon, .file-table a.btn-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--fgColor-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  padding: 0;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+/* Hover: fondo sutil + color del token semántico */
+.table .btn-icon:hover, .file-table .btn-icon:hover {
+  background: var(--bgColor-muted);
+  border-color: var(--borderColor-default);
+  color: var(--fgColor-accent);
+}
+
+.table .btn-icon.text-success:hover, .file-table .btn-icon.text-success:hover { color: var(--fgColor-success); }
+.table .btn-icon.text-danger:hover, .file-table .btn-icon.text-danger:hover { color: var(--fgColor-danger); }
+.table .btn-icon.text-warning:hover, .file-table .btn-icon.text-warning:hover { color: var(--fgColor-attention); }
+
+/* Focus visible para teclado */
+.table .btn-icon:focus-visible, .file-table .btn-icon:focus-visible {
+  outline: 2px solid var(--borderColor-accent-emphasis);
+  outline-offset: 1px;
+  border-radius: 6px;
+}
+
+/* Separación entre botones en la misma celda */
+.table td .btn-icon + .btn-icon, .file-table td .btn-icon + .btn-icon,
+.table td a.btn-icon + a.btn-icon,
+.table td .btn-icon + a.btn-icon,
+.table td a.btn-icon + .btn-icon { margin-left: 4px; }
+
+/* Contenedor de botones de acción en la celda */
+.table td:last-child, .file-table td:last-child { text-align: right; white-space: nowrap; }
+
+/* ===== Badges dentro de tablas ===== */
+.table .badge-status, .file-table .badge-status {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 999px;
+  display: inline-block;
+  line-height: 1.4;
+}
+
+/* ===== Checkbox en primera columna ===== */
+.table td:first-child .form-check-input, .file-table td:first-child .form-check-input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--bgColor-accent-emphasis);
+}
+
+/* ===== Nombre de archivo + metadata ===== */
+.table .file-name, .file-table .file-name {
+  font-weight: 500;
+  color: var(--fgColor-default);
+  font-size: 0.875rem;
+}
+
+.table .file-meta, .file-table .file-meta {
+  color: var(--fgColor-muted);
+  font-size: 0.75rem;
+  margin-top: 2px;
+}
+
+/* ===== Icono de tipo de archivo ===== */
+.table .file-icon-token, .file-table .file-icon-token {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--bgColor-muted);
+  color: var(--fgColor-muted);
+  font-size: 0.8125rem;
+}
