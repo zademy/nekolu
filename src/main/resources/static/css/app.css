@@ -418,7 +418,7 @@ html {
   background: var(--tg-primary-soft);
   color: var(--tg-primary-hover);
   font-size: 0.8125rem;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .hero-title {
@@ -685,7 +685,7 @@ html {
   gap: 8px;
   min-height: 46px;
   padding: 0 18px;
-  font-weight: 700;
+  font-weight: 500;
   color: var(--tg-ink);
   background: var(--bgColor-default);
   box-shadow: none;
@@ -858,7 +858,7 @@ textarea:focus {
   display: block;
   margin-bottom: 8px;
   color: var(--tg-text-soft);
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .form-text {
@@ -906,46 +906,47 @@ textarea:focus {
 
 .file-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse;
 }
 
 .file-table thead th {
-  padding: 14px 16px;
-  color: var(--tg-text-soft);
+  padding: 10px 16px;
+  color: var(--fgColor-muted);
   font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-weight: 600;
   white-space: nowrap;
-  background: linear-gradient(180deg, var(--bgColor-muted), var(--bgColor-muted));
+  background: var(--bgColor-muted);
+  border: none;
   border-bottom: 1px solid var(--borderColor-default);
 }
 
 .file-table tbody tr {
-  transition: background-color 0.16s ease;
+  transition: background-color 0.12s ease;
 }
 
 .file-table tbody td {
-  padding: 15px 16px;
-  background: var(--bgColor-default);
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
   border-bottom: 1px solid var(--borderColor-default);
-  color: var(--tg-text);
-}
-
-.file-table tbody tr:hover {
-  background: var(--bgColor-accent-muted);
+  color: var(--fgColor-default);
 }
 
 .file-table tbody tr:hover td {
-  background: var(--bgColor-accent-muted);
-  border-bottom-color: var(--fgColor-subtle);
+  background: var(--bgColor-muted);
+  border-bottom-color: var(--borderColor-default);
+}
+
+.file-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .file-name {
   display: block;
   color: var(--tg-ink);
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1.45;
   word-break: break-word;
 }
@@ -1105,7 +1106,7 @@ textarea:focus {
 
 .job-id {
   font-family: var(--font-mono);
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .summary-item {
@@ -1560,7 +1561,7 @@ textarea:focus {
 }
 
 .fw-bold {
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .text-light,
@@ -1717,7 +1718,7 @@ div.dt-container .dt-paging button:hover {
   border: 1px solid var(--borderColor-default) !important;
   background: var(--bgColor-default) !important;
   color: var(--tg-text) !important;
-  font-weight: 700;
+  font-weight: 500;
   box-shadow: none;
   transition:
     transform 0.18s ease,
@@ -2162,3 +2163,138 @@ a { color: var(--fgColor-accent); }
   color: var(--fgColor-muted);
   font-size: 0.8125rem;
 }
+
+/* ==================== GRID.JS — mismo patrón Primer que file-table ==================== */
+
+.gridjs-wrapper {
+  border: 1px solid var(--borderColor-default) !important;
+  border-radius: 8px;
+  background: var(--bgColor-default);
+  box-shadow: none !important;
+  color: var(--fgColor-default);
+  overflow: hidden;
+}
+
+.gridjs-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+  color: var(--fgColor-default);
+  font-size: 0.875rem;
+}
+
+/* Cabecera Grid.js: igual que file-table */
+.gridjs-th {
+  background: var(--bgColor-muted) !important;
+  color: var(--fgColor-muted) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--borderColor-default) !important;
+  padding: 10px 16px !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.gridjs-th .gridjs-th-content {
+  color: var(--fgColor-muted);
+  font-weight: 600;
+  text-overflow: ellipsis;
+}
+
+/* Celdas Grid.js */
+.gridjs-td {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid var(--borderColor-default) !important;
+  color: var(--fgColor-default) !important;
+  padding: 12px 16px !important;
+  font-size: 0.875rem;
+}
+
+/* Última fila sin borde */
+.gridjs-tr:last-child .gridjs-td {
+  border-bottom: none !important;
+}
+
+/* Hover de fila */
+.gridjs-tr:hover .gridjs-td,
+.gridjs-tr.selected .gridjs-td {
+  background: var(--bgColor-muted) !important;
+  color: var(--fgColor-default) !important;
+}
+
+/* Botones dentro de Grid.js */
+.gridjs-td .btn-icon,
+.gridjs-td a.btn-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--fgColor-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.gridjs-td .btn-icon:hover {
+  background: var(--bgColor-muted);
+  border-color: var(--borderColor-default);
+  color: var(--fgColor-accent);
+}
+
+.gridjs-td .btn-icon + .btn-icon { margin-left: 4px; }
+
+/* Badges en Grid.js */
+.gridjs-td .badge-status {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 999px;
+  display: inline-block;
+  border: none;
+}
+.gridjs-td .badge-downloaded { background: var(--bgColor-success-muted); color: var(--fgColor-success); }
+.gridjs-td .badge-pending { background: var(--bgColor-muted); color: var(--fgColor-muted); }
+
+/* Footer de Grid.js (paginación) */
+.gridjs-footer {
+  background: var(--bgColor-default) !important;
+  border-top: 1px solid var(--borderColor-default) !important;
+  border: none;
+  box-shadow: none !important;
+  padding: 8px 16px;
+}
+
+.gridjs-pagination {
+  background: transparent;
+  color: var(--fgColor-muted);
+}
+
+.gridjs-pagination .gridjs-currentPage {
+  background: var(--bgColor-accent-muted);
+  color: var(--fgColor-accent);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+/* Checkbox en Grid.js */
+.gridjs-td input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--bgColor-accent-emphasis);
+}
+
+/* Links dentro de Grid.js */
+.gridjs-td a {
+  color: var(--fgColor-accent);
+  text-decoration: none;
+}
+.gridjs-td a:hover { text-decoration: underline; }
