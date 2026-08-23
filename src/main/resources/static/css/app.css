@@ -1990,6 +1990,7 @@ div.dt-container .dt-paging button:hover {
 }
 .card-panel-header { border-bottom: 1px solid var(--borderColor-default); }
 .card-panel-title { color: var(--fgColor-default); }
+.card-panel-header .btn { margin-bottom: 8px; }
 
 /* Dropzone: reposo muted, drag accent */
 .dropzone {
@@ -2156,7 +2157,7 @@ a { color: var(--fgColor-accent); }
 }
 
 /* ===== Icono de tipo de archivo ===== */
-.table .file-icon, .file-table .file-icon {
+
   width: 32px;
   height: 32px;
   border-radius: 6px;
@@ -2165,71 +2166,121 @@ a { color: var(--fgColor-accent); }
   font-size: 0.8125rem;
 }
 
-/* ==================== GRID.JS — mismo patrón Primer que file-table ==================== */
+/* ==================== GRID.JS — estilos desde cero sobre tokens Primer ==================== */
 
+/* Contenedor: canvas con borde, sin sombra */
 .gridjs-wrapper {
-  border: 1px solid var(--borderColor-default) !important;
+  border: 1px solid var(--borderColor-default);
   border-radius: 8px;
   background: var(--bgColor-default);
-  box-shadow: none !important;
   color: var(--fgColor-default);
-  overflow: hidden;
+  overflow: auto;
+  font-size: 0.875rem;
+  box-shadow: none;
 }
 
+/* La tabla en sí */
 .gridjs-table {
   width: 100%;
   border-collapse: collapse;
   background: transparent;
-  color: var(--fgColor-default);
-  font-size: 0.875rem;
 }
 
-/* Cabecera Grid.js: igual que file-table */
+/* Cabecera: muted, uppercase, sin bordes verticales */
 .gridjs-th {
-  background: var(--bgColor-muted) !important;
-  color: var(--fgColor-muted) !important;
-  border: none !important;
-  border-bottom: 1px solid var(--borderColor-default) !important;
-  padding: 10px 16px !important;
-  font-size: 0.75rem !important;
-  font-weight: 600 !important;
+  background: var(--bgColor-muted);
+  color: var(--fgColor-muted);
+  border: none;
+  border-bottom: 1px solid var(--borderColor-default);
+  padding: 10px 16px;
+  font-size: 0.75rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  outline: none !important;
-  box-shadow: none !important;
+  text-align: left;
+  white-space: nowrap;
+  outline: none;
 }
 
-.gridjs-th .gridjs-th-content {
-  color: var(--fgColor-muted);
-  font-weight: 600;
-  text-overflow: ellipsis;
-}
+.gridjs-th:hover { background: var(--bgColor-muted); }
+.gridjs-th:focus { box-shadow: none; }
 
-/* Celdas Grid.js */
+/* Contenido del th */
+.gridjs-th-content { color: var(--fgColor-muted); font-weight: 600; }
+
+/* Sort indicators */
+.gridjs-th .gridjs-sort { background: none; border: none; }
+.gridjs-th.sorted { background: var(--bgColor-muted); }
+
+/* Celdas: fondo transparente, borde horizontal */
 .gridjs-td {
-  background: transparent !important;
-  border: none !important;
-  border-bottom: 1px solid var(--borderColor-default) !important;
-  color: var(--fgColor-default) !important;
-  padding: 12px 16px !important;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--borderColor-default);
+  color: var(--fgColor-default);
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  vertical-align: middle;
+}
+
+/* Última fila sin borde inferior */
+.gridjs-tr:last-child .gridjs-td { border-bottom: none; }
+
+/* Hover de fila: muted sutil */
+.gridjs-tr:hover .gridjs-td { background: var(--bgColor-muted); }
+
+/* Fila seleccionada (si aplica) */
+.gridjs-tr.selected .gridjs-td { background: var(--bgColor-accent-muted); }
+
+/* Loading / no results */
+.gridjs-loading, .gridjs-notfound {
+  background: var(--bgColor-default);
+  color: var(--fgColor-muted);
+  padding: 24px;
+  text-align: center;
   font-size: 0.875rem;
 }
 
-/* Última fila sin borde */
-.gridjs-tr:last-child .gridjs-td {
-  border-bottom: none !important;
+/* Footer / paginación */
+.gridjs-footer {
+  background: var(--bgColor-default);
+  border-top: 1px solid var(--borderColor-default);
+  box-shadow: none;
+  padding: 8px 16px;
 }
 
-/* Hover de fila */
-.gridjs-tr:hover .gridjs-td,
-.gridjs-tr.selected .gridjs-td {
-  background: var(--bgColor-muted) !important;
-  color: var(--fgColor-default) !important;
+.gridjs-pagination { background: transparent; color: var(--fgColor-muted); }
+
+.gridjs-pagination summary,
+.gridjs-pagination .gridjs-summary {
+  color: var(--fgColor-muted);
+  font-size: 0.8125rem;
 }
 
-/* Botones dentro de Grid.js */
-.gridjs-td .btn-icon,
-.gridjs-td a.btn-icon {
+.gridjs-pagination button {
+  background: transparent;
+  border: 1px solid var(--borderColor-default);
+  border-radius: 6px;
+  color: var(--fgColor-default);
+  padding: 4px 10px;
+  font-size: 0.8125rem;
+  margin-right: 4px;
+  cursor: pointer;
+}
+
+.gridjs-pagination button:hover {
+  background: var(--bgColor-muted);
+  border-color: var(--borderColor-default);
+}
+
+.gridjs-pagination .gridjs-currentPage {
+  background: var(--bgColor-accent-muted);
+  color: var(--fgColor-accent);
+  border-color: transparent;
+}
+
+/* Botones dentro de celdas Grid.js */
+.gridjs-td .btn-icon {
   width: 32px;
   height: 32px;
   border-radius: 6px;
@@ -2242,7 +2293,7 @@ a { color: var(--fgColor-accent); }
   padding: 0;
   font-size: 0.875rem;
   text-decoration: none;
-  transition: background 0.12s ease, color 0.12s ease;
+  cursor: pointer;
 }
 
 .gridjs-td .btn-icon:hover {
@@ -2251,51 +2302,51 @@ a { color: var(--fgColor-accent); }
   color: var(--fgColor-accent);
 }
 
+.gridjs-td .btn-icon.text-danger:hover { color: var(--fgColor-danger); }
 .gridjs-td .btn-icon + .btn-icon { margin-left: 4px; }
 
-/* Badges en Grid.js */
-.gridjs-td .badge-status {
+/* Badges dentro de Grid.js */
+.gridjs-td .badge-status,
+.gridjs-td .badge {
   font-size: 0.75rem;
   font-weight: 500;
   padding: 2px 8px;
   border-radius: 999px;
   display: inline-block;
   border: none;
+  line-height: 1.4;
 }
 .gridjs-td .badge-downloaded { background: var(--bgColor-success-muted); color: var(--fgColor-success); }
 .gridjs-td .badge-pending { background: var(--bgColor-muted); color: var(--fgColor-muted); }
+.gridjs-td .badge-downloading { background: var(--bgColor-accent-muted); color: var(--fgColor-accent); }
+.gridjs-td .badge-failed { background: var(--bgColor-danger-muted); color: var(--fgColor-danger); }
 
-/* Footer de Grid.js (paginación) */
-.gridjs-footer {
-  background: var(--bgColor-default) !important;
-  border-top: 1px solid var(--borderColor-default) !important;
-  border: none;
-  box-shadow: none !important;
-  padding: 8px 16px;
-}
+/* Links en Grid.js */
+.gridjs-td a { color: var(--fgColor-accent); text-decoration: none; }
+.gridjs-td a:hover { text-decoration: underline; }
 
-.gridjs-pagination {
-  background: transparent;
-  color: var(--fgColor-muted);
-}
-
-.gridjs-pagination .gridjs-currentPage {
-  background: var(--bgColor-accent-muted);
-  color: var(--fgColor-accent);
-  border-radius: 4px;
-  padding: 2px 8px;
-}
-
-/* Checkbox en Grid.js */
+/* Checkbox */
 .gridjs-td input[type="checkbox"] {
   width: 16px;
   height: 16px;
   accent-color: var(--bgColor-accent-emphasis);
 }
 
-/* Links dentro de Grid.js */
-.gridjs-td a {
-  color: var(--fgColor-accent);
-  text-decoration: none;
+/* Iconos de tipo */
+.gridjs-td .file-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
 }
-.gridjs-td a:hover { text-decoration: underline; }
+
+/* Resaltado de búsqueda */
+.gridjs-td mark, .gridjs-th mark {
+  background: var(--bgColor-attention-muted);
+  color: var(--fgColor-attention);
+  padding: 0 2px;
+  border-radius: 2px;
+}
