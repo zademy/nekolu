@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-23T05:50:27.737Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-23T05:54:56.831Z
 > Files: 153 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
@@ -27,7 +27,7 @@
 - `mvnw` — or more contributor license agreements.  See the NOTICE file (~3144 tok)
 - `mvnw.cmd` — Declares Directory (~2212 tok)
 - `pom.xml` (~1531 tok)
-- `README.md` — Project documentation (~3500 tok)
+- `README.md` — Project documentation (~3854 tok)
 - `SECURITY.md` — Security Policy (~742 tok)
 - `tdlib.log` (~0 tok)
 
