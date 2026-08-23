@@ -1056,7 +1056,7 @@
                 : `<button class="btn-icon btn-download-single" data-file-id="${row.fileId}" data-file-name="${escapeHtml(row.fileName || '')}" title="Download" onclick="downloadSingle(${row.fileId}, this); return false;"><i class="fa-solid fa-cloud-arrow-down"></i></button>`;
               return `<tr data-message-id="${row.messageId || ''}" data-chat-id="${row.chatId || ''}">
                 <td><input type="checkbox" class="form-check-input file-checkbox" data-file-id="${row.fileId}" data-message-id="${row.messageId}" data-chat-id="${row.chatId}" data-file-name="${escapeHtml(row.fileName || '')}"></td>
-                <td><div class="file-icon" class="file-icon-token" data-color="${color}"><i class="fa-solid ${icon}"></i></div></td>
+                <td><div class="file-icon ${row.type ? row.type.toLowerCase() : 'document'}"><i class="fa-solid ${icon}"></i></div></td>
                 <td><div><div class="file-name">${escapeHtml(name)}</div>${meta ? `<div class="file-meta">${meta}</div>` : ''}</div></td>
                 <td>${formatFileSize(row.size || row.fileSize || 0)}</td>
                 <td>${formatDate(row.date)}</td>
