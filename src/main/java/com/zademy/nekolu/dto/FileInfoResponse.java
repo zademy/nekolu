@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
+import com.zademy.nekolu.model.TelegramFileMessage;
 
 /**
  * Detailed API representation of a Telegram-backed file, including TDLib metadata and logical drive metadata.
@@ -159,5 +160,51 @@ public record FileInfoResponse(
 
     public static String thumbnailUrl(long fileId) {
         return "/api/telegram/files/" + fileId + "/thumbnail";
+    }
+
+    /**
+     * Named construction from the seam's file message: URL construction and
+     * logical defaults live here, next to the fields they describe.
+     */
+    public static FileInfoResponse fromMessage(TelegramFileMessage message) {
+        return new FileInfoResponse(
+            message.messageId(),
+            message.chatId(),
+            message.fileId(),
+            message.fileName(),
+            message.fileSize(),
+            message.mimeType(),
+            message.type(),
+            message.width(),
+            message.height(),
+            message.duration(),
+            message.thumbnailPath(),
+            message.date(),
+            message.downloaded(),
+            message.localPath()
+        );
+    }
+
+    /**
+     * Copy with a refreshed local download state; unknown values fall back
+     * to the current ones.
+     */
+    public FileInfoResponse withLocalState(long size, boolean downloaded, String localPath) {
+        return new FileInfoResponse(
+            messageId,
+            chatId,
+            fileId,
+            fileName,
+            size > 0 ? size : fileSize,
+            mimeType,
+            type,
+            width,
+            height,
+            duration,
+            thumbnailPath,
+            date,
+            downloaded,
+            localPath != null && !localPath.isBlank() ? localPath : this.localPath
+        );
     }
 }

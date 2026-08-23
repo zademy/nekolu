@@ -182,15 +182,7 @@ public class FileServiceImpl implements FileService {
                 if (state == null) {
                     return cached;
                 }
-                FileInfoResponse updated = new FileInfoResponse(
-                    cached.messageId(), cached.chatId(), cached.fileId(),
-                    cached.fileName(), state.size() > 0 ? state.size() : cached.fileSize(),
-                    cached.mimeType(), cached.type(),
-                    cached.width(), cached.height(), cached.duration(),
-                    cached.thumbnailPath(), cached.date(),
-                    state.downloaded(),
-                    state.localPath() != null && !state.localPath().isBlank() ? state.localPath() : cached.localPath()
-                );
+                FileInfoResponse updated = cached.withLocalState(state.size(), state.downloaded(), state.localPath());
                 fileMetadataCache.put(cached.fileId(), updated);
                 return updated;
             });
@@ -282,26 +274,11 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
-     * Maps a seam file message to the workspace response view. URL
-     * construction and logical defaults happen inside the response record.
+     * Maps a seam file message to the workspace response view (named
+     * construction lives on the response record) and caches it.
      */
     private FileInfoResponse toFileInfo(TelegramFileMessage message) {
-        FileInfoResponse fileInfo = new FileInfoResponse(
-            message.messageId(),
-            message.chatId(),
-            message.fileId(),
-            message.fileName(),
-            message.fileSize(),
-            message.mimeType(),
-            message.type(),
-            message.width(),
-            message.height(),
-            message.duration(),
-            message.thumbnailPath(),
-            message.date(),
-            message.downloaded(),
-            message.localPath()
-        );
+        FileInfoResponse fileInfo = FileInfoResponse.fromMessage(message);
         fileMetadataCache.put(fileInfo.fileId(), fileInfo);
         return fileInfo;
     }
