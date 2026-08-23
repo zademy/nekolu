@@ -450,8 +450,11 @@ public class FileController {
     @GetMapping("/recent")
     @Operation(summary = "Recent Saved Messages files",
         description = """
-                Gets the latest files from your personal chat (Saved Messages).
-                Includes recently uploaded files and returns an empty list if the underlying Telegram query fails.
+                Gets the latest files from your personal chat (Saved Messages) ONLY.
+                Files uploaded to folder channels do NOT appear here — use the
+                advanced search (GET /api/telegram/files) or the folder's file
+                listing (GET /api/telegram/files/folders/{chatId}/files) for those.
+                Returns an empty list if the underlying Telegram query fails.
                 """)
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Recent Saved Messages files retrieved",

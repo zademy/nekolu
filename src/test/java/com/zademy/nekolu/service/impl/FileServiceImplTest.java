@@ -7,6 +7,7 @@
 package com.zademy.nekolu.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -83,6 +84,21 @@ class FileServiceImplTest {
 
         assertEquals(1, result.size());
         assertEquals("one.jpg", result.get(0).fileName());
+    }
+
+    @Test
+    void searchFilesAdvancedWithPhotoTypeExcludesDocumentsFromOwnChat() throws Exception {
+        // Own chat has a document; global search returns photos only.
+        // The merged result must NOT include the own-chat document.
+        telegram
+            .withOwnChatId(1)
+            .withMessages(document(1, 1, 100, "own-report.pdf", 1000, 1700000000));
+
+        List<FileInfoResponse> result = fileService
+            .searchFilesAdvanced("photo", 10, null, null, null, null, null, null, null, null)
+            .get();
+
+        assertTrue(result.stream().noneMatch(f -> "document".equalsIgnoreCase(f.type())));
     }
 
     @Test
@@ -250,6 +266,26 @@ class FileServiceImplTest {
     }
 
     @Test
+    void uploadStagesWithOriginalFilenameSoTelegramSeesIt() throws Exception {
+        // Telegram derives the visible filename from the staged file's path;
+        // staging preserves the original name inside a UUID subdirectory.
+        telegram.withUploadResult(message(77, 1, 700, null, 0, "document", 1700000000));
+
+        fileService.upload(new UploadCommand(
+            "my-report.pdf", new java.io.ByteArrayInputStream("data".getBytes()),
+            1, null, "/", List.of(), "telegram-upload", false, false)).get();
+
+        // The staged file is named exactly as the user's original
+        File[] uploadDirs = stagingDir.listFiles(File::isDirectory);
+        assertEquals(1, uploadDirs.length);
+        File[] files = uploadDirs[0].listFiles();
+        assertEquals(1, files.length);
+        assertEquals("my-report.pdf", files[0].getName());
+        // No UUID prefix in the filename Telegram will see
+        assertFalse(files[0].getName().contains("_"));
+    }
+
+    @Test
     void uploadCompletesEndToEndWithoutTelegram() throws Exception {
         telegram.withUploadResult(message(77, 1, 700, null, 0, "document", 1700000000));
 
@@ -259,10 +295,12 @@ class FileServiceImplTest {
 
         assertEquals(UploadResponse.STATUS_COMPLETED, response.status());
         assertEquals(77, response.messageId());
-        // The staged file lives in the staging area with a sanitized name
-        File[] stagedFiles = stagingDir.listFiles();
+        // The staged file carries the original name inside a UUID subdirectory
+        File[] uploadDirs = stagingDir.listFiles(File::isDirectory);
+        assertEquals(1, uploadDirs.length);
+        File[] stagedFiles = uploadDirs[0].listFiles();
         assertEquals(1, stagedFiles.length);
-        assertTrue(stagedFiles[0].getName().endsWith("incoming_report.pdf"));
+        assertEquals("incoming_report.pdf", stagedFiles[0].getName());
     }
 
     @Test

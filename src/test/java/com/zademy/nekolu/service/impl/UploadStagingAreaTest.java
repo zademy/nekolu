@@ -47,10 +47,10 @@ class UploadStagingAreaTest {
 
         assertTrue(staged.exists());
         assertEquals("payload".length(), staged.length());
-        // Unsafe characters neutralized, unique prefix kept, and the staged
-        // file stays inside the staging directory (no traversal escape)
-        assertTrue(staged.getName().endsWith(".._evil_name_.pdf"));
-        assertEquals(tempDir.toPath(), staged.toPath().getParent());
+        // Unsafe characters neutralized; original name preserved (no UUID prefix)
+        assertEquals(".._evil_name_.pdf", staged.getName());
+        // Staged inside a UUID subdirectory of the staging area
+        assertEquals(tempDir.toPath(), staged.toPath().getParent().getParent());
     }
 
     @Test
@@ -62,12 +62,15 @@ class UploadStagingAreaTest {
     }
 
     @Test
-    void discardRemovesTheStagedFile() {
+    void discardRemovesTheStagedUploadDirectory() {
         File staged = stagingArea.stage("gone.pdf", new ByteArrayInputStream("x".getBytes()));
+        File uploadDir = staged.getParentFile();
+        assertTrue(uploadDir.exists());
 
         stagingArea.discard(staged);
 
         assertFalse(staged.exists());
+        assertFalse(uploadDir.exists());
     }
 
     @Test

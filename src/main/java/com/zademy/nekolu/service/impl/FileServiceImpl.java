@@ -63,6 +63,7 @@ public class FileServiceImpl implements FileService {
     private static final String CACHE_CONTROL_PUBLIC_MAX_AGE = "public, max-age=3600";
 
     private record AdvancedSearchOptions(
+            String type,
             String sort,
             int limit,
             Long minDate,
@@ -385,7 +386,7 @@ public class FileServiceImpl implements FileService {
             mergeUniqueFiles(seenFileIds, combined, searchFilesFuture.join());
 
             return filterAndSortFiles(combined, new AdvancedSearchOptions(
-                sort, requestedLimit, minDate, maxDate, minSize, maxSize, chatId, filenameContains
+                type, sort, requestedLimit, minDate, maxDate, minSize, maxSize, chatId, filenameContains
             ));
         }).exceptionally(ex -> {
             logger.error("[SearchAdvanced] Error: {}", ex.getMessage());
@@ -404,6 +405,7 @@ public class FileServiceImpl implements FileService {
 
     private List<FileInfoResponse> filterAndSortFiles(List<FileInfoResponse> files, AdvancedSearchOptions options) {
         return files.stream()
+            .filter(file -> matchesRequestedType(file, options.type()))
             .filter(file -> options.minDate() == null || file.date() >= options.minDate())
             .filter(file -> options.maxDate() == null || file.date() <= options.maxDate())
             .filter(file -> options.minSize() == null || file.fileSize() >= options.minSize())

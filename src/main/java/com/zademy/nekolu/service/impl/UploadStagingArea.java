@@ -56,30 +56,39 @@ public class UploadStagingArea {
      */
     @PostConstruct
     public void purgeExpired() {
-        File[] leftovers = directory.toFile().listFiles();
-        if (leftovers == null) {
+        File[] uploadDirs = directory.toFile().listFiles();
+        if (uploadDirs == null) {
             return;
         }
         long cutoff = Instant.now().minus(LEFTOVER_RETENTION).toEpochMilli();
-        for (File leftover : leftovers) {
-            if (leftover.isFile() && leftover.lastModified() < cutoff) {
-                if (leftover.delete()) {
-                    logger.info("[Upload] Purged expired staged file: {}", leftover.getAbsolutePath());
-                } else {
-                    logger.warn("[Upload] Could not purge expired staged file: {}", leftover.getAbsolutePath());
+        for (File uploadDir : uploadDirs) {
+            if (uploadDir.isDirectory() && uploadDir.lastModified() < cutoff) {
+                try {
+                    Files.walk(uploadDir.toPath())
+                        .sorted(java.util.Comparator.reverseOrder())
+                        .forEach(path -> path.toFile().delete());
+                    logger.info("[Upload] Purged expired upload directory: {}", uploadDir.getAbsolutePath());
+                } catch (IOException e) {
+                    logger.warn("[Upload] Could not purge expired upload directory: {}", uploadDir.getAbsolutePath());
                 }
+            } else if (uploadDir.isFile() && uploadDir.lastModified() < cutoff && uploadDir.delete()) {
+                // Legacy flat files from older versions
+                logger.info("[Upload] Purged expired staged file: {}", uploadDir.getAbsolutePath());
             }
         }
     }
 
     /**
-     * Materializes an incoming upload as a staged file with a unique,
-     * sanitized name in the staging directory.
+     * Materializes an incoming upload as a staged file. Each upload gets its
+     * own UUID subdirectory — the file inside carries the original (sanitized)
+     * name, so Telegram shows the user's filename, not a prefixed one, while
+     * the subdirectory prevents collisions between same-named uploads.
      */
     public File stage(String originalFilename, InputStream content) {
         try {
-            Files.createDirectories(directory);
-            Path staged = directory.resolve(UUID.randomUUID() + "_" + sanitize(originalFilename));
+            Path uploadDir = directory.resolve(UUID.randomUUID().toString());
+            Files.createDirectories(uploadDir);
+            Path staged = uploadDir.resolve(sanitize(originalFilename));
             Files.copy(content, staged, StandardCopyOption.REPLACE_EXISTING);
             return staged.toFile();
         } catch (IOException e) {
@@ -89,10 +98,26 @@ public class UploadStagingArea {
     }
 
     /**
-     * Best-effort removal of a staged file whose publication failed.
+     * Best-effort removal of a staged upload (the UUID subdirectory) whose
+     * publication failed.
      */
     public void discard(File staged) {
-        if (staged != null && staged.exists() && staged.delete()) {
+        if (staged == null || !staged.exists()) {
+            return;
+        }
+        File uploadDir = staged.getParentFile();
+        if (uploadDir != null && uploadDir.getParentFile() != null
+                && uploadDir.getParentFile().equals(directory.toFile())) {
+            // Remove the whole UUID subdirectory
+            try {
+                Files.walk(uploadDir.toPath())
+                    .sorted(java.util.Comparator.reverseOrder())
+                    .forEach(path -> path.toFile().delete());
+                logger.info("[Upload] Discarded staged upload directory: {}", uploadDir.getAbsolutePath());
+            } catch (IOException e) {
+                logger.warn("[Upload] Could not discard staged upload: {}", uploadDir.getAbsolutePath());
+            }
+        } else if (staged.delete()) {
             logger.info("[Upload] Discarded staged file after failed upload: {}", staged.getAbsolutePath());
         }
     }
