@@ -2032,3 +2032,15 @@ div.dt-container .dt-paging button:hover {
 /* Texto global sobre tokens */
 body { color: var(--fgColor-default); background: var(--bgColor-default); }
 a { color: var(--fgColor-accent); }
+
+/* Iconos de tipo de archivo: color del token, fondo derivado */
+.file-icon-token {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  background: var(--bgColor-muted);
+  color: var(--fgColor-muted);
+}

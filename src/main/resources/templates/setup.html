@@ -4,7 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title th:text="#{setup.browser.title}">Nekolu setup</title>
+    <script>
+        (function () {
+          var stored = null;
+          try { stored = localStorage.getItem('theme'); } catch (e) {}
+          var theme = stored === 'dark' || stored === 'light'
+            ? stored
+            : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        })();
+      </script>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link th:href="@{/css/tokens.css(v=${#dates.createNow().time})}" rel="stylesheet" />
     <link
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -13,11 +24,11 @@
       body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
     </style>
   </head>
-  <body class="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-slate-200 flex items-center justify-center p-6">
+  <body class="min-h-screen bg-gradient-to-br from-slate-100 via-slate-50 to-slate-200 flex items-center justify-center p-6">
     <main class="w-full max-w-md">
 
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#229ED9] text-white shadow-lg shadow-sky-200 mb-4">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[var(--bgColor-accent-emphasis)] text-white shadow-lg shadow-sky-200 mb-4">
           <svg viewBox="0 0 24 24" fill="currentColor" class="w-9 h-9">
             <path d="M9.04 15.51l-.38 5.35c.54 0 .78-.23 1.06-.5l2.55-2.44 5.28 3.87c.97.53 1.66.25 1.92-.9L23.9 4.6c.31-1.42-.51-1.98-1.46-1.63L1.7 11.2c-1.39.54-1.37 1.32-.24 1.67l5.31 1.66L19.53 6.9c.58-.38 1.11-.17.68.21L9.04 15.51z"/>
           </svg>
@@ -28,13 +39,13 @@
 
       <!-- Step indicator -->
       <div class="flex items-center justify-center gap-2 mb-6" aria-hidden="true">
-        <span th:classappend="${step >= 1} ? 'bg-[#229ED9] text-white' : 'bg-white text-slate-400'"
+        <span th:classappend="${step >= 1} ? 'bg-[var(--bgColor-accent-emphasis)] text-white' : 'bg-white text-slate-400'"
               class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-sm font-bold">1</span>
-        <span class="w-8 h-0.5 rounded" th:classappend="${step >= 2} ? 'bg-[#229ED9]' : 'bg-slate-300'"></span>
-        <span th:classappend="${step >= 2} ? 'bg-[#229ED9] text-white' : 'bg-white text-slate-400'"
+        <span class="w-8 h-0.5 rounded" th:classappend="${step >= 2} ? 'bg-[var(--bgColor-accent-emphasis)]' : 'bg-slate-300'"></span>
+        <span th:classappend="${step >= 2} ? 'bg-[var(--bgColor-accent-emphasis)] text-white' : 'bg-white text-slate-400'"
               class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-sm font-bold">2</span>
-        <span class="w-8 h-0.5 rounded" th:classappend="${step >= 3} ? 'bg-[#229ED9]' : 'bg-slate-300'"></span>
-        <span th:classappend="${step >= 3} ? 'bg-[#229ED9] text-white' : 'bg-white text-slate-400'"
+        <span class="w-8 h-0.5 rounded" th:classappend="${step >= 3} ? 'bg-[var(--bgColor-accent-emphasis)]' : 'bg-slate-300'"></span>
+        <span th:classappend="${step >= 3} ? 'bg-[var(--bgColor-accent-emphasis)] text-white' : 'bg-white text-slate-400'"
               class="w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-sm font-bold">3</span>
       </div>
 
@@ -52,10 +63,10 @@
               <input type="tel" name="phoneNumber" required autocomplete="tel"
                      placeholder="+1 555 000 0000"
                      th:placeholder="#{setup.hint.phone}"
-                     class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#229ED9] focus:border-transparent" />
+                     class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-[var(--borderColor-accent-emphasis)] focus:border-transparent" />
             </label>
             <button type="submit"
-                    class="w-full rounded-xl bg-[#229ED9] hover:bg-[#1c8ec4] text-white font-semibold py-3 transition-colors"
+                    class="w-full rounded-xl bg-[var(--bgColor-accent-emphasis)] hover:opacity-90 text-white font-semibold py-3 transition-colors"
                     th:text="#{setup.action.continue}">Continue</button>
           </form>
         </div>
@@ -71,10 +82,10 @@
               <span class="text-xs font-semibold uppercase tracking-wide text-slate-500" th:text="#{setup.label.code}">Code</span>
               <input type="text" name="code" required inputmode="numeric" autocomplete="one-time-code"
                      placeholder="12345"
-                     class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-center text-2xl tracking-[0.4em] font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#229ED9] focus:border-transparent" />
+                     class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-center text-2xl tracking-[0.4em] font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[var(--borderColor-accent-emphasis)] focus:border-transparent" />
             </label>
             <button type="submit"
-                    class="w-full rounded-xl bg-[#229ED9] hover:bg-[#1c8ec4] text-white font-semibold py-3 transition-colors"
+                    class="w-full rounded-xl bg-[var(--bgColor-accent-emphasis)] hover:opacity-90 text-white font-semibold py-3 transition-colors"
                     th:text="#{setup.action.continue}">Continue</button>
           </form>
         </div>
@@ -89,10 +100,10 @@
             <label class="block">
               <span class="text-xs font-semibold uppercase tracking-wide text-slate-500" th:text="#{setup.label.password}">Password</span>
               <input type="password" name="password" required autocomplete="current-password"
-                     class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#229ED9] focus:border-transparent" />
+                     class="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-[var(--borderColor-accent-emphasis)] focus:border-transparent" />
             </label>
             <button type="submit"
-                    class="w-full rounded-xl bg-[#229ED9] hover:bg-[#1c8ec4] text-white font-semibold py-3 transition-colors"
+                    class="w-full rounded-xl bg-[var(--bgColor-accent-emphasis)] hover:opacity-90 text-white font-semibold py-3 transition-colors"
                     th:text="#{setup.action.signIn}">Sign in</button>
           </form>
         </div>
