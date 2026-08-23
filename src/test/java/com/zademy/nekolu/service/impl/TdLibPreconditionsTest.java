@@ -7,56 +7,60 @@
 package com.zademy.nekolu.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
+import org.drinkless.tdlib.TdApi;
 import org.junit.jupiter.api.Test;
+
+import com.zademy.nekolu.exception.TelegramNotInitializedException;
 
 /**
  * Unit tests for the centralized TDLib readiness preconditions used by the
- * request guard. Only the uninitialized-client paths run without a live TDLib
- * session; a real Client instance cannot be created in tests, so the
+ * request guard. Only the uninitialized-client paths run without a live
+ * TDLib session; a real Client instance cannot be created in tests, so the
  * authorized paths are covered by the seam contract tests instead.
  */
 class TdLibPreconditionsTest {
 
     @Test
-    void requireReadyFailsWhenClientIsNotInitialized() throws Exception {
-        CompletableFuture<Object> failed = TdLibPreconditions.requireReady(null, true);
+    void readinessFailureIsPresentWhenClientIsNotInitialized() throws Exception {
+        Optional<CompletableFuture<TdApi.Object>> failure =
+            TdLibPreconditions.readinessFailure(null, true);
 
-        assertNotNull(failed);
-        ExecutionException thrown = assertThrowsExecution(failed);
-        assertTrue(thrown.getCause() instanceof IllegalStateException);
+        assertTrue(failure.isPresent());
+        ExecutionException thrown = assertThrowsExecution(failure.get());
+        assertTrue(thrown.getCause() instanceof TelegramNotInitializedException);
         assertEquals("Telegram client not initialized", thrown.getCause().getMessage());
     }
 
     @Test
-    void requireReadyChecksClientBeforeAuthorization() throws Exception {
-        // A null client wins over the authorization flag: the message must be
+    void readinessFailureChecksClientBeforeAuthorization() throws Exception {
+        // A null client wins over the authorization flag: the failure must be
         // the initialization one even when the session is also unauthorized.
-        CompletableFuture<Object> failed = TdLibPreconditions.requireReady(null, false);
+        Optional<CompletableFuture<TdApi.Object>> failure =
+            TdLibPreconditions.readinessFailure(null, false);
 
-        ExecutionException thrown = assertThrowsExecution(failed);
-        assertEquals("Telegram client not initialized", thrown.getCause().getMessage());
+        assertTrue(failure.isPresent());
+        assertEquals("Telegram client not initialized",
+            assertThrowsExecution(failure.get()).getCause().getMessage());
     }
 
     @Test
     void requireReadyOrThrowThrowsWhenClientIsNotInitialized() {
-        IllegalStateException thrown = assertThrows(
-            IllegalStateException.class,
+        TelegramNotInitializedException thrown = org.junit.jupiter.api.Assertions.assertThrows(
+            TelegramNotInitializedException.class,
             () -> TdLibPreconditions.requireReadyOrThrow(null, true));
 
         assertEquals("Telegram client not initialized", thrown.getMessage());
     }
 
     private static ExecutionException assertThrowsExecution(CompletableFuture<?> failed) {
-        return assertThrows(
+        return org.junit.jupiter.api.Assertions.assertThrows(
             ExecutionException.class,
-            () -> failed.get(1, TimeUnit.SECONDS));
+            () -> failed.get());
     }
 }

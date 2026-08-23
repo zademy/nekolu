@@ -80,8 +80,8 @@ public class TelegramServiceImpl implements TelegramService {
      * timeout. The permit is held until the returned future completes.
      */
     private <T extends TdApi.Object> CompletableFuture<T> send(TdApi.Function<T> request) {
-        CompletableFuture<T> failed = TdLibPreconditions.requireReady(client, isAuthorized);
-        if (failed != null) return failed;
+        var failure = TdLibPreconditions.<T>readinessFailure(client, isAuthorized);
+        if (failure.isPresent()) return failure.get();
 
         CompletableFuture<T> future = new CompletableFuture<>();
         try {

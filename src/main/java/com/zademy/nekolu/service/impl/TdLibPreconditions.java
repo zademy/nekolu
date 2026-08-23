@@ -6,6 +6,7 @@
 
 package com.zademy.nekolu.service.impl;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.drinkless.tdlib.Client;
@@ -22,21 +23,21 @@ final class TdLibPreconditions {
     private TdLibPreconditions() {}
 
     /**
-     * Returns a failed future if the client is null or not authorized.
-     * Returns {@code null} when preconditions pass, so callers can do:
+     * Readiness failure for futures: present when the client is missing or
+     * unauthorized, {@link Optional#empty()} when preconditions pass:
      * <pre>
-     * var failed = TdLibPreconditions.requireReady(client, authorized);
-     * if (failed != null) return failed;
+     * var failure = TdLibPreconditions.readinessFailure(client, authorized);
+     * if (failure.isPresent()) return failure.get();
      * </pre>
      */
-    static <T> CompletableFuture<T> requireReady(Client client, boolean isAuthorized) {
+    static <T> Optional<CompletableFuture<T>> readinessFailure(Client client, boolean isAuthorized) {
         if (client == null) {
-            return CompletableFuture.failedFuture(new TelegramNotInitializedException());
+            return Optional.of(CompletableFuture.failedFuture(new TelegramNotInitializedException()));
         }
         if (!isAuthorized) {
-            return CompletableFuture.failedFuture(new TelegramUnauthorizedException());
+            return Optional.of(CompletableFuture.failedFuture(new TelegramUnauthorizedException()));
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
