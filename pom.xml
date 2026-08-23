@@ -69,7 +69,7 @@
 		<dependency>
 			<groupId>org.drinkless</groupId>
 			<artifactId>tdlib</artifactId>
-			<version>1.8.29</version>
+			<version>1.8.66</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -143,7 +143,7 @@
 							<file>${project.basedir}/lib/tdlib.jar</file>
 							<groupId>org.drinkless</groupId>
 							<artifactId>tdlib</artifactId>
-							<version>1.8.29</version>
+							<version>1.8.66</version>
 							<packaging>jar</packaging>
 							<generatePom>true</generatePom>
 						</configuration>
@@ -163,10 +163,23 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<!-- The native TDLib library writes to the fork's stdout;
+					     redirecting keeps surefire's channel intact. -->
+					<redirectTestOutputToFile>true</redirectTestOutputToFile>
+					<!-- Load the project's tdjni library, not any stale copy in
+					     system extension directories. -->
+					<argLine>-Djava.library.path=${project.basedir}/lib</argLine>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<mainClass>com.zademy.nekolu.Application</mainClass>
+					<jvmArguments>-Djava.library.path=${project.basedir}/lib</jvmArguments>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>

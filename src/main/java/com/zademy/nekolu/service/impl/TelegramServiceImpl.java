@@ -60,6 +60,14 @@ public class TelegramServiceImpl implements TelegramService {
 
     @PostConstruct
     public void init() {
+        // Native TDLib logs write straight to the process stdout; keep them
+        // to errors only so they never corrupt wrapped output (surefire
+        // forks, piped logs) or flood the application log.
+        try {
+            Client.execute(new TdApi.SetLogVerbosityLevel(1));
+        } catch (Client.ExecutionException e) {
+            logger.warn("Could not lower TDLib log verbosity: {}", e.getMessage());
+        }
         client = Client.create(new UpdateHandler(), null, null);
         setTdlibParameters();
     }
@@ -251,9 +259,11 @@ public class TelegramServiceImpl implements TelegramService {
 
     @Override
     public CompletableFuture<TelegramFileMessage> sendDocument(long chatId, String filePath, String caption) {
+        TdApi.InputDocument inputDocument = new TdApi.InputDocument();
+        inputDocument.document = new TdApi.InputFileLocal(filePath);
+
         TdApi.InputMessageDocument document = new TdApi.InputMessageDocument();
-        document.document = new TdApi.InputFileLocal(filePath);
-        document.thumbnail = null;
+        document.document = inputDocument;
         document.caption = caption != null ? new TdApi.FormattedText(caption, null) : null;
 
         TdApi.SendMessage sendMessage = new TdApi.SendMessage();
@@ -265,9 +275,11 @@ public class TelegramServiceImpl implements TelegramService {
 
     @Override
     public CompletableFuture<TelegramFileMessage> sendPhoto(long chatId, String filePath, String caption) {
+        TdApi.InputPhoto inputPhoto = new TdApi.InputPhoto();
+        inputPhoto.photo = new TdApi.InputFileLocal(filePath);
+
         TdApi.InputMessagePhoto photo = new TdApi.InputMessagePhoto();
-        photo.photo = new TdApi.InputFileLocal(filePath);
-        photo.thumbnail = null;
+        photo.photo = inputPhoto;
         photo.caption = caption != null ? new TdApi.FormattedText(caption, null) : null;
         photo.hasSpoiler = false;
 
