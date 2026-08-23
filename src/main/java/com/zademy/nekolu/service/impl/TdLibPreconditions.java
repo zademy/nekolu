@@ -6,9 +6,13 @@
 
 package com.zademy.nekolu.service.impl;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import org.drinkless.tdlib.Client;
+
+import com.zademy.nekolu.exception.TelegramNotInitializedException;
+import com.zademy.nekolu.exception.TelegramUnauthorizedException;
 
 /**
  * Centralizes TDLib precondition checks that are repeated across service methods.
@@ -16,28 +20,24 @@ import org.drinkless.tdlib.Client;
  */
 final class TdLibPreconditions {
 
-    private static final String CLIENT_NOT_INITIALIZED = "Telegram client not initialized";
-    private static final String NOT_AUTHORIZED = "Unauthorized. Telegram requires authentication. "
-            + "Use the TDLib CLI client to authenticate first.";
-
     private TdLibPreconditions() {}
 
     /**
-     * Returns a failed future if the client is null or not authorized.
-     * Returns {@code null} when preconditions pass, so callers can do:
+     * Readiness failure for futures: present when the client is missing or
+     * unauthorized, {@link Optional#empty()} when preconditions pass:
      * <pre>
-     * var failed = TdLibPreconditions.requireReady(client, authorized);
-     * if (failed != null) return failed;
+     * var failure = TdLibPreconditions.readinessFailure(client, authorized);
+     * if (failure.isPresent()) return failure.get();
      * </pre>
      */
-    static <T> CompletableFuture<T> requireReady(Client client, boolean isAuthorized) {
+    static <T> Optional<CompletableFuture<T>> readinessFailure(Client client, boolean isAuthorized) {
         if (client == null) {
-            return CompletableFuture.failedFuture(new IllegalStateException(CLIENT_NOT_INITIALIZED));
+            return Optional.of(CompletableFuture.failedFuture(new TelegramNotInitializedException()));
         }
         if (!isAuthorized) {
-            return CompletableFuture.failedFuture(new IllegalStateException(NOT_AUTHORIZED));
+            return Optional.of(CompletableFuture.failedFuture(new TelegramUnauthorizedException()));
         }
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -46,10 +46,10 @@ final class TdLibPreconditions {
      */
     static void requireReadyOrThrow(Client client, boolean isAuthorized) {
         if (client == null) {
-            throw new IllegalStateException(CLIENT_NOT_INITIALIZED);
+            throw new TelegramNotInitializedException();
         }
         if (!isAuthorized) {
-            throw new IllegalStateException(NOT_AUTHORIZED);
+            throw new TelegramUnauthorizedException();
         }
     }
 }

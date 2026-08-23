@@ -6,24 +6,22 @@
 
 package com.zademy.nekolu.service;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.zademy.nekolu.dto.BulkDeleteRequest;
 import com.zademy.nekolu.dto.BulkDeleteResponse;
 import com.zademy.nekolu.dto.DeleteMessageResponse;
 import com.zademy.nekolu.dto.DownloadJob;
 import com.zademy.nekolu.dto.DownloadResponse;
-import com.zademy.nekolu.dto.FileActionResponse;
 import com.zademy.nekolu.dto.FileExportResponse;
 import com.zademy.nekolu.dto.FileInfoResponse;
 import com.zademy.nekolu.dto.FileStatsResponse;
 import com.zademy.nekolu.dto.FileStreamResponse;
+import com.zademy.nekolu.dto.UploadCommand;
 import com.zademy.nekolu.dto.UploadResponse;
 
 /**
@@ -113,14 +111,6 @@ public interface FileService {
     CompletableFuture<FileStreamResponse> getStreamInfo(long fileId);
 
     /**
-     * Subscribes to download progress through SSE.
-     *
-     * @param fileId file ID
-     * @return SseEmitter for receiving updates
-     */
-    SseEmitter subscribeToProgress(long fileId);
-
-    /**
      * Creates a batch download job.
      *
      * @param fileIds list of file IDs to download
@@ -168,50 +158,15 @@ public interface FileService {
     CompletableFuture<Long> getOwnChatId();
 
     /**
-     * Uploads a file to Telegram as a document.
+     * Stages an incoming upload and publishes it to Telegram — as a photo
+     * or a document, per the command. The staging area owns materialization,
+     * cleanup on failure, and leftover purging; the caller supplies the
+     * command and nothing else.
      *
-     * @param file file to upload
-     * @param chatId target chat ID
-     * @param caption optional caption
+     * @param command the upload command
      * @return upload response
      */
-    CompletableFuture<UploadResponse> uploadFile(File file, long chatId, String caption);
-
-    CompletableFuture<UploadResponse> uploadFile(
-            File file,
-            long chatId,
-            String caption,
-            String virtualPath,
-            List<String> tags,
-            String origin,
-            boolean archived);
-
-    /**
-     * Detects whether the file is an image.
-     *
-     * @param file file to check
-     * @return true if it is an image
-     */
-    boolean isImageFile(File file);
-
-    /**
-     * Uploads a photo to Telegram.
-     *
-     * @param file image file
-     * @param chatId target chat ID
-     * @param caption optional caption
-     * @return upload response
-     */
-    CompletableFuture<UploadResponse> uploadPhoto(File file, long chatId, String caption);
-
-    CompletableFuture<UploadResponse> uploadPhoto(
-            File file,
-            long chatId,
-            String caption,
-            String virtualPath,
-            List<String> tags,
-            String origin,
-            boolean archived);
+    CompletableFuture<UploadResponse> upload(UploadCommand command);
 
     /**
      * Deletes a Telegram message.
@@ -230,14 +185,6 @@ public interface FileService {
      * @return batch deletion response
      */
     CompletableFuture<BulkDeleteResponse> bulkDeleteMessages(BulkDeleteRequest request);
-
-    CompletableFuture<FileActionResponse> restoreFile(long fileId);
-
-    CompletableFuture<FileActionResponse> moveFile(long fileId, String virtualPath);
-
-    CompletableFuture<FileActionResponse> archiveFile(long fileId, boolean archived);
-
-    CompletableFuture<List<FileInfoResponse>> listTrash();
 
     /**
      * Gets the thumbnail resource for a file.

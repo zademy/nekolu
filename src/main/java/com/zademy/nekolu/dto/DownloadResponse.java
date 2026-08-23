@@ -30,6 +30,11 @@ public record DownloadResponse(
     @Schema(description = "Additional message (error or info)", example = "Download started", nullable = true)
     String message
 ) {
+    /**
+     * Lifecycle of a single file download. A separate concept from the batch
+     * job lifecycle: an individual download has no IN_PROGRESS or CANCELLED
+     * states — completion is observed by polling the file state.
+     */
     public static final String STATUS_PENDING = "PENDING";
     public static final String STATUS_DOWNLOADING = "DOWNLOADING";
     public static final String STATUS_COMPLETED = "COMPLETED";
@@ -43,7 +48,7 @@ public record DownloadResponse(
             progress,
             STATUS_COMPLETED.equals(status) && localPath != null && !localPath.isBlank(),
             STATUS_COMPLETED.equals(status) && localPath != null && !localPath.isBlank()
-                ? "/api/telegram/files/" + fileId + "/content"
+                ? FileInfoResponse.contentUrl(fileId)
                 : null,
             message
         );

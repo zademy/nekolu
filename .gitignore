@@ -71,3 +71,11 @@ src/main/resources/application-*.properties
 ### TDLib local state ###
 tdlib/
 **/tdlib/
+/.claude/skills/playwright-cli
+/.playwright-mcp
+/.codex
+/.cursor
+/.claude
+/.opencode
+.env
+docker/td-src

@@ -1037,14 +1037,11 @@
               'DOCUMENT': 'fa-file-lines', 'VOICE': 'fa-microphone', 'VIDEO_NOTE': 'fa-circle-play'
             };
             const colorMap = {
-              'photo': '#2aabee', 'video': '#e74c3c', 'audio': '#f7b955',
-              'document': '#8b949e', 'voice': '#34d058', 'video_note': '#e74c3c',
-              'PHOTO': '#2aabee', 'VIDEO': '#e74c3c', 'AUDIO': '#f7b955',
-              'DOCUMENT': '#8b949e', 'VOICE': '#34d058', 'VIDEO_NOTE': '#e74c3c'
+              'photo': 'var(--fgColor-accent)', 'video': 'var(--fgColor-danger)', 'audio': 'var(--fgColor-attention)', 'document': 'var(--fgColor-muted)', 'voice': 'var(--fgColor-success)', 'video_note': 'var(--fgColor-danger)', 'PHOTO': 'var(--fgColor-accent)', 'VIDEO': 'var(--fgColor-danger)', 'AUDIO': 'var(--fgColor-attention)', 'DOCUMENT': 'var(--fgColor-muted)', 'VOICE': 'var(--fgColor-success)', 'VIDEO_NOTE': 'var(--fgColor-danger)'
             };
             tableBody.innerHTML = rows.map(row => {
               const icon = iconMap[row.type] || 'fa-file';
-              const color = colorMap[row.type] || '#8b949e';
+              const color = colorMap[row.type] || 'var(--fgColor-muted)';
               let meta = '';
               if (row.mimeType) meta += `<span class="file-meta">${row.mimeType}</span>`;
               if (row.width && row.height) meta += `<span class="file-meta">${row.width}×${row.height}</span>`;
@@ -1059,7 +1056,7 @@
                 : `<button class="btn-icon btn-download-single" data-file-id="${row.fileId}" data-file-name="${escapeHtml(row.fileName || '')}" title="Download" onclick="downloadSingle(${row.fileId}, this); return false;"><i class="fa-solid fa-cloud-arrow-down"></i></button>`;
               return `<tr data-message-id="${row.messageId || ''}" data-chat-id="${row.chatId || ''}">
                 <td><input type="checkbox" class="form-check-input file-checkbox" data-file-id="${row.fileId}" data-message-id="${row.messageId}" data-chat-id="${row.chatId}" data-file-name="${escapeHtml(row.fileName || '')}"></td>
-                <td><div class="file-icon" style="background: ${color}20; color: ${color};"><i class="fa-solid ${icon}"></i></div></td>
+                <td><div class="file-icon ${row.type ? row.type.toLowerCase() : 'document'}"><i class="fa-solid ${icon}"></i></div></td>
                 <td><div><div class="file-name">${escapeHtml(name)}</div>${meta ? `<div class="file-meta">${meta}</div>` : ''}</div></td>
                 <td>${formatFileSize(row.size || row.fileSize || 0)}</td>
                 <td>${formatDate(row.date)}</td>

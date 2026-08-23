@@ -33,10 +33,10 @@ public class TelegramHealthIndicator extends AbstractHealthIndicator {
 
     @Override
     protected void doHealthCheck(Health.Builder builder) {
-        boolean clientReady = telegramService.getClient() != null;
+        // Readiness lives behind the seam: isAuthorized is false until the
+        // TDLib session is initialized AND authenticated.
         boolean authorized = telegramService.isAuthorized();
 
-        builder.withDetail("clientInitialized", clientReady);
         builder.withDetail("authorized", authorized);
 
         Path dbDir = Path.of(telegramConfig.getDatabaseDirectory());
@@ -59,10 +59,10 @@ public class TelegramHealthIndicator extends AbstractHealthIndicator {
             builder.withDetail("usableDiskSpaceBytes", "unavailable");
         }
 
-        if (clientReady && authorized && dbAccessible && filesAccessible) {
+        if (authorized && dbAccessible && filesAccessible) {
             builder.up();
-        } else if (clientReady && !authorized) {
-            builder.down().withDetail("reason", "TDLib session not authorized");
+        } else if (!authorized) {
+            builder.down().withDetail("reason", "TDLib session not initialized or not authorized");
         } else {
             builder.down();
         }

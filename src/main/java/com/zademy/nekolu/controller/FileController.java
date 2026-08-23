@@ -6,7 +6,6 @@
 
 package com.zademy.nekolu.controller;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -23,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
 import jakarta.validation.Valid;
 
 import com.zademy.nekolu.dto.BulkDeleteRequest;
@@ -33,16 +30,17 @@ import com.zademy.nekolu.dto.DeleteMessageRequest;
 import com.zademy.nekolu.dto.DeleteMessageResponse;
 import com.zademy.nekolu.dto.DownloadFilesRequest;
 import com.zademy.nekolu.dto.DownloadJob;
-import com.zademy.nekolu.dto.DownloadProgress;
 import com.zademy.nekolu.dto.DownloadResponse;
-import com.zademy.nekolu.dto.FileActionResponse;
 import com.zademy.nekolu.dto.FileExportResponse;
 import com.zademy.nekolu.dto.FileInfoResponse;
 import com.zademy.nekolu.dto.FileStatsResponse;
 import com.zademy.nekolu.dto.FileStreamResponse;
 import com.zademy.nekolu.dto.FullStatsResponse;
-import com.zademy.nekolu.dto.MoveFileRequest;
+import com.zademy.nekolu.dto.UploadCommand;
 import com.zademy.nekolu.dto.UploadResponse;
+import com.zademy.nekolu.exception.Exceptions;
+import com.zademy.nekolu.exception.StagingException;
+import com.zademy.nekolu.exception.TelegramOperationException;
 import com.zademy.nekolu.service.FileService;
 import com.zademy.nekolu.service.TelegramService;
 
@@ -60,7 +58,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  */
 @RestController
 @RequestMapping("/api/telegram/files")
-@Tag(name = "Files", description = "Telegram-backed file discovery, transfer, preview, and logical organization")
+@Tag(name = "Files", description = "Telegram-backed file discovery, transfer, preview, statistics, and bulk operations")
 public class FileController {
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
@@ -144,8 +142,7 @@ public class FileController {
 
         return fileService.searchFilesAdvanced(type, limit, offset, sort,
                 minDate, maxDate, minSize, maxSize, chatId, filenameContains)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().body(null));
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/{fileId}")
@@ -160,8 +157,7 @@ public class FileController {
     public CompletableFuture<ResponseEntity<FileInfoResponse>> getFileInfo(
             @PathVariable @Parameter(description = "File ID", example = "12345") long fileId) {
         return fileService.getFileInfo(fileId)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.notFound().build());
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/{fileId}/content")
@@ -187,7 +183,7 @@ public class FileController {
             fileService.getFileInfo(fileId)
                 .thenApply(fileInfo -> buildFileResponse(resource, fileInfo, "attachment"))
                 .exceptionally(ex -> buildFallbackFileResponse(resource, fileId, "attachment"))
-        ).exceptionally(ex -> ResponseEntity.notFound().build());
+        );
     }
 
     @GetMapping("/{fileId}/view")
@@ -207,7 +203,7 @@ public class FileController {
             fileService.getFileInfo(fileId)
                 .thenApply(fileInfo -> buildFileResponse(resource, fileInfo, "inline"))
                 .exceptionally(ex -> buildFallbackFileResponse(resource, fileId, "inline"))
-        ).exceptionally(ex -> ResponseEntity.notFound().build());
+        );
     }
 
     private ResponseEntity<org.springframework.core.io.Resource> buildFileResponse(
@@ -324,20 +320,7 @@ public class FileController {
     public CompletableFuture<ResponseEntity<FileStreamResponse>> getStreamInfo(
             @PathVariable @Parameter(description = "File ID", example = "12345") long fileId) {
         return fileService.getStreamInfo(fileId)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.notFound().build());
-    }
-
-    @GetMapping(value = "/{fileId}/progress", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @Operation(summary = "Download progress (SSE)",
-        description = "Server-Sent Events stream with real-time download progress")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Progress stream in text/event-stream format",
-            content = @Content(mediaType = "text/event-stream", schema = @Schema(implementation = DownloadProgress.class)))
-    })
-    public SseEmitter downloadProgress(
-            @PathVariable @Parameter(description = "File ID", example = "12345") long fileId) {
-        return fileService.subscribeToProgress(fileId);
+                .thenApply(ResponseEntity::ok);
     }
 
     @PostMapping("/{fileId}/download")
@@ -352,10 +335,7 @@ public class FileController {
     public CompletableFuture<ResponseEntity<DownloadResponse>> downloadFile(
             @PathVariable @Parameter(description = "File ID", example = "12345") long fileId) {
         return fileService.downloadFile(fileId)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().body(
-                        new DownloadResponse(fileId, DownloadResponse.STATUS_FAILED, null, 0, ex.getMessage())
-                ));
+                .thenApply(ResponseEntity::ok);
     }
 
     @PostMapping("/download")
@@ -370,8 +350,7 @@ public class FileController {
             @RequestBody @Parameter(description = "Request with fileId list", required = true)
             @Valid DownloadFilesRequest request) {
         return fileService.downloadFiles(request.fileIds())
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().body(null));
+                .thenApply(ResponseEntity::ok);
     }
 
     @PostMapping("/batch-download")
@@ -416,8 +395,7 @@ public class FileController {
     })
     public CompletableFuture<ResponseEntity<FileStatsResponse>> getStats() {
         return fileService.getFileStats()
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().build());
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/stats/full")
@@ -445,11 +423,7 @@ public class FileController {
                 storageStatsFuture.join(),
                 networkStatsFuture.join(),
                 limitsFuture.join()
-            )))
-            .exceptionally(ex -> {
-                logger.error("Error getting full statistics: {}", ex.getMessage());
-                return ResponseEntity.badRequest().build();
-            });
+            )));
     }
 
     @GetMapping("/export")
@@ -470,15 +444,17 @@ public class FileController {
             @Parameter(description = "File type to filter", example = "photo")
             String type) {
         return fileService.exportFiles(format, type)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().build());
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/recent")
     @Operation(summary = "Recent Saved Messages files",
         description = """
-                Gets the latest files from your personal chat (Saved Messages).
-                Includes recently uploaded files and returns an empty list if the underlying Telegram query fails.
+                Gets the latest files from your personal chat (Saved Messages) ONLY.
+                Files uploaded to folder channels do NOT appear here — use the
+                advanced search (GET /api/telegram/files) or the folder's file
+                listing (GET /api/telegram/files/folders/{chatId}/files) for those.
+                Returns an empty list if the underlying Telegram query fails.
                 """)
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Recent Saved Messages files retrieved",
@@ -489,11 +465,7 @@ public class FileController {
             @Parameter(description = "Result limit", example = "50")
             Integer limit) {
         return fileService.getRecentFilesFromOwnChat(limit != null ? limit : 50)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> {
-                    logger.error("[RecentFiles] Error: {}", ex.getMessage());
-                    return ResponseEntity.ok(List.of());
-                });
+                .thenApply(ResponseEntity::ok);
     }
 
     /**
@@ -588,49 +560,28 @@ public class FileController {
                 );
             }
 
-            try {
-                java.io.File stagedFile = createUploadStagingFile(file);
+            try (java.io.InputStream content = file.getInputStream()) {
+                java.util.List<String> parsedTags = parseTags(tags);
 
-                logger.info("[UploadController] Upload staging file created: {}", stagedFile.getAbsolutePath());
-                logger.info("[UploadController] Size: {} bytes", stagedFile.length());
+                UploadCommand uploadCommand = new UploadCommand(
+                    file.getOriginalFilename(), content, targetChatId, caption,
+                    virtualPath, parsedTags, origin, archived,
+                    "photo".equalsIgnoreCase(type));
 
-                CompletableFuture<UploadResponse> uploadFuture;
-                if ("photo".equalsIgnoreCase(type)) {
-                    uploadFuture = fileService.uploadPhoto(
-                        stagedFile,
-                        targetChatId,
-                        caption,
-                        virtualPath,
-                        parseTags(tags),
-                        origin,
-                        archived
-                    );
-                } else {
-                    uploadFuture = fileService.uploadFile(
-                        stagedFile,
-                        targetChatId,
-                        caption,
-                        virtualPath,
-                        parseTags(tags),
-                        origin,
-                        archived
-                    );
-                }
+                CompletableFuture<UploadResponse> uploadFuture = fileService.upload(uploadCommand);
 
                 return uploadFuture.thenApply(response -> {
                     logger.info("[UploadController] Upload completed - Status: {}, Message ID: {}, Chat ID: {}",
                         response.status(), response.messageId(), response.chatId());
-                    // TelegramServiceImpl cleans the staged upload file once TDLib confirms the remote upload.
+                    // The staging area cleans up after failures; the Telegram module
+                    // cleans the staged file once TDLib confirms the remote upload.
                     return ResponseEntity.ok(response);
-                }).exceptionally(ex -> {
-                    logger.error("[UploadController] Upload failed", ex);
-                    stagedFile.delete();
-                    return ResponseEntity.badRequest().body(
-                        new UploadResponse(0, targetChatId, UploadResponse.STATUS_FAILED,
-                            file.getOriginalFilename(), file.getSize(), caption, "Failure: " + ex.getMessage())
-                    );
-                });
+                }).exceptionally(ex -> failedUpload(ex, file, targetChatId, caption));
 
+            } catch (StagingException e) {
+                // Server-side disk failure: must reach the global handler
+                // as 500, not be masked as a client error.
+                throw e;
             } catch (Exception e) {
                 logger.error("[UploadController] Error processing file", e);
                 return CompletableFuture.completedFuture(
@@ -641,94 +592,25 @@ public class FileController {
                     )
                 );
             }
-        }).exceptionally(ex -> {
-            logger.error("[UploadController] Error getting chat", ex);
-            return ResponseEntity.badRequest().body(
-                new UploadResponse(0, 0, UploadResponse.STATUS_FAILED,
-                    file.getOriginalFilename() != null ? file.getOriginalFilename() : "unknown",
-                    0, caption, "Error resolving chat: " + ex.getMessage())
-            );
         });
     }
 
-    private java.io.File createUploadStagingFile(org.springframework.web.multipart.MultipartFile multipartFile) throws java.io.IOException {
-        java.nio.file.Path stagingDir = java.nio.file.Paths.get("tdlib", "upload-staging");
-        java.nio.file.Files.createDirectories(stagingDir);
-
-        String originalName = multipartFile.getOriginalFilename() != null ? multipartFile.getOriginalFilename() : "upload.bin";
-        String sanitizedName = originalName.replaceAll("[^a-zA-Z0-9._-]", "_");
-        if (sanitizedName.isBlank()) {
-            sanitizedName = "upload.bin";
+    /**
+     * Business-failure mapping for uploads: only Telegram-rejected transfers
+     * become a failed-upload response; session and infrastructure failures
+     * propagate to the global handler.
+     */
+    private ResponseEntity<UploadResponse> failedUpload(Throwable error,
+            org.springframework.web.multipart.MultipartFile file, long chatId, String caption) {
+        Throwable cause = Exceptions.unwrap(error);
+        if (!(cause instanceof TelegramOperationException)) {
+            throw new java.util.concurrent.CompletionException(cause);
         }
-
-        java.nio.file.Path stagedPath = stagingDir.resolve(java.util.UUID.randomUUID() + "_" + sanitizedName);
-        multipartFile.transferTo(stagedPath);
-        return stagedPath.toFile();
-    }
-
-    @PostMapping("/{fileId}/restore")
-    @Operation(summary = "Restore file from trash", description = "Restores a file from the logical trash")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "File restored",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileActionResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Restore error")
-    })
-    public CompletableFuture<ResponseEntity<FileActionResponse>> restoreFile(
-            @PathVariable @Parameter(description = "File ID", example = "12345") long fileId) {
-        return fileService.restoreFile(fileId)
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.badRequest().body(
-                new FileActionResponse(fileId, FileActionResponse.STATUS_FAILED, ex.getMessage(), "/", false, false, 0)
-            ));
-    }
-
-    @PostMapping("/{fileId}/move")
-    @Operation(summary = "Move file logically", description = "Moves a file to a virtual path inside the drive")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "File moved",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileActionResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Move error")
-    })
-    public CompletableFuture<ResponseEntity<FileActionResponse>> moveFile(
-            @PathVariable @Parameter(description = "File ID", example = "12345") long fileId,
-            @RequestBody @Valid MoveFileRequest request) {
-        return fileService.moveFile(fileId, request.virtualPath())
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.badRequest().body(
-                new FileActionResponse(fileId, FileActionResponse.STATUS_FAILED, ex.getMessage(), "/", false, false, 0)
-            ));
-    }
-
-    @PostMapping("/{fileId}/archive")
-    @Operation(summary = "Archive or unarchive file", description = "Marks a file as archived or active in the logical index")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Archive state updated",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = FileActionResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Archive error")
-    })
-    public CompletableFuture<ResponseEntity<FileActionResponse>> archiveFile(
-            @PathVariable @Parameter(description = "File ID", example = "12345") long fileId,
-            @RequestParam(defaultValue = "true") boolean archived) {
-        return fileService.archiveFile(fileId, archived)
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.badRequest().body(
-                new FileActionResponse(fileId, FileActionResponse.STATUS_FAILED, ex.getMessage(), "/", false, false, 0)
-            ));
-    }
-
-    @GetMapping("/trash")
-    @Operation(
-        summary = "List logical trash",
-        description = "Returns files currently stored in the logical trash. If the query fails, the endpoint returns an empty list."
-    )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Logical trash retrieved",
-            content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = FileInfoResponse.class))))
-    })
-    public CompletableFuture<ResponseEntity<List<FileInfoResponse>>> listTrash() {
-        return fileService.listTrash()
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.ok(List.of()));
+        logger.error("[UploadController] Upload failed: {}", cause.getMessage());
+        return ResponseEntity.badRequest().body(
+            new UploadResponse(0, chatId, UploadResponse.STATUS_FAILED,
+                file.getOriginalFilename(), file.getSize(), caption, "Failure: " + cause.getMessage())
+        );
     }
 
     @DeleteMapping("/message")
@@ -761,13 +643,7 @@ public class FileController {
         }
 
         return fileService.deleteMessage(request.messageId(), request.chatId(), request.permanent())
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().body(
-                    new DeleteMessageResponse(request.messageId(), request.chatId(),
-                        DeleteMessageResponse.STATUS_FAILED,
-                        request.permanent() ? DeleteMessageResponse.DELETION_TYPE_PERMANENT : DeleteMessageResponse.DELETION_TYPE_LOCAL,
-                        "Error: " + ex.getMessage())
-                ));
+                .thenApply(ResponseEntity::ok);
     }
 
     @DeleteMapping("/bulk-delete")
@@ -796,17 +672,7 @@ public class FileController {
             @Valid BulkDeleteRequest request) {
 
         return fileService.bulkDeleteMessages(request)
-                .thenApply(ResponseEntity::ok)
-                .exceptionally(ex -> ResponseEntity.badRequest().body(
-                    new BulkDeleteResponse(
-                        request.items().size(),
-                        0,
-                        request.items().size(),
-                        List.of(new BulkDeleteResponse.DeleteResult(
-                            0, null, false, "Error general: " + ex.getMessage()
-                        ))
-                    )
-                ));
+                .thenApply(ResponseEntity::ok);
     }
 
     // ==================== FOLDER ENDPOINTS ====================
@@ -847,8 +713,7 @@ public class FileController {
         }
 
         return fileService.searchFilesInChat(chatId, type, limit)
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.ok(Collections.emptyList()));
+            .thenApply(ResponseEntity::ok);
     }
 
     private List<String> parseTags(String tags) {

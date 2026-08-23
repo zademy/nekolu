@@ -1,6 +1,10 @@
-# ==== Stage 1: Build ====
-FROM eclipse-temurin:25-jdk AS builder
+FROM maven:3-eclipse-temurin-26 AS builder
 WORKDIR /build
+
+COPY lib/tdlib-linux.jar /build/lib/tdlib.jar
+RUN mvn install:install-file \
+    -Dfile=/build/lib/tdlib.jar \
+    -DgroupId=org.drinkless -DartifactId=tdlib -Dversion=1.8.66 -Dpackaging=jar
 
 COPY pom.xml ./
 COPY .mvn .mvn
@@ -8,28 +12,22 @@ COPY mvnw ./
 RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
 
 COPY src ./src
-COPY libs ./libs
 RUN ./mvnw package -DskipTests -B
 
-# ==== Stage 2: Runtime ====
-FROM eclipse-temurin:25-jre
+FROM eclipse-temurin:26-jre
 WORKDIR /app
 
-# Install TDLib native library dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libssl3 \
-    zlib1g \
+    libssl3 zlib1g curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the TDLib native library (adjust path if needed)
-COPY libs/libtdjni.so /usr/lib/libtdjni.so
-ENV LD_LIBRARY_PATH=/usr/lib
-
 COPY --from=builder /build/target/*.jar app.jar
+COPY lib/libtdjni.so /usr/lib/libtdjni.so
 
-# TDLib data directories
+ENV LD_LIBRARY_PATH=/usr/lib
+ENV JAVA_TOOL_OPTIONS="--enable-native-access=ALL-UNNAMED"
+
 VOLUME /app/tdlib
-
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]

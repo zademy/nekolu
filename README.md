@@ -35,9 +35,8 @@ The project exposes:
 - a REST API documented with OpenAPI / Swagger UI
 - a server-rendered Thymeleaf interface with i18n support
 - TDLib-backed file discovery, upload, download, and inline preview workflows
-- logical drive features such as virtual paths, archive state, and trash operations
 - folder management backed by private Telegram channels
-- real-time download progress via WebSocket
+- download progress via polling: start the download and poll the file state
 - observability through Actuator, Micrometer metrics, and Prometheus
 
 ---
@@ -51,13 +50,6 @@ The project exposes:
 - View downloaded media inline in the browser
 - Generate thumbnails and stream metadata
 - Run batch downloads and inspect progress
-
-### Logical drive features
-- Assign virtual paths to files
-- Archive and restore files
-- Move files between logical paths
-- Send files to logical trash and restore them later
-- Keep logical metadata alongside raw Telegram metadata
 
 ### Folder management
 - Create folders backed by private Telegram channels
@@ -93,7 +85,7 @@ The project exposes:
 | Validation | Jakarta Bean Validation |
 | Caching | Caffeine |
 | Metrics | Micrometer + Prometheus |
-| Real-time | WebSocket |
+| Progress | Polling (REST) |
 | Logging | Logback with JSON output (prod) + MDC correlation |
 | i18n | Spring MessageSource (English, Spanish) |
 | Build | Maven |
@@ -157,6 +149,8 @@ java --enable-native-access=ALL-UNNAMED -Djava.library.path=lib -cp lib/tdlib.ja
 ```
 
 Follow the interactive prompts to complete authentication (phone number, verification code, and 2FA password if enabled). After successful login, quit the example client before starting Nekolu.
+
+**Easier alternative — first-run wizard:** start Nekolu directly and open it in your browser. Without an authenticated session every page redirects to `/setup`, a three-step wizard (phone number → verification code → two-step password if enabled) that authenticates inside the app. Progress persists with TDLib: leave and come back, and the wizard resumes at the right step. The CLI example above remains a valid alternative.
 
 ### 4. Run the application
 
@@ -227,9 +221,8 @@ Once running, the API documentation is available at:
 
 | Area | Base path | Capabilities |
 |------|-----------|-------------|
-| Files | `/api/telegram/files` | List, download, upload, preview, thumbnails, batch operations, archive, move, trash, delete, export |
+| Files | `/api/telegram/files` | List, download, upload, preview, thumbnails, batch operations, delete, export |
 | Folders | `/api/telegram` | Create, list, delete folder channels |
-| Progress | `/ws/download-progress` | WebSocket endpoint for real-time download progress |
 | Health | `/actuator/health` | TDLib authorization, disk space, directory accessibility |
 | Metrics | `/actuator/prometheus` | Prometheus-compatible metrics endpoint |
 
@@ -281,8 +274,7 @@ src/main/java/com/zademy/nekolu/
 │   ├── RequestCorrelationFilter.java
 │   ├── TelegramConfig.java
 │   ├── TelegramHealthIndicator.java
-│   ├── WebConfig.java
-│   └── WebSocketConfig.java
+│   └── WebConfig.java
 ├── constants/
 │   ├── FileTypeConstants.java
 │   ├── MediaConstants.java
@@ -308,8 +300,6 @@ src/main/java/com/zademy/nekolu/
 │   ├── TelegramRateLimiter.java
 │   ├── TelegramServiceImpl.java
 │   └── TemporaryUploadJanitor.java
-└── websocket/
-    └── DownloadProgressWebSocketHandler.java
 
 src/main/resources/
 ├── application.example.properties
@@ -381,7 +371,7 @@ If Telegram operations fail because the client is not authorized, authenticate T
 java --enable-native-access=ALL-UNNAMED -Djava.library.path=lib -cp lib/tdlib.jar org.drinkless.tdlib.example.Example
 ```
 
-After successful authentication, quit the TDLib example client, ensure the same `tdlib/` directory is configured, and restart Nekolu.
+After successful authentication, quit the TDLib example client, ensure the same `tdlib/` directory is configured, and restart Nekolu. Alternatively, skip this step and use the built-in `/setup` wizard on first run.
 
 ### `PHONE_NUMBER_INVALID`
 Re-enter the phone number in international format with the leading `+` and country code.
