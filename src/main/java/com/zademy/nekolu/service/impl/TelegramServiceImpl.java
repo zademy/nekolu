@@ -301,11 +301,12 @@ public class TelegramServiceImpl implements TelegramService {
      * staging area's startup purge.
      */
     private CompletableFuture<TelegramFileMessage> trackedFileMessage(TdApi.Message message, String stagedFilePath) {
-        TdApi.File file = fileOf(message);
+        MessageContent content = message.content != null ? contentOf(message.content) : null;
         TelegramFileMessage fileMessage = toFileMessage(message);
-        if (file == null || fileMessage == null) {
+        if (content == null || fileMessage == null) {
             return CompletableFuture.failedFuture(new TelegramNotFoundException("Message contains no file"));
         }
+        TdApi.File file = content.file();
         if (file.remote != null && !file.remote.isUploadingActive && file.remote.isUploadingCompleted) {
             java.io.File staged = new java.io.File(stagedFilePath);
             if (staged.exists() && staged.delete()) {
@@ -315,24 +316,6 @@ public class TelegramServiceImpl implements TelegramService {
         }
         trackUpload(fileMessage.fileId(), stagedFilePath);
         return CompletableFuture.completedFuture(fileMessage);
-    }
-
-    /**
-     * Extracts the TDLib file carried by a message, or null when it carries
-     * none.
-     */
-    private TdApi.File fileOf(TdApi.Message message) {
-        if (message.content == null) return null;
-        return switch (message.content) {
-            case TdApi.MessagePhoto photo when photo.photo != null && photo.photo.sizes.length > 0 ->
-                photo.photo.sizes[photo.photo.sizes.length - 1].photo;
-            case TdApi.MessageVideo video when video.video != null -> video.video.video;
-            case TdApi.MessageAudio audio when audio.audio != null -> audio.audio.audio;
-            case TdApi.MessageDocument doc when doc.document != null -> doc.document.document;
-            case TdApi.MessageVoiceNote voice when voice.voiceNote != null -> voice.voiceNote.voice;
-            case TdApi.MessageVideoNote videoNote when videoNote.videoNote != null -> videoNote.videoNote.video;
-            default -> null;
-        };
     }
 
     @Override
@@ -406,171 +389,113 @@ public class TelegramServiceImpl implements TelegramService {
         return fileMessages;
     }
 
+    /** Facts carried by a message's file content, extracted per content type. */
+    private record MessageContent(
+            TdApi.File file,
+            String fileName,
+            String mimeType,
+            String type,
+            Integer width,
+            Integer height,
+            Integer duration,
+            String thumbnailPath) {}
+
     /**
      * Maps a Telegram message to the domain file-message view, or null when
-     * the message carries no file. Single source of the message-content
-     * classification.
+     * the message carries no file. The construction lives in this single
+     * place; per-type differences reduce to {@link #contentOf}.
      */
     private TelegramFileMessage toFileMessage(TdApi.Message message) {
         if (message.content == null) return null;
 
-        return switch (message.content) {
-            case TdApi.MessagePhoto photo -> fromPhoto(message, photo);
-            case TdApi.MessageVideo video -> fromVideo(message, video);
-            case TdApi.MessageAudio audio -> fromAudio(message, audio);
-            case TdApi.MessageDocument doc -> fromDocument(message, doc);
-            case TdApi.MessageVoiceNote voice -> fromVoiceNote(message, voice);
-            case TdApi.MessageVideoNote videoNote -> fromVideoNote(message, videoNote);
+        MessageContent content = contentOf(message.content);
+        if (content == null) return null;
+
+        TdApi.File file = content.file();
+        return new TelegramFileMessage(
+            message.id,
+            message.chatId,
+            file.id,
+            content.fileName(),
+            file.size,
+            content.mimeType(),
+            content.type(),
+            content.width(),
+            content.height(),
+            content.duration(),
+            content.thumbnailPath(),
+            message.date,
+            isFileActuallyDownloaded(file),
+            file.local != null ? file.local.path : null
+        );
+    }
+
+    /**
+     * Single source of the message-content classification: one case per
+     * workspace file type, each yielding the content's raw facts.
+     */
+    private MessageContent contentOf(TdApi.MessageContent content) {
+        return switch (content) {
+            case TdApi.MessagePhoto photo when photo.photo != null && photo.photo.sizes.length > 0 -> {
+                TdApi.PhotoSize largest = photo.photo.sizes[photo.photo.sizes.length - 1];
+                TdApi.PhotoSize smallest = photo.photo.sizes[0];
+                yield new MessageContent(
+                    largest.photo,
+                    MediaConstants.FILE_PREFIX_PHOTO + largest.photo.id + MediaConstants.EXTENSION_JPG,
+                    MediaConstants.MIME_IMAGE_JPEG,
+                    FileTypeConstants.PHOTO,
+                    largest.width,
+                    largest.height,
+                    null,
+                    thumbnailPathOf(smallest.photo));
+            }
+            case TdApi.MessageVideo video when video.video != null -> new MessageContent(
+                video.video.video,
+                video.video.fileName != null ? video.video.fileName
+                    : MediaConstants.FILE_PREFIX_VIDEO + video.video.video.id + MediaConstants.EXTENSION_MP4,
+                video.video.mimeType != null ? video.video.mimeType : MediaConstants.MIME_VIDEO_MP4,
+                FileTypeConstants.VIDEO,
+                video.video.width,
+                video.video.height,
+                video.video.duration,
+                video.video.thumbnail != null && video.video.thumbnail.file != null
+                    ? thumbnailPathOf(video.video.thumbnail.file) : null);
+            case TdApi.MessageAudio audio when audio.audio != null -> new MessageContent(
+                audio.audio.audio,
+                audio.audio.fileName != null ? audio.audio.fileName
+                    : MediaConstants.FILE_PREFIX_AUDIO + audio.audio.audio.id + MediaConstants.EXTENSION_MP3,
+                audio.audio.mimeType != null ? audio.audio.mimeType : MediaConstants.MIME_AUDIO_MPEG,
+                FileTypeConstants.AUDIO,
+                null, null,
+                audio.audio.duration,
+                null);
+            case TdApi.MessageDocument doc when doc.document != null -> new MessageContent(
+                doc.document.document,
+                doc.document.fileName != null ? doc.document.fileName
+                    : MediaConstants.FILE_PREFIX_DOCUMENT + doc.document.document.id,
+                doc.document.mimeType != null ? doc.document.mimeType
+                    : MediaConstants.MIME_APPLICATION_OCTET_STREAM,
+                FileTypeConstants.DOCUMENT,
+                null, null, null, null);
+            case TdApi.MessageVoiceNote voice when voice.voiceNote != null -> new MessageContent(
+                voice.voiceNote.voice,
+                MediaConstants.FILE_PREFIX_VOICE + voice.voiceNote.voice.id + MediaConstants.EXTENSION_OGA,
+                MediaConstants.MIME_AUDIO_OGG,
+                FileTypeConstants.VOICE,
+                null, null,
+                voice.voiceNote.duration,
+                null);
+            case TdApi.MessageVideoNote videoNote when videoNote.videoNote != null -> new MessageContent(
+                videoNote.videoNote.video,
+                MediaConstants.FILE_PREFIX_VIDEO_NOTE + videoNote.videoNote.video.id + MediaConstants.EXTENSION_MP4,
+                MediaConstants.MIME_VIDEO_MP4,
+                FileTypeConstants.VIDEO_NOTE,
+                videoNote.videoNote.length,
+                videoNote.videoNote.length,
+                videoNote.videoNote.duration,
+                null);
             default -> null;
         };
-    }
-
-    private TelegramFileMessage fromPhoto(TdApi.Message message, TdApi.MessagePhoto photo) {
-        if (photo.photo == null || photo.photo.sizes == null || photo.photo.sizes.length == 0) {
-            return null;
-        }
-        // Use the largest size for the main file
-        TdApi.PhotoSize largest = photo.photo.sizes[photo.photo.sizes.length - 1];
-        TdApi.File file = largest.photo;
-
-        // Use the smallest size for the thumbnail
-        TdApi.PhotoSize smallest = photo.photo.sizes[0];
-        String thumbnailPath = thumbnailPathOf(smallest.photo);
-
-        return new TelegramFileMessage(
-            message.id,
-            message.chatId,
-            file.id,
-            MediaConstants.FILE_PREFIX_PHOTO + file.id + MediaConstants.EXTENSION_JPG,
-            file.size,
-            MediaConstants.MIME_IMAGE_JPEG,
-            FileTypeConstants.PHOTO,
-            largest.width,
-            largest.height,
-            null,
-            thumbnailPath,
-            message.date,
-            isFileActuallyDownloaded(file),
-            file.local != null ? file.local.path : null
-        );
-    }
-
-    private TelegramFileMessage fromVideo(TdApi.Message message, TdApi.MessageVideo video) {
-        if (video.video == null) return null;
-        TdApi.File file = video.video.video;
-
-        String thumbnailPath = null;
-        if (video.video.thumbnail != null && video.video.thumbnail.file != null) {
-            thumbnailPath = thumbnailPathOf(video.video.thumbnail.file);
-        }
-
-        return new TelegramFileMessage(
-            message.id,
-            message.chatId,
-            file.id,
-            video.video.fileName != null ? video.video.fileName
-                : MediaConstants.FILE_PREFIX_VIDEO + file.id + MediaConstants.EXTENSION_MP4,
-            file.size,
-            video.video.mimeType != null ? video.video.mimeType : MediaConstants.MIME_VIDEO_MP4,
-            FileTypeConstants.VIDEO,
-            video.video.width,
-            video.video.height,
-            video.video.duration,
-            thumbnailPath,
-            message.date,
-            isFileActuallyDownloaded(file),
-            file.local != null ? file.local.path : null
-        );
-    }
-
-    private TelegramFileMessage fromAudio(TdApi.Message message, TdApi.MessageAudio audio) {
-        if (audio.audio == null) return null;
-        TdApi.File file = audio.audio.audio;
-
-        return new TelegramFileMessage(
-            message.id,
-            message.chatId,
-            file.id,
-            audio.audio.fileName != null ? audio.audio.fileName
-                : MediaConstants.FILE_PREFIX_AUDIO + file.id + MediaConstants.EXTENSION_MP3,
-            file.size,
-            audio.audio.mimeType != null ? audio.audio.mimeType : MediaConstants.MIME_AUDIO_MPEG,
-            FileTypeConstants.AUDIO,
-            null,
-            null,
-            audio.audio.duration,
-            null,
-            message.date,
-            isFileActuallyDownloaded(file),
-            file.local != null ? file.local.path : null
-        );
-    }
-
-    private TelegramFileMessage fromDocument(TdApi.Message message, TdApi.MessageDocument doc) {
-        if (doc.document == null) return null;
-        TdApi.File file = doc.document.document;
-
-        return new TelegramFileMessage(
-            message.id,
-            message.chatId,
-            file.id,
-            doc.document.fileName != null ? doc.document.fileName
-                : MediaConstants.FILE_PREFIX_DOCUMENT + file.id,
-            file.size,
-            doc.document.mimeType != null ? doc.document.mimeType : MediaConstants.MIME_APPLICATION_OCTET_STREAM,
-            FileTypeConstants.DOCUMENT,
-            null,
-            null,
-            null,
-            null,
-            message.date,
-            isFileActuallyDownloaded(file),
-            file.local != null ? file.local.path : null
-        );
-    }
-
-    private TelegramFileMessage fromVoiceNote(TdApi.Message message, TdApi.MessageVoiceNote voice) {
-        if (voice.voiceNote == null) return null;
-        TdApi.File file = voice.voiceNote.voice;
-
-        return new TelegramFileMessage(
-            message.id,
-            message.chatId,
-            file.id,
-            MediaConstants.FILE_PREFIX_VOICE + file.id + MediaConstants.EXTENSION_OGA,
-            file.size,
-            MediaConstants.MIME_AUDIO_OGG,
-            FileTypeConstants.VOICE,
-            null,
-            null,
-            voice.voiceNote.duration,
-            null,
-            message.date,
-            isFileActuallyDownloaded(file),
-            file.local != null ? file.local.path : null
-        );
-    }
-
-    private TelegramFileMessage fromVideoNote(TdApi.Message message, TdApi.MessageVideoNote videoNote) {
-        if (videoNote.videoNote == null) return null;
-        TdApi.File file = videoNote.videoNote.video;
-
-        return new TelegramFileMessage(
-            message.id,
-            message.chatId,
-            file.id,
-            MediaConstants.FILE_PREFIX_VIDEO_NOTE + file.id + MediaConstants.EXTENSION_MP4,
-            file.size,
-            MediaConstants.MIME_VIDEO_MP4,
-            FileTypeConstants.VIDEO_NOTE,
-            videoNote.videoNote.length,
-            videoNote.videoNote.length,
-            videoNote.videoNote.duration,
-            null,
-            message.date,
-            isFileActuallyDownloaded(file),
-            file.local != null ? file.local.path : null
-        );
     }
 
     /**
