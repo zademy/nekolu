@@ -6,6 +6,16 @@
 >
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (function () {
+        var stored = null;
+        try { stored = localStorage.getItem('theme'); } catch (e) {}
+        var theme = stored === 'dark' || stored === 'light'
+          ? stored
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title layout:title-pattern="$CONTENT_TITLE - Nekolu">Nekolu</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -29,6 +39,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css"
     />
+    <link th:href="@{/css/tokens.css(v=${#dates.createNow().time})}" rel="stylesheet" />
     <link th:href="@{/css/app.css(v=${#dates.createNow().time})}" rel="stylesheet" />
   </head>
   <body class="app-body">
@@ -84,6 +95,11 @@
           </a>
         </nav>
         <div class="sidebar-footer">
+          <button type="button" id="themeToggle" class="theme-toggle" title="Cambiar tema"
+                  aria-label="Cambiar entre tema claro y oscuro">
+            <i class="fa-solid fa-moon theme-icon-moon"></i>
+            <i class="fa-solid fa-sun theme-icon-sun"></i>
+          </button>
           <div class="sidebar-footnote">
             Save files, organize folders, and use Telegram as your private
             cloud.
@@ -133,6 +149,7 @@
     <script th:src="@{/js/api-client.js(v=${#dates.createNow().time})}"></script>
     <script th:src="@{/js/grid-table.js(v=${#dates.createNow().time})}"></script>
     <script th:src="@{/js/app.js(v=${#dates.createNow().time})}"></script>
+    <script th:src="@{/js/theme.js(v=${#dates.createNow().time})}"></script>
     <th:block layout:fragment="scripts"></th:block>
   </body>
 </html>

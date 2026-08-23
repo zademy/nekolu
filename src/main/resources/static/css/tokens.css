@@ -1,0 +1,94 @@
+/*
+ * Design tokens — GitHub Primer (official values from @primer/primitives).
+ * Light theme is the default; dark applies via [data-theme="dark"].
+ * This is the ONLY file allowed to declare color literals.
+ */
+
+:root {
+  /* canvas & surfaces */
+  --bgColor-default: #ffffff;
+  --bgColor-inset: #f6f8fa;
+  --bgColor-muted: #f6f8fa;
+  --bgColor-emphasis: #25292e;
+  --fgColor-onEmphasis: #ffffff;
+
+  /* foreground */
+  --fgColor-default: #1f2328;
+  --fgColor-muted: #59636e;
+  --fgColor-subtle: #818b98;
+
+  /* borders */
+  --borderColor-default: #d1d9e0;
+  --borderColor-muted: #d1d9e0b3;
+  --borderColor-emphasis: #818b98;
+
+  /* accent (actions & links) */
+  --fgColor-accent: #0969da;
+  --bgColor-accent-emphasis: #0969da;
+  --bgColor-accent-muted: #ddf4ff;
+  --borderColor-accent-emphasis: #0969da;
+
+  /* success */
+  --fgColor-success: #1a7f37;
+  --bgColor-success-emphasis: #1f883d;
+  --bgColor-success-muted: #dafbe1;
+
+  /* danger */
+  --fgColor-danger: #d1242f;
+  --bgColor-danger-emphasis: #cf222e;
+  --bgColor-danger-muted: #ffebe9;
+
+  /* attention */
+  --fgColor-attention: #9a6700;
+  --bgColor-attention-emphasis: #9a6700;
+  --bgColor-attention-muted: #fff8c5;
+
+  /* done */
+  --fgColor-done: #8250df;
+  --bgColor-done-emphasis: #8250df;
+
+  /* shadows */
+  --shadow-resting: 0 1px 0 rgba(31, 35, 40, 0.04);
+  --shadow-raised: 0 3px 6px rgba(140, 149, 159, 0.15);
+  --shadow-inset: inset 0 1px 0 rgba(208, 215, 222, 0.2);
+}
+
+[data-theme="dark"] {
+  --bgColor-default: #0d1117;
+  --bgColor-inset: #010409;
+  --bgColor-muted: #151b23;
+  --bgColor-emphasis: #3d444d;
+  --fgColor-onEmphasis: #ffffff;
+
+  --fgColor-default: #f0f6fc;
+  --fgColor-muted: #9198a1;
+  --fgColor-subtle: #656c76;
+
+  --borderColor-default: #3d444d;
+  --borderColor-muted: #3d444db3;
+  --borderColor-emphasis: #656c76;
+
+  --fgColor-accent: #4493f8;
+  --bgColor-accent-emphasis: #1f6feb;
+  --bgColor-accent-muted: #388bfd1a;
+  --borderColor-accent-emphasis: #1f6feb;
+
+  --fgColor-success: #3fb950;
+  --bgColor-success-emphasis: #238636;
+  --bgColor-success-muted: #2ea04326;
+
+  --fgColor-danger: #f85149;
+  --bgColor-danger-emphasis: #da3633;
+  --bgColor-danger-muted: #f851491a;
+
+  --fgColor-attention: #d29922;
+  --bgColor-attention-emphasis: #9e6a03;
+  --bgColor-attention-muted: #bb800926;
+
+  --fgColor-done: #ab7df8;
+  --bgColor-done-emphasis: #8957e5;
+
+  --shadow-resting: 0 0 transparent;
+  --shadow-raised: 0 3px 6px rgba(1, 4, 9, 0.3);
+  --shadow-inset: inset 0 1px 0 rgba(1, 4, 9, 0.4);
+}
