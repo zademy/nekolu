@@ -304,3 +304,4 @@ description: chronological action log per session, consolidated weekly
 | 23:47 | Edited src/main/java/com/zademy/nekolu/service/impl/UploadStagingArea.java | added error handling | ~294 |
 | 23:47 | Edited src/main/java/com/zademy/nekolu/service/impl/UploadStagingArea.java | added error handling | ~311 |
 | 23:50 | Edited src/test/java/com/zademy/nekolu/service/impl/UploadStagingAreaTest.java | 7→7 lines | ~105 |
+| 23:54 | Created README.md | — | ~4111 |
