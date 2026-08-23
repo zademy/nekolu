@@ -109,27 +109,20 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorResponse> handleCompletionException(CompletionException ex,
                                                                        HttpServletRequest request) {
         Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
-        if (cause instanceof TelegramUnauthorizedException e) {
-            return handleUnauthorized(e, request);
-        }
-        if (cause instanceof TelegramNotInitializedException e) {
-            return handleNotInitialized(e, request);
-        }
-        if (cause instanceof TelegramOperationException e) {
-            return handleTelegramOperation(e, request);
-        }
-        if (cause instanceof TelegramNotFoundException e) {
-            return handleTelegramNotFound(e, request);
-        }
-        if (cause instanceof IllegalStateException ise) {
-            return handleIllegalState(ise, request);
-        }
-        if (cause instanceof TimeoutException te) {
-            return handleTimeout(te, request);
-        }
-        logger.error("Async operation failed on {}: {}", request.getRequestURI(), cause.getMessage(), cause);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                ApiErrorResponse.of(500, "Internal Server Error", cause.getMessage(), request.getRequestURI()));
+        // Single typed dispatch: a new exception type registers in one line.
+        return switch (cause) {
+            case TelegramUnauthorizedException e -> handleUnauthorized(e, request);
+            case TelegramNotInitializedException e -> handleNotInitialized(e, request);
+            case TelegramOperationException e -> handleTelegramOperation(e, request);
+            case TelegramNotFoundException e -> handleTelegramNotFound(e, request);
+            case TimeoutException e -> handleTimeout(e, request);
+            case IllegalStateException e -> handleIllegalState(e, request);
+            default -> {
+                logger.error("Async operation failed on {}: {}", request.getRequestURI(), cause.getMessage(), cause);
+                yield ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                        ApiErrorResponse.of(500, "Internal Server Error", cause.getMessage(), request.getRequestURI()));
+            }
+        };
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
