@@ -1,0 +1,2674 @@
+{
+  "version": 1,
+  "meta": {
+    "lastScanned": "2026-08-23T05:35:18.183Z",
+    "fileCount": 153,
+    "hits": 0,
+    "misses": 0,
+    "renderedHash": "a1c6483ff4e3b4af8f368b9c1ad1227d7fac813e47ff33a9d99df0ece7b80e27",
+    "storeUpdatedAt": "2026-08-23T05:35:18.190Z",
+    "rootHash": "2a7b03256877af08"
+  },
+  "files": {
+    ".classpath": {
+      "description": "",
+      "tokens": 614,
+      "hash": "5447726d8adcb09f",
+      "size": 2300,
+      "mtimeMs": 1787432308702.6658,
+      "updatedAt": "2026-08-23T00:00:00.184Z",
+      "source": "scan"
+    },
+    ".factorypath": {
+      "description": "",
+      "tokens": 46,
+      "hash": "be01b72dab008fdb",
+      "size": 170,
+      "mtimeMs": 1787432308731.279,
+      "updatedAt": "2026-08-23T00:00:00.185Z",
+      "source": "scan"
+    },
+    ".gitattributes": {
+      "description": "Git attributes",
+      "tokens": 11,
+      "hash": "5775a77ad2f6d12d",
+      "size": 38,
+      "mtimeMs": 1775327908829.9043,
+      "updatedAt": "2026-08-23T00:00:00.185Z",
+      "source": "scan"
+    },
+    ".github/workflows/generate-changelog.yml": {
+      "description": "CI: Generate Changelog",
+      "tokens": 773,
+      "hash": "3faf1790936a1297",
+      "size": 2705,
+      "mtimeMs": 1775327908748.9465,
+      "updatedAt": "2026-08-23T00:00:00.186Z",
+      "source": "scan"
+    },
+    ".gitignore": {
+      "description": "Git ignore rules",
+      "tokens": 250,
+      "hash": "85d0837b00660983",
+      "size": 937,
+      "mtimeMs": 1775328806270.0864,
+      "updatedAt": "2026-08-23T00:00:00.186Z",
+      "source": "scan"
+    },
+    ".mvn/wrapper/maven-wrapper.properties": {
+      "description": "",
+      "tokens": 45,
+      "hash": "b0ffaf47bfff05e4",
+      "size": 168,
+      "mtimeMs": 1775327908764.0347,
+      "updatedAt": "2026-08-23T00:00:00.187Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-22T23-38-08-399Z.log": {
+      "description": "",
+      "tokens": 299,
+      "hash": "81544037b87433ee",
+      "size": 1119,
+      "mtimeMs": 1787442285737.5422,
+      "updatedAt": "2026-08-23T00:00:00.188Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-22T23-50-13-302Z.log": {
+      "description": "",
+      "tokens": 35,
+      "hash": "a304adb2bc10a864",
+      "size": 129,
+      "mtimeMs": 1787442613646.076,
+      "updatedAt": "2026-08-23T00:00:00.188Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-38-09-061Z.yml": {
+      "description": "",
+      "tokens": 202,
+      "hash": "dcf84f63232dd052",
+      "size": 713,
+      "mtimeMs": 1787441889061.8452,
+      "updatedAt": "2026-08-23T00:00:00.188Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-50-13-675Z.yml": {
+      "description": "Declares for",
+      "tokens": 1246,
+      "hash": "ca1767def381f6f9",
+      "size": 4418,
+      "mtimeMs": 1787442613676.176,
+      "updatedAt": "2026-08-23T00:00:00.190Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-50-28-755Z.yml": {
+      "description": "Declares for",
+      "tokens": 2614,
+      "hash": "4ed537125e7abf4d",
+      "size": 9247,
+      "mtimeMs": 1787442628755.8079,
+      "updatedAt": "2026-08-23T00:00:00.190Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-50-59-646Z.yml": {
+      "description": "Declares for",
+      "tokens": 1540,
+      "hash": "c0df22cef8286c8b",
+      "size": 5461,
+      "mtimeMs": 1787442659646.3726,
+      "updatedAt": "2026-08-23T00:00:00.190Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-51-23-241Z.yml": {
+      "description": "",
+      "tokens": 0,
+      "hash": "e3b0c44298fc1c14",
+      "size": 0,
+      "mtimeMs": 1787442683241.2114,
+      "updatedAt": "2026-08-23T00:00:00.191Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-51-31-885Z.yml": {
+      "description": "Declares for",
+      "tokens": 1538,
+      "hash": "eadf912d11102352",
+      "size": 5457,
+      "mtimeMs": 1787442691885.7202,
+      "updatedAt": "2026-08-23T00:00:00.191Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-51-46-148Z.yml": {
+      "description": "Declares for",
+      "tokens": 11966,
+      "hash": "31f4fa8bb7895321",
+      "size": 42328,
+      "mtimeMs": 1787442706148.8796,
+      "updatedAt": "2026-08-23T00:00:00.192Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-52-04-660Z.yml": {
+      "description": "Declares for",
+      "tokens": 12569,
+      "hash": "26e0c47373ec3520",
+      "size": 44437,
+      "mtimeMs": 1787442724660.6519,
+      "updatedAt": "2026-08-23T00:00:00.193Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-52-14-584Z.yml": {
+      "description": "Declares for",
+      "tokens": 12022,
+      "hash": "468becd2270e9228",
+      "size": 42528,
+      "mtimeMs": 1787442734584.921,
+      "updatedAt": "2026-08-23T00:00:00.194Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-52-28-052Z.yml": {
+      "description": "Declares for",
+      "tokens": 987,
+      "hash": "ebfd71e7f66df05b",
+      "size": 3513,
+      "mtimeMs": 1787442748053.1736,
+      "updatedAt": "2026-08-23T00:00:00.194Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-52-45-887Z.yml": {
+      "description": "Declares for",
+      "tokens": 1802,
+      "hash": "e11aa48414b1f910",
+      "size": 6381,
+      "mtimeMs": 1787442765887.8777,
+      "updatedAt": "2026-08-23T00:00:00.195Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-53-09-414Z.yml": {
+      "description": "Declares for",
+      "tokens": 1779,
+      "hash": "1542a2afa9e62317",
+      "size": 6309,
+      "mtimeMs": 1787442789415.572,
+      "updatedAt": "2026-08-23T00:00:00.195Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-53-20-974Z.yml": {
+      "description": "Declares for",
+      "tokens": 1779,
+      "hash": "1542a2afa9e62317",
+      "size": 6309,
+      "mtimeMs": 1787442800975.134,
+      "updatedAt": "2026-08-23T00:00:00.196Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-55-55-915Z.yml": {
+      "description": "Declares for",
+      "tokens": 1801,
+      "hash": "4381782958c5e647",
+      "size": 6387,
+      "mtimeMs": 1787442955915.7546,
+      "updatedAt": "2026-08-23T00:00:00.196Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-56-13-826Z.yml": {
+      "description": "Declares for",
+      "tokens": 1540,
+      "hash": "597c17ad4a656301",
+      "size": 5461,
+      "mtimeMs": 1787442973827.088,
+      "updatedAt": "2026-08-23T00:00:00.197Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-56-37-844Z.yml": {
+      "description": "Declares for",
+      "tokens": 12483,
+      "hash": "57469dc0b6dde006",
+      "size": 44142,
+      "mtimeMs": 1787442997845.0183,
+      "updatedAt": "2026-08-23T00:00:00.198Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-57-03-734Z.yml": {
+      "description": "Declares for",
+      "tokens": 12483,
+      "hash": "f50826a6cb670e9b",
+      "size": 44142,
+      "mtimeMs": 1787443023734.7751,
+      "updatedAt": "2026-08-23T00:00:00.198Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-57-08-753Z.yml": {
+      "description": "Declares for",
+      "tokens": 1538,
+      "hash": "31562146c9e4deb8",
+      "size": 5457,
+      "mtimeMs": 1787443028753.35,
+      "updatedAt": "2026-08-23T00:00:00.199Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-22T23-57-22-109Z.yml": {
+      "description": "Declares for",
+      "tokens": 12000,
+      "hash": "4dfc76ffa9fe4b98",
+      "size": 42449,
+      "mtimeMs": 1787443042110.472,
+      "updatedAt": "2026-08-23T00:00:00.200Z",
+      "source": "scan"
+    },
+    ".project": {
+      "description": "",
+      "tokens": 222,
+      "hash": "24cfe79cfd4c5358",
+      "size": 831,
+      "mtimeMs": 1787430521042.6738,
+      "updatedAt": "2026-08-23T00:00:00.200Z",
+      "source": "scan"
+    },
+    ".qoder/rules/agents_reference.md": {
+      "description": "Referencia a AGENTS.md",
+      "tokens": 810,
+      "hash": "db8b5385fe61c045",
+      "size": 3275,
+      "mtimeMs": 1775327908767.6038,
+      "updatedAt": "2026-08-23T00:00:00.201Z",
+      "source": "scan"
+    },
+    ".qoder/rules/anti_patterns.md": {
+      "description": "Antipatrones Spring Boot 4 y Java 25",
+      "tokens": 7473,
+      "hash": "948426a8ee1d14d9",
+      "size": 30080,
+      "mtimeMs": 1775327908768.0796,
+      "updatedAt": "2026-08-23T00:00:00.202Z",
+      "source": "scan"
+    },
+    ".qoder/rules/api_rest_conventions.md": {
+      "description": "Convenciones de API REST",
+      "tokens": 1371,
+      "hash": "bee1485d4308b54c",
+      "size": 5521,
+      "mtimeMs": 1775327908768.616,
+      "updatedAt": "2026-08-23T00:00:00.202Z",
+      "source": "scan"
+    },
+    ".qoder/rules/architecture.md": {
+      "description": "Arquitectura del Proyecto",
+      "tokens": 766,
+      "hash": "5ed08bae675d9304",
+      "size": 3173,
+      "mtimeMs": 1775327908768.9353,
+      "updatedAt": "2026-08-23T00:00:00.203Z",
+      "source": "scan"
+    },
+    ".qoder/rules/design_patterns.md": {
+      "description": "Patrones de Diseño Spring Boot 4 y Java 25",
+      "tokens": 7876,
+      "hash": "4f27fc1432b0c603",
+      "size": 31627,
+      "mtimeMs": 1775327908769.521,
+      "updatedAt": "2026-08-23T00:00:00.203Z",
+      "source": "scan"
+    },
+    ".qoder/rules/java_coding_standards.md": {
+      "description": "Estándares de Código Java 25",
+      "tokens": 1271,
+      "hash": "0b18674a4bb10186",
+      "size": 5112,
+      "mtimeMs": 1775327908769.8445,
+      "updatedAt": "2026-08-23T00:00:00.204Z",
+      "source": "scan"
+    },
+    ".qoder/rules/java_evolution_guide.md": {
+      "description": "Guía de Evolución Java - Features Modernas 8-25",
+      "tokens": 3574,
+      "hash": "a0d15031d9e34769",
+      "size": 14449,
+      "mtimeMs": 1775327908770.166,
+      "updatedAt": "2026-08-23T00:00:00.204Z",
+      "source": "scan"
+    },
+    ".qoder/rules/java_rules_compendium.md": {
+      "description": "Compendio de Reglas Java - Integración Completa",
+      "tokens": 2319,
+      "hash": "d98592eff0c49ac1",
+      "size": 9374,
+      "mtimeMs": 1775327908770.5107,
+      "updatedAt": "2026-08-23T00:00:00.205Z",
+      "source": "scan"
+    },
+    ".qoder/rules/java_style_guide_formatting.md": {
+      "description": "Java Style Guide - Formato",
+      "tokens": 4932,
+      "hash": "7e6c781fbc8b9431",
+      "size": 20022,
+      "mtimeMs": 1775327908770.9648,
+      "updatedAt": "2026-08-23T00:00:00.205Z",
+      "source": "scan"
+    },
+    ".qoder/rules/java_style_guide_javadoc.md": {
+      "description": "Java Style Guide - Javadoc",
+      "tokens": 2875,
+      "hash": "43e6c4122b9be1ee",
+      "size": 11650,
+      "mtimeMs": 1775327908771.3943,
+      "updatedAt": "2026-08-23T00:00:00.206Z",
+      "source": "scan"
+    },
+    ".qoder/rules/java_style_guide_naming.md": {
+      "description": "Java Style Guide - Nombramiento",
+      "tokens": 3846,
+      "hash": "d16210dea3932922",
+      "size": 15489,
+      "mtimeMs": 1775327908771.766,
+      "updatedAt": "2026-08-23T00:00:00.206Z",
+      "source": "scan"
+    },
+    ".qoder/rules/java_style_guide_programming_practices.md": {
+      "description": "Java Style Guide - Prácticas de Programación",
+      "tokens": 3627,
+      "hash": "9e5ed366d7d6eb1f",
+      "size": 14625,
+      "mtimeMs": 1775327908772.1191,
+      "updatedAt": "2026-08-23T00:00:00.206Z",
+      "source": "scan"
+    },
+    ".qoder/rules/java_style_guide_source_file_basics.md": {
+      "description": "Java Style Guide - Básicos de Archivo Fuente",
+      "tokens": 1161,
+      "hash": "37a0354e1bacc098",
+      "size": 4697,
+      "mtimeMs": 1775327908772.5117,
+      "updatedAt": "2026-08-23T00:00:00.207Z",
+      "source": "scan"
+    },
+    ".qoder/rules/java_style_guide_source_file_structure.md": {
+      "description": "Java Style Guide - Estructura de Archivo Fuente",
+      "tokens": 1959,
+      "hash": "cb7d0e181c8a861f",
+      "size": 7948,
+      "mtimeMs": 1775327908772.8462,
+      "updatedAt": "2026-08-23T00:00:00.207Z",
+      "source": "scan"
+    },
+    ".qoder/rules/java_style_guide_specific_constructs.md": {
+      "description": "Java Style Guide - Constructos Específicos",
+      "tokens": 3523,
+      "hash": "51b85c28c014a30b",
+      "size": 14273,
+      "mtimeMs": 1775327908773.156,
+      "updatedAt": "2026-08-23T00:00:00.208Z",
+      "source": "scan"
+    },
+    ".qoder/rules/mcp_usage.md": {
+      "description": "Uso de Herramientas MCP",
+      "tokens": 728,
+      "hash": "39d4d3035c499d4e",
+      "size": 2940,
+      "mtimeMs": 1775327908773.4683,
+      "updatedAt": "2026-08-23T00:00:00.208Z",
+      "source": "scan"
+    },
+    ".qoder/rules/tdlib_integration.md": {
+      "description": "Integración TDLib Native",
+      "tokens": 1373,
+      "hash": "7d12c641d3f1dfda",
+      "size": 5516,
+      "mtimeMs": 1775327908773.7861,
+      "updatedAt": "2026-08-23T00:00:00.208Z",
+      "source": "scan"
+    },
+    ".settings/org.eclipse.core.resources.prefs": {
+      "description": "",
+      "tokens": 40,
+      "hash": "4461930d47c463ad",
+      "size": 150,
+      "mtimeMs": 1787430520772.755,
+      "updatedAt": "2026-08-23T00:00:00.209Z",
+      "source": "scan"
+    },
+    ".settings/org.eclipse.jdt.apt.core.prefs": {
+      "description": "",
+      "tokens": 58,
+      "hash": "c5c3e3666f87a76a",
+      "size": 214,
+      "mtimeMs": 1787432308730.8677,
+      "updatedAt": "2026-08-23T00:00:00.209Z",
+      "source": "scan"
+    },
+    ".settings/org.eclipse.jdt.core.prefs": {
+      "description": "",
+      "tokens": 347,
+      "hash": "b2e7e3ada8b1c89f",
+      "size": 1299,
+      "mtimeMs": 1787442288484.338,
+      "updatedAt": "2026-08-23T00:00:00.209Z",
+      "source": "scan"
+    },
+    ".settings/org.eclipse.m2e.core.prefs": {
+      "description": "",
+      "tokens": 23,
+      "hash": "73e2bc42062725b3",
+      "size": 86,
+      "mtimeMs": 1787430519872.1392,
+      "updatedAt": "2026-08-23T00:00:00.210Z",
+      "source": "scan"
+    },
+    "AGENTS.md": {
+      "description": "AGENTS.md",
+      "tokens": 7852,
+      "hash": "f931a955a571d6cd",
+      "size": 31408,
+      "mtimeMs": 1787428102698.4385,
+      "updatedAt": "2026-08-23T00:00:00.217Z",
+      "source": "scan"
+    },
+    "CLAUDE.md": {
+      "description": "OpenWolf",
+      "tokens": 99,
+      "hash": "074d6b42b583729a",
+      "size": 395,
+      "mtimeMs": 1787428102035.7495,
+      "updatedAt": "2026-08-23T00:00:00.217Z",
+      "source": "scan"
+    },
+    "CODE_OF_CONDUCT.md": {
+      "description": "Code of Conduct",
+      "tokens": 641,
+      "hash": "9cedbf8eff44fdd6",
+      "size": 2562,
+      "mtimeMs": 1775347023796.4685,
+      "updatedAt": "2026-08-23T00:00:00.218Z",
+      "source": "scan"
+    },
+    "CONTEXT.md": {
+      "description": "CONTEXT.md — Glosario del workspace",
+      "tokens": 662,
+      "hash": "378843b10bba93a6",
+      "size": 2715,
+      "mtimeMs": 1787433538739.8198,
+      "updatedAt": "2026-08-23T00:00:00.218Z",
+      "source": "scan"
+    },
+    "CONTRIBUTING.adoc": {
+      "description": "",
+      "tokens": 899,
+      "hash": "18a310f408135ace",
+      "size": 3594,
+      "mtimeMs": 1775347023796.5552,
+      "updatedAt": "2026-08-23T00:00:00.218Z",
+      "source": "scan"
+    },
+    "docker-compose.yml": {
+      "description": "Docker Compose services",
+      "tokens": 285,
+      "hash": "815bc26b5d9c2d1d",
+      "size": 997,
+      "mtimeMs": 1787454982936.264,
+      "updatedAt": "2026-08-23T03:16:22.972Z",
+      "source": "hook"
+    },
+    "Dockerfile": {
+      "description": "Docker container definition",
+      "tokens": 219,
+      "hash": "0dcf494e9097427d",
+      "size": 820,
+      "mtimeMs": 1787463318134.2397,
+      "updatedAt": "2026-08-23T05:35:18.183Z",
+      "source": "hook"
+    },
+    "docs/adr/0001-recortar-drive-logico.md": {
+      "description": "ADR-0001: Recortar el drive lógico en lugar de materializarlo",
+      "tokens": 539,
+      "hash": "988f8910918997c2",
+      "size": 2200,
+      "mtimeMs": 1787433540598.654,
+      "updatedAt": "2026-08-23T00:00:00.221Z",
+      "source": "scan"
+    },
+    "docs/agents/domain.md": {
+      "description": "Domain Docs",
+      "tokens": 484,
+      "hash": "edc6d6131fdffc4b",
+      "size": 2033,
+      "mtimeMs": 1787428011269.2542,
+      "updatedAt": "2026-08-23T00:00:00.221Z",
+      "source": "scan"
+    },
+    "docs/agents/issue-tracker.md": {
+      "description": "Issue tracker: GitHub",
+      "tokens": 933,
+      "hash": "afd6852a80185217",
+      "size": 3731,
+      "mtimeMs": 1787428006066.9058,
+      "updatedAt": "2026-08-23T00:00:00.222Z",
+      "source": "scan"
+    },
+    "docs/agents/triage-labels.md": {
+      "description": "Triage Labels",
+      "tokens": 262,
+      "hash": "4f53c9b40ce2651e",
+      "size": 1045,
+      "mtimeMs": 1787428007836.9783,
+      "updatedAt": "2026-08-23T00:00:00.223Z",
+      "source": "scan"
+    },
+    "GEMINI.md": {
+      "description": "OpenWolf",
+      "tokens": 75,
+      "hash": "e401f79554a8d796",
+      "size": 297,
+      "mtimeMs": 1787428102719.1704,
+      "updatedAt": "2026-08-23T00:00:00.223Z",
+      "source": "scan"
+    },
+    "HELP.md": {
+      "description": "Getting Started",
+      "tokens": 387,
+      "hash": "62cd67853e159588",
+      "size": 1547,
+      "mtimeMs": 1775327908785.1736,
+      "updatedAt": "2026-08-23T00:00:00.223Z",
+      "source": "scan"
+    },
+    "LICENSE": {
+      "description": "Project license",
+      "tokens": 288,
+      "hash": "fb881dd0593eb64b",
+      "size": 1080,
+      "mtimeMs": 1775347023796.612,
+      "updatedAt": "2026-08-23T00:00:00.223Z",
+      "source": "scan"
+    },
+    "mvnw": {
+      "description": "or more contributor license agreements.  See the NOTICE file",
+      "tokens": 3144,
+      "hash": "cae96cef89ebea35",
+      "size": 11790,
+      "mtimeMs": 1775327908819.6548,
+      "updatedAt": "2026-08-23T00:00:00.224Z",
+      "source": "scan"
+    },
+    "mvnw.cmd": {
+      "description": "Declares Directory",
+      "tokens": 2212,
+      "hash": "4a361e1374a3e5ad",
+      "size": 8292,
+      "mtimeMs": 1775327908821.9539,
+      "updatedAt": "2026-08-23T00:00:00.224Z",
+      "source": "scan"
+    },
+    "pom.xml": {
+      "description": "",
+      "tokens": 1531,
+      "hash": "a4b5ce59404803ed",
+      "size": 5739,
+      "mtimeMs": 1787444355590.4392,
+      "updatedAt": "2026-08-23T00:19:15.644Z",
+      "source": "hook"
+    },
+    "README.md": {
+      "description": "Project documentation",
+      "tokens": 3500,
+      "hash": "5e17737074359034",
+      "size": 14360,
+      "mtimeMs": 1787441184208.6096,
+      "updatedAt": "2026-08-23T00:00:00.227Z",
+      "source": "scan"
+    },
+    "SECURITY.md": {
+      "description": "Security Policy",
+      "tokens": 742,
+      "hash": "4eafb6651b0dc472",
+      "size": 2965,
+      "mtimeMs": 1775347023796.6628,
+      "updatedAt": "2026-08-23T00:00:00.228Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/Application.java": {
+      "description": "Bootstrap class for the Nekolu Spring Boot application.",
+      "tokens": 129,
+      "hash": "e02850d018317cd4",
+      "size": 451,
+      "mtimeMs": 1775329436819.632,
+      "updatedAt": "2026-08-23T00:00:00.229Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/config/CacheConfig.java": {
+      "description": "Caffeine cache configuration for file metadata.",
+      "tokens": 445,
+      "hash": "8011bf5dd02d6c76",
+      "size": 1556,
+      "mtimeMs": 1787433086549.7446,
+      "updatedAt": "2026-08-23T00:00:00.229Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/config/MetricsConfig.java": {
+      "description": "Registers custom Micrometer metrics for TDLib operations.",
+      "tokens": 604,
+      "hash": "b13f4097a46ca4d4",
+      "size": 2113,
+      "mtimeMs": 1776033768264.4817,
+      "updatedAt": "2026-08-23T00:00:00.230Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "MetricsConfig",
+          "kind": "class",
+          "startLine": 20,
+          "endLine": 71,
+          "tokens": 480
+        },
+        {
+          "name": "MetricsConfig.MetricsConfig",
+          "kind": "method",
+          "startLine": 29,
+          "endLine": 49,
+          "tokens": 261
+        },
+        {
+          "name": "MetricsConfig.incrementDownloadsStarted",
+          "kind": "method",
+          "startLine": 51,
+          "endLine": 54,
+          "tokens": 38
+        },
+        {
+          "name": "MetricsConfig.decrementActiveDownloads",
+          "kind": "method",
+          "startLine": 56,
+          "endLine": 58,
+          "tokens": 27
+        },
+        {
+          "name": "MetricsConfig.incrementUploadsStarted",
+          "kind": "method",
+          "startLine": 60,
+          "endLine": 62,
+          "tokens": 25
+        },
+        {
+          "name": "MetricsConfig.incrementFoldersCreated",
+          "kind": "method",
+          "startLine": 64,
+          "endLine": 66,
+          "tokens": 25
+        },
+        {
+          "name": "MetricsConfig.incrementTdlibErrors",
+          "kind": "method",
+          "startLine": 68,
+          "endLine": 70,
+          "tokens": 23
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/main/java/com/zademy/nekolu/config/OpenApiConfig.java": {
+      "description": "Configures the generated OpenAPI document exposed through SpringDoc.",
+      "tokens": 694,
+      "hash": "548df7a22b83bf44",
+      "size": 2429,
+      "mtimeMs": 1787433537020.6355,
+      "updatedAt": "2026-08-23T00:00:00.230Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "OpenApiConfig",
+          "kind": "class",
+          "startLine": 22,
+          "endLine": 56,
+          "tokens": 547
+        },
+        {
+          "name": "OpenApiConfig.customOpenAPI",
+          "kind": "method",
+          "startLine": 25,
+          "endLine": 55,
+          "tokens": 534
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/main/java/com/zademy/nekolu/config/RequestCorrelationFilter.java": {
+      "description": "Servlet filter that injects a unique request correlation ID into the MDC context.",
+      "tokens": 526,
+      "hash": "28546da3635aa0d9",
+      "size": 1841,
+      "mtimeMs": 1776033641070.183,
+      "updatedAt": "2026-08-23T00:00:00.230Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "RequestCorrelationFilter",
+          "kind": "class",
+          "startLine": 30,
+          "endLine": 58,
+          "tokens": 284
+        },
+        {
+          "name": "RequestCorrelationFilter.doFilter",
+          "kind": "method",
+          "startLine": 37,
+          "endLine": 57,
+          "tokens": 216
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/main/java/com/zademy/nekolu/config/SetupRedirectInterceptor.java": {
+      "description": "Sends web visitors to the first-run authentication wizard while no",
+      "tokens": 335,
+      "hash": "d0a71884f51ca132",
+      "size": 1172,
+      "mtimeMs": 1787441053892.2834,
+      "updatedAt": "2026-08-23T00:00:00.230Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/config/TelegramConfig.java": {
+      "description": "Centralizes application properties required to bootstrap and operate the shared TDLib client.",
+      "tokens": 1057,
+      "hash": "d8db1debada2e15d",
+      "size": 3699,
+      "mtimeMs": 1775330066968.713,
+      "updatedAt": "2026-08-23T00:00:00.231Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "TelegramConfig",
+          "kind": "class",
+          "startLine": 16,
+          "endLine": 120,
+          "tokens": 952
+        },
+        {
+          "name": "TelegramConfig.TelegramConfig",
+          "kind": "method",
+          "startLine": 34,
+          "endLine": 63,
+          "tokens": 474
+        },
+        {
+          "name": "TelegramConfig.getApiId",
+          "kind": "method",
+          "startLine": 65,
+          "endLine": 67,
+          "tokens": 16
+        },
+        {
+          "name": "TelegramConfig.getApiHash",
+          "kind": "method",
+          "startLine": 69,
+          "endLine": 71,
+          "tokens": 18
+        },
+        {
+          "name": "TelegramConfig.getDatabaseDirectory",
+          "kind": "method",
+          "startLine": 73,
+          "endLine": 75,
+          "tokens": 24
+        },
+        {
+          "name": "TelegramConfig.getFilesDirectory",
+          "kind": "method",
+          "startLine": 77,
+          "endLine": 79,
+          "tokens": 22
+        },
+        {
+          "name": "TelegramConfig.getSystemLanguageCode",
+          "kind": "method",
+          "startLine": 81,
+          "endLine": 83,
+          "tokens": 24
+        },
+        {
+          "name": "TelegramConfig.getDeviceModel",
+          "kind": "method",
+          "startLine": 85,
+          "endLine": 87,
+          "tokens": 20
+        },
+        {
+          "name": "TelegramConfig.getSystemVersion",
+          "kind": "method",
+          "startLine": 89,
+          "endLine": 91,
+          "tokens": 22
+        },
+        {
+          "name": "TelegramConfig.getApplicationVersion",
+          "kind": "method",
+          "startLine": 93,
+          "endLine": 95,
+          "tokens": 24
+        },
+        {
+          "name": "TelegramConfig.isUseTestDc",
+          "kind": "method",
+          "startLine": 97,
+          "endLine": 99,
+          "tokens": 19
+        },
+        {
+          "name": "TelegramConfig.isUseSecretChats",
+          "kind": "method",
+          "startLine": 101,
+          "endLine": 103,
+          "tokens": 22
+        },
+        {
+          "name": "TelegramConfig.isUseMessageDatabase",
+          "kind": "method",
+          "startLine": 105,
+          "endLine": 107,
+          "tokens": 24
+        },
+        {
+          "name": "TelegramConfig.isUseChatInfoDatabase",
+          "kind": "method",
+          "startLine": 109,
+          "endLine": 111,
+          "tokens": 25
+        },
+        {
+          "name": "TelegramConfig.isUseFileDatabase",
+          "kind": "method",
+          "startLine": 113,
+          "endLine": 115,
+          "tokens": 23
+        },
+        {
+          "name": "TelegramConfig.getUserId",
+          "kind": "method",
+          "startLine": 117,
+          "endLine": 119,
+          "tokens": 17
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/main/java/com/zademy/nekolu/config/TelegramHealthIndicator.java": {
+      "description": "Custom health indicator that reports TDLib authorization status,",
+      "tokens": 744,
+      "hash": "4aaf51339e43fff6",
+      "size": 2601,
+      "mtimeMs": 1787431761238.2117,
+      "updatedAt": "2026-08-23T00:00:00.231Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "TelegramHealthIndicator",
+          "kind": "class",
+          "startLine": 22,
+          "endLine": 70,
+          "tokens": 586
+        },
+        {
+          "name": "TelegramHealthIndicator.TelegramHealthIndicator",
+          "kind": "method",
+          "startLine": 28,
+          "endLine": 32,
+          "tokens": 71
+        },
+        {
+          "name": "TelegramHealthIndicator.doHealthCheck",
+          "kind": "method",
+          "startLine": 34,
+          "endLine": 69,
+          "tokens": 462
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/main/java/com/zademy/nekolu/config/WebConfig.java": {
+      "description": "Web MVC configuration for internationalization support and the first-run",
+      "tokens": 570,
+      "hash": "3738cddc842c769f",
+      "size": 1993,
+      "mtimeMs": 1787441057398.727,
+      "updatedAt": "2026-08-23T00:00:00.231Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "WebConfig",
+          "kind": "class",
+          "startLine": 25,
+          "endLine": 64,
+          "tokens": 351
+        },
+        {
+          "name": "WebConfig.WebConfig",
+          "kind": "method",
+          "startLine": 30,
+          "endLine": 32,
+          "tokens": 32
+        },
+        {
+          "name": "WebConfig.localeResolver",
+          "kind": "method",
+          "startLine": 34,
+          "endLine": 39,
+          "tokens": 62
+        },
+        {
+          "name": "WebConfig.localeChangeInterceptor",
+          "kind": "method",
+          "startLine": 41,
+          "endLine": 46,
+          "tokens": 65
+        },
+        {
+          "name": "WebConfig.addInterceptors",
+          "kind": "method",
+          "startLine": 48,
+          "endLine": 63,
+          "tokens": 157
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/main/java/com/zademy/nekolu/constants/FileTypeConstants.java": {
+      "description": "Centralizes logical file-type identifiers used by the API, filters, and user interface.",
+      "tokens": 483,
+      "hash": "6eed1036e9f1e326",
+      "size": 1688,
+      "mtimeMs": 1775329436820.0508,
+      "updatedAt": "2026-08-23T00:00:00.232Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/constants/MediaConstants.java": {
+      "description": "Defines shared MIME types, filename prefixes, and file extensions for media handling.",
+      "tokens": 777,
+      "hash": "8af1f9389ef768f6",
+      "size": 2717,
+      "mtimeMs": 1775329436820.1667,
+      "updatedAt": "2026-08-23T00:00:00.232Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "MediaConstants",
+          "kind": "class",
+          "startLine": 12,
+          "endLine": 56,
+          "tokens": 713
+        },
+        {
+          "name": "MediaConstants.MediaConstants",
+          "kind": "method",
+          "startLine": 55,
+          "endLine": 55,
+          "tokens": 9
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/main/java/com/zademy/nekolu/constants/ServiceDefaults.java": {
+      "description": "Holds shared default values and timeout settings used by service-layer workflows.",
+      "tokens": 222,
+      "hash": "1ace98b4a0ab4a4f",
+      "size": 774,
+      "mtimeMs": 1775329436820.2883,
+      "updatedAt": "2026-08-23T00:00:00.232Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/controller/FileController.java": {
+      "description": "Exposes REST endpoints for browsing, uploading, downloading, previewing, and organizing Telegram-bac",
+      "tokens": 9478,
+      "hash": "dd249189863efa66",
+      "size": 35542,
+      "mtimeMs": 1787445486578.5623,
+      "updatedAt": "2026-08-23T00:38:06.620Z",
+      "source": "hook"
+    },
+    "src/main/java/com/zademy/nekolu/controller/GlobalExceptionHandler.java": {
+      "description": "Centralizes exception handling for all REST controllers.",
+      "tokens": 2294,
+      "hash": "8132b4ce46769d46",
+      "size": 8602,
+      "mtimeMs": 1787445068648.6733,
+      "updatedAt": "2026-08-23T00:31:08.691Z",
+      "source": "hook"
+    },
+    "src/main/java/com/zademy/nekolu/controller/SetupController.java": {
+      "description": "First-run authentication wizard: shows the step TDLib is waiting for and",
+      "tokens": 1010,
+      "hash": "9002e26c4e4bffb8",
+      "size": 3533,
+      "mtimeMs": 1787441051929.0037,
+      "updatedAt": "2026-08-23T00:00:00.234Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "SetupController",
+          "kind": "class",
+          "startLine": 29,
+          "endLine": 94,
+          "tokens": 744
+        },
+        {
+          "name": "SetupController.SetupController",
+          "kind": "method",
+          "startLine": 35,
+          "endLine": 37,
+          "tokens": 33
+        },
+        {
+          "name": "SetupController.setup",
+          "kind": "method",
+          "startLine": 39,
+          "endLine": 49,
+          "tokens": 129
+        },
+        {
+          "name": "SetupController.submitPhone",
+          "kind": "method",
+          "startLine": 51,
+          "endLine": 59,
+          "tokens": 145
+        },
+        {
+          "name": "SetupController.submitCode",
+          "kind": "method",
+          "startLine": 61,
+          "endLine": 69,
+          "tokens": 133
+        },
+        {
+          "name": "SetupController.submitPassword",
+          "kind": "method",
+          "startLine": 71,
+          "endLine": 79,
+          "tokens": 140
+        },
+        {
+          "name": "SetupController.stepFor",
+          "kind": "method",
+          "startLine": 81,
+          "endLine": 89,
+          "tokens": 79
+        },
+        {
+          "name": "SetupController.encode",
+          "kind": "method",
+          "startLine": 91,
+          "endLine": 93,
+          "tokens": 48
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/main/java/com/zademy/nekolu/controller/TelegramController.java": {
+      "description": "Exposes folder-management endpoints backed by Telegram private channels.",
+      "tokens": 1952,
+      "hash": "07259018f1e584eb",
+      "size": 6831,
+      "mtimeMs": 1787436902174.7478,
+      "updatedAt": "2026-08-23T00:00:00.236Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "TelegramController",
+          "kind": "class",
+          "startLine": 44,
+          "endLine": 155,
+          "tokens": 1490
+        },
+        {
+          "name": "TelegramController.TelegramController",
+          "kind": "method",
+          "startLine": 51,
+          "endLine": 53,
+          "tokens": 34
+        },
+        {
+          "name": "TelegramController.createFolder",
+          "kind": "method",
+          "startLine": 55,
+          "endLine": 87,
+          "tokens": 474
+        },
+        {
+          "name": "TelegramController.failedFolderCreation",
+          "kind": "method",
+          "startLine": 94,
+          "endLine": 102,
+          "tokens": 130
+        },
+        {
+          "name": "TelegramController.listFolders",
+          "kind": "method",
+          "startLine": 104,
+          "endLine": 118,
+          "tokens": 222
+        },
+        {
+          "name": "TelegramController.deleteFolder",
+          "kind": "method",
+          "startLine": 120,
+          "endLine": 144,
+          "tokens": 385
+        },
+        {
+          "name": "TelegramController.failedFolderDeletion",
+          "kind": "method",
+          "startLine": 146,
+          "endLine": 154,
+          "tokens": 118
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/main/java/com/zademy/nekolu/controller/WebController.java": {
+      "description": "MVC controller for Thymeleaf views.",
+      "tokens": 366,
+      "hash": "9505ea6e0225831b",
+      "size": 1278,
+      "mtimeMs": 1775329436820.7537,
+      "updatedAt": "2026-08-23T00:00:00.237Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/ApiErrorResponse.java": {
+      "description": "Standard error response following RFC 7807 Problem Details conventions.",
+      "tokens": 308,
+      "hash": "af69a9a86202e621",
+      "size": 1075,
+      "mtimeMs": 1776033460190.1062,
+      "updatedAt": "2026-08-23T00:00:00.237Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/BulkDeleteRequest.java": {
+      "description": "Request payload for deleting multiple Telegram file messages in a single operation.",
+      "tokens": 445,
+      "hash": "b8f37b786a2b48bd",
+      "size": 1556,
+      "mtimeMs": 1776033528601.995,
+      "updatedAt": "2026-08-23T00:00:00.237Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/BulkDeleteResponse.java": {
+      "description": "Response payload that summarizes the outcome of a bulk delete operation.",
+      "tokens": 380,
+      "hash": "4b2d7bd28b2a72f6",
+      "size": 1327,
+      "mtimeMs": 1775329436822.1653,
+      "updatedAt": "2026-08-23T00:00:00.238Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/CreateFolderRequest.java": {
+      "description": "Request for creating a new folder (private Telegram channel).",
+      "tokens": 251,
+      "hash": "1ef81b44ec68637a",
+      "size": 878,
+      "mtimeMs": 1776033507996.889,
+      "updatedAt": "2026-08-23T00:00:00.238Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/CreateFolderResponse.java": {
+      "description": "Response after creating a folder.",
+      "tokens": 272,
+      "hash": "49438b17063c1da1",
+      "size": 950,
+      "mtimeMs": 1775329436822.356,
+      "updatedAt": "2026-08-23T00:00:00.238Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/DeleteFolderResponse.java": {
+      "description": "Response after deleting a folder.",
+      "tokens": 215,
+      "hash": "92508f98e666c7a5",
+      "size": 752,
+      "mtimeMs": 1775329436822.438,
+      "updatedAt": "2026-08-23T00:00:00.240Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/DeleteMessageRequest.java": {
+      "description": "Request payload for deleting a single Telegram file message.",
+      "tokens": 285,
+      "hash": "3080c1b80a4ab4ef",
+      "size": 995,
+      "mtimeMs": 1775329436822.5227,
+      "updatedAt": "2026-08-23T00:00:00.240Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/DeleteMessageResponse.java": {
+      "description": "Response payload returned after attempting to delete a single Telegram message.",
+      "tokens": 329,
+      "hash": "93a98dbaeb2ebd51",
+      "size": 1151,
+      "mtimeMs": 1775329436822.6013,
+      "updatedAt": "2026-08-23T00:00:00.241Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/DownloadFilesRequest.java": {
+      "description": "Request for downloading multiple files.",
+      "tokens": 181,
+      "hash": "0a67b1041a1db391",
+      "size": 633,
+      "mtimeMs": 1776033521878.865,
+      "updatedAt": "2026-08-23T00:00:00.242Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/DownloadJob.java": {
+      "description": "DTO for batch download jobs.",
+      "tokens": 551,
+      "hash": "8bb0aa93cfee3c7e",
+      "size": 1930,
+      "mtimeMs": 1787432418338.084,
+      "updatedAt": "2026-08-23T00:00:00.243Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "DownloadJob",
+          "kind": "class",
+          "startLine": 16,
+          "endLine": 56,
+          "tokens": 477
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/main/java/com/zademy/nekolu/dto/DownloadResponse.java": {
+      "description": "File download status response.",
+      "tokens": 611,
+      "hash": "0d7710c362cb59cc",
+      "size": 2139,
+      "mtimeMs": 1787432416753.6145,
+      "updatedAt": "2026-08-23T00:00:00.243Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "DownloadResponse",
+          "kind": "class",
+          "startLine": 15,
+          "endLine": 56,
+          "tokens": 535
+        },
+        {
+          "name": "DownloadResponse.DownloadResponse",
+          "kind": "method",
+          "startLine": 43,
+          "endLine": 55,
+          "tokens": 143
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/main/java/com/zademy/nekolu/dto/FileExportResponse.java": {
+      "description": "DTO for file export.",
+      "tokens": 198,
+      "hash": "a790b5abdc6382f5",
+      "size": 691,
+      "mtimeMs": 1775329436823.079,
+      "updatedAt": "2026-08-23T00:00:00.243Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/FileInfoResponse.java": {
+      "description": "Detailed API representation of a Telegram-backed file, including TDLib metadata and logical drive me",
+      "tokens": 1772,
+      "hash": "04626f1e13b10165",
+      "size": 6645,
+      "mtimeMs": 1787445240708.1921,
+      "updatedAt": "2026-08-23T00:34:00.744Z",
+      "source": "hook"
+    },
+    "src/main/java/com/zademy/nekolu/dto/FileStatsResponse.java": {
+      "description": "DTO for file statistics.",
+      "tokens": 277,
+      "hash": "5754488f5ad07d64",
+      "size": 967,
+      "mtimeMs": 1775329436823.3784,
+      "updatedAt": "2026-08-23T00:00:00.244Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/FileStreamResponse.java": {
+      "description": "DTO for file streaming response.",
+      "tokens": 255,
+      "hash": "33cc7eeb2e07c640",
+      "size": 891,
+      "mtimeMs": 1775329436823.4866,
+      "updatedAt": "2026-08-23T00:00:00.244Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/FolderInfo.java": {
+      "description": "Information about a folder (private Telegram channel).",
+      "tokens": 229,
+      "hash": "236a0a7a10941317",
+      "size": 801,
+      "mtimeMs": 1775329436823.5981,
+      "updatedAt": "2026-08-23T00:00:00.245Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/FullStatsResponse.java": {
+      "description": "DTO for full statistics: files, storage, network, and limits.",
+      "tokens": 202,
+      "hash": "f1c17fd26bf13f48",
+      "size": 704,
+      "mtimeMs": 1775329436823.7095,
+      "updatedAt": "2026-08-23T00:00:00.246Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/NetworkStatsResponse.java": {
+      "description": "DTO for TDLib network usage statistics.",
+      "tokens": 492,
+      "hash": "2a25dc40b53c2ad8",
+      "size": 1720,
+      "mtimeMs": 1775329436824.0261,
+      "updatedAt": "2026-08-23T00:00:00.247Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/StorageStatsResponse.java": {
+      "description": "DTO for TDLib local storage statistics.",
+      "tokens": 238,
+      "hash": "4dad6319cb12fbfb",
+      "size": 830,
+      "mtimeMs": 1775329436824.1897,
+      "updatedAt": "2026-08-23T00:00:00.247Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/TelegramLimitsResponse.java": {
+      "description": "DTO for Telegram account limits.",
+      "tokens": 211,
+      "hash": "c612c3639c2c83c7",
+      "size": 737,
+      "mtimeMs": 1775329436825.177,
+      "updatedAt": "2026-08-23T00:00:00.248Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/UploadResponse.java": {
+      "description": "File upload status response for Telegram.",
+      "tokens": 745,
+      "hash": "e783e6dbd8fdeee1",
+      "size": 2606,
+      "mtimeMs": 1775329436825.267,
+      "updatedAt": "2026-08-23T00:00:00.249Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "UploadResponse",
+          "kind": "class",
+          "startLine": 16,
+          "endLine": 75,
+          "tokens": 674
+        },
+        {
+          "name": "UploadResponse.UploadResponse",
+          "kind": "method",
+          "startLine": 50,
+          "endLine": 74,
+          "tokens": 139
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/main/java/com/zademy/nekolu/exception/Exceptions.java": {
+      "description": "Single unwrapping point for futures-completed exceptions: async stages",
+      "tokens": 196,
+      "hash": "8b98d43f843e5b14",
+      "size": 683,
+      "mtimeMs": 1787433465941.2275,
+      "updatedAt": "2026-08-23T00:00:00.249Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/exception/StagingException.java": {
+      "description": "Server-side staging failure (disk I/O while materializing an upload).",
+      "tokens": 125,
+      "hash": "5890fed9120205c3",
+      "size": 436,
+      "mtimeMs": 1787433466992.7922,
+      "updatedAt": "2026-08-23T00:00:00.249Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/exception/TelegramNotFoundException.java": {
+      "description": "The requested Telegram resource (message, file) does not exist or, when",
+      "tokens": 130,
+      "hash": "26b64c30f13a99b5",
+      "size": 454,
+      "mtimeMs": 1787432732246.4373,
+      "updatedAt": "2026-08-23T00:00:00.250Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/exception/TelegramNotInitializedException.java": {
+      "description": "The Telegram module has no TDLib client yet (startup not finished).",
+      "tokens": 129,
+      "hash": "29f47032c2818242",
+      "size": 450,
+      "mtimeMs": 1787432729613.5044,
+      "updatedAt": "2026-08-23T00:00:00.250Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/exception/TelegramOperationException.java": {
+      "description": "Telegram (upstream) rejected or failed an operation, reported by TDLib",
+      "tokens": 183,
+      "hash": "bbffb51954c0609c",
+      "size": 638,
+      "mtimeMs": 1787432731105.5977,
+      "updatedAt": "2026-08-23T00:00:00.250Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/exception/TelegramUnauthorizedException.java": {
+      "description": "The TDLib session exists but is not authenticated. The user must",
+      "tokens": 179,
+      "hash": "8d21c6b52e6bc9b8",
+      "size": 624,
+      "mtimeMs": 1787432728521.6226,
+      "updatedAt": "2026-08-23T00:00:00.250Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/model/TelegramFileMessage.java": {
+      "description": "Domain view of a Telegram message that carries a file, as exposed through",
+      "tokens": 493,
+      "hash": "5edfd8cac3abbc95",
+      "size": 1723,
+      "mtimeMs": 1787430926952.0845,
+      "updatedAt": "2026-08-23T00:00:00.251Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/model/TelegramFileState.java": {
+      "description": "Domain view of a file's local download state as exposed through the",
+      "tokens": 379,
+      "hash": "3d18ce9796e70a69",
+      "size": 1325,
+      "mtimeMs": 1787431072130.0303,
+      "updatedAt": "2026-08-23T00:00:00.252Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/service/FileService.java": {
+      "description": "Interface for the Telegram file management service.",
+      "tokens": 2195,
+      "hash": "a56ddba9ee26649e",
+      "size": 8228,
+      "mtimeMs": 1787445367951.9792,
+      "updatedAt": "2026-08-23T00:36:07.989Z",
+      "source": "hook"
+    },
+    "src/main/java/com/zademy/nekolu/service/impl/FileServiceImpl.java": {
+      "description": "Implementation of the Telegram file management service.",
+      "tokens": 11209,
+      "hash": "bc0ad0db65b83de2",
+      "size": 42032,
+      "mtimeMs": 1787445541124.7043,
+      "updatedAt": "2026-08-23T00:39:01.166Z",
+      "source": "hook"
+    },
+    "src/main/java/com/zademy/nekolu/service/impl/TdLibPreconditions.java": {
+      "description": "Centralizes TDLib precondition checks that are repeated across service methods.",
+      "tokens": 481,
+      "hash": "f5610da4f146feb9",
+      "size": 1802,
+      "mtimeMs": 1787445094724.6387,
+      "updatedAt": "2026-08-23T00:31:34.766Z",
+      "source": "hook"
+    },
+    "src/main/java/com/zademy/nekolu/service/impl/TelegramRateLimiter.java": {
+      "description": "Token-bucket-style rate limiter that protects the TDLib client from",
+      "tokens": 644,
+      "hash": "6d9a05aa139114b0",
+      "size": 2254,
+      "mtimeMs": 1776033678209.6428,
+      "updatedAt": "2026-08-23T00:00:00.256Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "TelegramRateLimiter",
+          "kind": "class",
+          "startLine": 24,
+          "endLine": 70,
+          "tokens": 460
+        },
+        {
+          "name": "TelegramRateLimiter.TelegramRateLimiter",
+          "kind": "method",
+          "startLine": 32,
+          "endLine": 37,
+          "tokens": 90
+        },
+        {
+          "name": "TelegramRateLimiter.acquire",
+          "kind": "method",
+          "startLine": 44,
+          "endLine": 55,
+          "tokens": 169
+        },
+        {
+          "name": "TelegramRateLimiter.release",
+          "kind": "method",
+          "startLine": 60,
+          "endLine": 62,
+          "tokens": 18
+        },
+        {
+          "name": "TelegramRateLimiter.availablePermits",
+          "kind": "method",
+          "startLine": 67,
+          "endLine": 69,
+          "tokens": 25
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/main/java/com/zademy/nekolu/service/impl/TelegramServiceImpl.java": {
+      "description": "TDLib-backed implementation of Telegram operations such as authorization, downloads, folders, and te",
+      "tokens": 11191,
+      "hash": "fad330ef975cae2f",
+      "size": 41970,
+      "mtimeMs": 1787445194056.4355,
+      "updatedAt": "2026-08-23T00:33:14.099Z",
+      "source": "hook"
+    },
+    "src/main/java/com/zademy/nekolu/service/impl/UploadStagingArea.java": {
+      "description": "Deep module owning the staged-upload cycle: materializing an incoming",
+      "tokens": 1011,
+      "hash": "9d486a8d88ddd12b",
+      "size": 3788,
+      "mtimeMs": 1787445129691.0203,
+      "updatedAt": "2026-08-23T00:32:09.731Z",
+      "source": "hook"
+    },
+    "src/main/java/com/zademy/nekolu/service/TelegramService.java": {
+      "description": "The seam between the workspace and Telegram. This contract owns the whole",
+      "tokens": 2842,
+      "hash": "73b215232d9ee00f",
+      "size": 9946,
+      "mtimeMs": 1787440974474.5396,
+      "updatedAt": "2026-08-23T00:00:00.258Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "TelegramService",
+          "kind": "section",
+          "startLine": 26,
+          "endLine": 264,
+          "tokens": 2596
+        },
+        {
+          "name": "TelegramService.isAuthorized",
+          "kind": "method",
+          "startLine": 33,
+          "endLine": 33,
+          "tokens": 8
+        },
+        {
+          "name": "TelegramService.getAuthState",
+          "kind": "method",
+          "startLine": 52,
+          "endLine": 52,
+          "tokens": 8
+        },
+        {
+          "name": "TelegramService.submitPhoneNumber",
+          "kind": "method",
+          "startLine": 60,
+          "endLine": 60,
+          "tokens": 19
+        },
+        {
+          "name": "TelegramService.submitAuthCode",
+          "kind": "method",
+          "startLine": 68,
+          "endLine": 68,
+          "tokens": 16
+        },
+        {
+          "name": "TelegramService.submitAuthPassword",
+          "kind": "method",
+          "startLine": 77,
+          "endLine": 77,
+          "tokens": 19
+        },
+        {
+          "name": "TelegramService.getFileMessages",
+          "kind": "method",
+          "startLine": 90,
+          "endLine": 90,
+          "tokens": 32
+        },
+        {
+          "name": "TelegramService.searchFileMessages",
+          "kind": "method",
+          "startLine": 104,
+          "endLine": 104,
+          "tokens": 35
+        },
+        {
+          "name": "TelegramService.getFileMessage",
+          "kind": "method",
+          "startLine": 114,
+          "endLine": 114,
+          "tokens": 25
+        },
+        {
+          "name": "TelegramService.startDownload",
+          "kind": "method",
+          "startLine": 126,
+          "endLine": 126,
+          "tokens": 20
+        },
+        {
+          "name": "TelegramService.getFileState",
+          "kind": "method",
+          "startLine": 136,
+          "endLine": 136,
+          "tokens": 20
+        },
+        {
+          "name": "TelegramService.sendDocument",
+          "kind": "method",
+          "startLine": 149,
+          "endLine": 149,
+          "tokens": 30
+        },
+        {
+          "name": "TelegramService.sendPhoto",
+          "kind": "method",
+          "startLine": 161,
+          "endLine": 161,
+          "tokens": 29
+        },
+        {
+          "name": "TelegramService.deleteMessages",
+          "kind": "method",
+          "startLine": 171,
+          "endLine": 171,
+          "tokens": 28
+        },
+        {
+          "name": "TelegramService.deleteLocalFile",
+          "kind": "method",
+          "startLine": 180,
+          "endLine": 180,
+          "tokens": 17
+        },
+        {
+          "name": "TelegramService.getOwnChatId",
+          "kind": "method",
+          "startLine": 187,
+          "endLine": 187,
+          "tokens": 13
+        },
+        {
+          "name": "TelegramService.trackUpload",
+          "kind": "method",
+          "startLine": 196,
+          "endLine": 196,
+          "tokens": 16
+        },
+        {
+          "name": "TelegramService.isUploadTracked",
+          "kind": "method",
+          "startLine": 204,
+          "endLine": 204,
+          "tokens": 12
+        },
+        {
+          "name": "TelegramService.waitForUploadRelease",
+          "kind": "method",
+          "startLine": 212,
+          "endLine": 212,
+          "tokens": 18
+        },
+        {
+          "name": "TelegramService.createFolder",
+          "kind": "method",
+          "startLine": 223,
+          "endLine": 223,
+          "tokens": 24
+        },
+        {
+          "name": "TelegramService.listFolders",
+          "kind": "method",
+          "startLine": 230,
+          "endLine": 230,
+          "tokens": 16
+        },
+        {
+          "name": "TelegramService.deleteFolder",
+          "kind": "method",
+          "startLine": 239,
+          "endLine": 239,
+          "tokens": 16
+        },
+        {
+          "name": "TelegramService.getStorageStatisticsFast",
+          "kind": "method",
+          "startLine": 248,
+          "endLine": 248,
+          "tokens": 21
+        },
+        {
+          "name": "TelegramService.getNetworkStatistics",
+          "kind": "method",
+          "startLine": 256,
+          "endLine": 256,
+          "tokens": 25
+        },
+        {
+          "name": "TelegramService.getTelegramLimits",
+          "kind": "method",
+          "startLine": 263,
+          "endLine": 263,
+          "tokens": 19
+        }
+      ],
+      "symbolSource": "ts",
+      "skeleton": "public interface TelegramService {\n    boolean isAuthorized();\n    String getAuthState();\n    CompletableFuture<Void> submitPhoneNumber(String phoneNumber);\n    CompletableFuture<Void> submitAuthCode(String code);\n    CompletableFuture<Void> submitAuthPassword(String password);\n    CompletableFuture<List<TelegramFileMessage>> getFileMessages(long chatId, long fromMessageId, int limit);\n    CompletableFuture<List<TelegramFileMessage>> searchFileMessages(String query, String type, String offset, int limit);\n    CompletableFuture<TelegramFileMessage> getFileMessage(long chatId, long messageId);\n    CompletableFuture<TelegramFileState> startDownload(long fileId);\n    CompletableFuture<TelegramFileState> getFileState(long fileId);\n    CompletableFuture<TelegramFileMessage> sendDocument(long chatId, String filePath, String caption);\n    CompletableFuture<TelegramFileMessage> sendPhoto(long chatId, String filePath, String caption);\n    CompletableFuture<Void> deleteMessages(long chatId, List<Long> messageIds, boolean revoke);\n    CompletableFuture<Void> deleteLocalFile(long fileId);\n    CompletableFuture<Long> getOwnChatId();\n    void trackUpload(long fileId, String tempFilePath);\n    boolean isUploadTracked(long fileId);\n    CompletableFuture<Void> waitForUploadRelease(long fileId);\n    CompletableFuture<FolderInfo> createFolder(String title, String description);"
+    },
+    "src/main/resources/application.example.properties": {
+      "description": "Spring Boot application name",
+      "tokens": 734,
+      "hash": "bff03e0c40dae19b",
+      "size": 2749,
+      "mtimeMs": 1776033777262.1965,
+      "updatedAt": "2026-08-23T00:00:00.260Z",
+      "source": "scan"
+    },
+    "src/main/resources/application.properties": {
+      "description": "Spring Boot application name",
+      "tokens": 712,
+      "hash": "5abdf3021f8e14f7",
+      "size": 2669,
+      "mtimeMs": 1787441690610.3745,
+      "updatedAt": "2026-08-23T00:00:00.260Z",
+      "source": "scan"
+    },
+    "src/main/resources/logback-spring.xml": {
+      "description": "",
+      "tokens": 279,
+      "hash": "59b4493a71d04d76",
+      "size": 974,
+      "mtimeMs": 1776033665057.395,
+      "updatedAt": "2026-08-23T00:00:00.260Z",
+      "source": "scan"
+    },
+    "src/main/resources/messages_es.properties": {
+      "description": "=== Mensajes en Español ===",
+      "tokens": 535,
+      "hash": "8afeae8ecfe03e54",
+      "size": 2040,
+      "mtimeMs": 1787441083422.7588,
+      "updatedAt": "2026-08-23T00:00:00.260Z",
+      "source": "scan"
+    },
+    "src/main/resources/messages.properties": {
+      "description": "=== Default messages (English) ===",
+      "tokens": 492,
+      "hash": "5742e135b1170095",
+      "size": 1844,
+      "mtimeMs": 1787441083419.404,
+      "updatedAt": "2026-08-23T00:00:00.261Z",
+      "source": "scan"
+    },
+    "src/main/resources/static/css/app.css": {
+      "description": "Styles: 89 rules, 20 vars",
+      "tokens": 9229,
+      "hash": "2783d8c68882ecde",
+      "size": 32301,
+      "mtimeMs": 1775327993846.2698,
+      "updatedAt": "2026-08-23T00:00:00.262Z",
+      "source": "scan"
+    },
+    "src/main/resources/static/js/api-client.js": {
+      "description": "Author: Zademy",
+      "tokens": 1999,
+      "hash": "526a92cca6164480",
+      "size": 6996,
+      "mtimeMs": 1775329436826.8706,
+      "updatedAt": "2026-08-23T00:00:00.263Z",
+      "source": "scan"
+    },
+    "src/main/resources/static/js/app.js": {
+      "description": "Author: Zademy",
+      "tokens": 1954,
+      "hash": "341d00f56672370f",
+      "size": 6839,
+      "mtimeMs": 1775329436826.976,
+      "updatedAt": "2026-08-23T00:00:00.264Z",
+      "source": "scan"
+    },
+    "src/main/resources/static/js/grid-table.js": {
+      "description": "Author: Zademy",
+      "tokens": 1998,
+      "hash": "59b49f17a0d2bbc9",
+      "size": 6992,
+      "mtimeMs": 1775329436827.1917,
+      "updatedAt": "2026-08-23T00:00:00.264Z",
+      "source": "scan"
+    },
+    "src/main/resources/static/vendors/dropzone/dropzone.css": {
+      "description": "Styles: 57 rules, 3 animations",
+      "tokens": 3370,
+      "hash": "7ad9dddaa00577b8",
+      "size": 11792,
+      "mtimeMs": 1775327993847.777,
+      "updatedAt": "2026-08-23T00:00:00.265Z",
+      "source": "scan"
+    },
+    "src/main/resources/static/vendors/dropzone/dropzone.js": {
+      "description": "",
+      "tokens": 77402,
+      "hash": "8239a30cc8a09d4d",
+      "size": 270952,
+      "mtimeMs": 1775330141690.374,
+      "updatedAt": "2026-08-23T00:00:00.268Z",
+      "source": "scan"
+    },
+    "src/main/resources/templates/dashboard.html": {
+      "description": "Home",
+      "tokens": 3853,
+      "hash": "fb04a833ac4f8ae6",
+      "size": 14446,
+      "mtimeMs": 1787442287731.3367,
+      "updatedAt": "2026-08-23T00:00:00.269Z",
+      "source": "scan"
+    },
+    "src/main/resources/templates/files.html": {
+      "description": "Files",
+      "tokens": 12158,
+      "hash": "ac60ab33cbd9acf0",
+      "size": 45592,
+      "mtimeMs": 1775327993850.2896,
+      "updatedAt": "2026-08-23T00:00:00.269Z",
+      "source": "scan"
+    },
+    "src/main/resources/templates/folder-files.html": {
+      "description": "Folder files",
+      "tokens": 12598,
+      "hash": "5bb1358ba64e2c4f",
+      "size": 47244,
+      "mtimeMs": 1775327993850.5,
+      "updatedAt": "2026-08-23T00:00:00.278Z",
+      "source": "scan"
+    },
+    "src/main/resources/templates/folders.html": {
+      "description": "Folders",
+      "tokens": 4094,
+      "hash": "1d58c26f48df7fb4",
+      "size": 15349,
+      "mtimeMs": 1775327993851.1555,
+      "updatedAt": "2026-08-23T00:00:00.282Z",
+      "source": "scan"
+    },
+    "src/main/resources/templates/layout/base.html": {
+      "description": "Nekolu",
+      "tokens": 1270,
+      "hash": "62ef0f66edf8d289",
+      "size": 4759,
+      "mtimeMs": 1775329529396.1191,
+      "updatedAt": "2026-08-23T00:00:00.282Z",
+      "source": "scan"
+    },
+    "src/main/resources/templates/setup.html": {
+      "description": "Nekolu setup",
+      "tokens": 1843,
+      "hash": "4cac1b2946b1b518",
+      "size": 6909,
+      "mtimeMs": 1787441079840.8394,
+      "updatedAt": "2026-08-23T00:00:00.282Z",
+      "source": "scan"
+    },
+    "src/main/resources/templates/stats.html": {
+      "description": "Statistics",
+      "tokens": 5154,
+      "hash": "22e770485a0dfc62",
+      "size": 19325,
+      "mtimeMs": 1775327993852.1714,
+      "updatedAt": "2026-08-23T00:00:00.283Z",
+      "source": "scan"
+    },
+    "src/test/java/com/zademy/nekolu/ApplicationTests.java": {
+      "description": "Class: ApplicationTests",
+      "tokens": 405,
+      "hash": "d08c2c4cef449523",
+      "size": 1416,
+      "mtimeMs": 1775329436827.3867,
+      "updatedAt": "2026-08-23T00:00:00.284Z",
+      "source": "scan"
+    },
+    "src/test/java/com/zademy/nekolu/controller/FileControllerTest.java": {
+      "description": "HTTP error-contract tests over standalone MockMvc: the controllers are",
+      "tokens": 1705,
+      "hash": "e2b682be3d917ada",
+      "size": 5965,
+      "mtimeMs": 1787433092744.4338,
+      "updatedAt": "2026-08-23T00:00:00.284Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "FileControllerTest",
+          "kind": "class",
+          "startLine": 41,
+          "endLine": 154,
+          "tokens": 1183
+        },
+        {
+          "name": "FileControllerTest.setUp",
+          "kind": "method",
+          "startLine": 50,
+          "endLine": 64,
+          "tokens": 177
+        },
+        {
+          "name": "FileControllerTest.unauthorizedSessionYieldsUniform401",
+          "kind": "method",
+          "startLine": 66,
+          "endLine": 78,
+          "tokens": 152
+        },
+        {
+          "name": "FileControllerTest.notInitializedModuleYields503",
+          "kind": "method",
+          "startLine": 80,
+          "endLine": 91,
+          "tokens": 128
+        },
+        {
+          "name": "FileControllerTest.telegramRejectedOperationYields502",
+          "kind": "method",
+          "startLine": 93,
+          "endLine": 104,
+          "tokens": 136
+        },
+        {
+          "name": "FileControllerTest.unknownFileYields404",
+          "kind": "method",
+          "startLine": 106,
+          "endLine": 115,
+          "tokens": 106
+        },
+        {
+          "name": "FileControllerTest.rejectedFolderCreationStaysABusinessResponse",
+          "kind": "method",
+          "startLine": 117,
+          "endLine": 133,
+          "tokens": 214
+        },
+        {
+          "name": "FileControllerTest.unauthorizedFolderCreationYields401NotABusinessResponse",
+          "kind": "method",
+          "startLine": 135,
+          "endLine": 149,
+          "tokens": 171
+        },
+        {
+          "name": "FileControllerTest.asyncDispatch",
+          "kind": "method",
+          "startLine": 151,
+          "endLine": 153,
+          "tokens": 49
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/test/java/com/zademy/nekolu/controller/SetupControllerTest.java": {
+      "description": "First-run wizard tests over standalone MockMvc with the in-memory seam",
+      "tokens": 1985,
+      "hash": "f9f83005e4e67e0c",
+      "size": 6947,
+      "mtimeMs": 1787441163986.5896,
+      "updatedAt": "2026-08-23T00:00:00.285Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "SetupControllerTest",
+          "kind": "class",
+          "startLine": 41,
+          "endLine": 171,
+          "tokens": 1456
+        },
+        {
+          "name": "SetupControllerTest.setUp",
+          "kind": "method",
+          "startLine": 46,
+          "endLine": 67,
+          "tokens": 327
+        },
+        {
+          "name": "SetupControllerTest.setupShowsThePhoneStepWhenWaitingForPhoneNumber",
+          "kind": "method",
+          "startLine": 69,
+          "endLine": 77,
+          "tokens": 100
+        },
+        {
+          "name": "SetupControllerTest.setupShowsTheCodeStepWhenWaitingForTheCode",
+          "kind": "method",
+          "startLine": 79,
+          "endLine": 85,
+          "tokens": 72
+        },
+        {
+          "name": "SetupControllerTest.setupShowsThePasswordStepWhenWaitingForTwoStepVerification",
+          "kind": "method",
+          "startLine": 87,
+          "endLine": 93,
+          "tokens": 78
+        },
+        {
+          "name": "SetupControllerTest.setupRedirectsHomeWhenAlreadyAuthorized",
+          "kind": "method",
+          "startLine": 95,
+          "endLine": 101,
+          "tokens": 68
+        },
+        {
+          "name": "SetupControllerTest.submittingThePhoneRecordsItAndReturnsToTheWizard",
+          "kind": "method",
+          "startLine": 103,
+          "endLine": 115,
+          "tokens": 154
+        },
+        {
+          "name": "SetupControllerTest.aRejectedSubmissionSurfacesTheTelegramMessage",
+          "kind": "method",
+          "startLine": 117,
+          "endLine": 133,
+          "tokens": 204
+        },
+        {
+          "name": "SetupControllerTest.submittingThePasswordRecordsIt",
+          "kind": "method",
+          "startLine": 135,
+          "endLine": 147,
+          "tokens": 147
+        },
+        {
+          "name": "SetupControllerTest.interceptorRedirectsToSetupWhenUnauthorized",
+          "kind": "method",
+          "startLine": 149,
+          "endLine": 159,
+          "tokens": 149
+        },
+        {
+          "name": "SetupControllerTest.interceptorLetsAuthorizedTrafficThrough",
+          "kind": "method",
+          "startLine": 161,
+          "endLine": 170,
+          "tokens": 125
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "src/test/java/com/zademy/nekolu/service/FakeTelegramService.java": {
+      "description": "In-memory adapter for the TelegramService seam, used by unit tests of the",
+      "tokens": 3133,
+      "hash": "265ab73755ba9dbf",
+      "size": 10964,
+      "mtimeMs": 1787440993012.8296,
+      "updatedAt": "2026-08-23T00:00:00.285Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "FakeTelegramService",
+          "kind": "class",
+          "startLine": 33,
+          "endLine": 324,
+          "tokens": 2794
+        },
+        {
+          "name": "FakeTelegramService.inState",
+          "kind": "method",
+          "startLine": 52,
+          "endLine": 55,
+          "tokens": 33
+        },
+        {
+          "name": "FakeTelegramService.withMessages",
+          "kind": "method",
+          "startLine": 57,
+          "endLine": 60,
+          "tokens": 47
+        },
+        {
+          "name": "FakeTelegramService.withFileState",
+          "kind": "method",
+          "startLine": 62,
+          "endLine": 65,
+          "tokens": 47
+        },
+        {
+          "name": "FakeTelegramService.withUploadResult",
+          "kind": "method",
+          "startLine": 67,
+          "endLine": 70,
+          "tokens": 44
+        },
+        {
+          "name": "FakeTelegramService.deletedMessages",
+          "kind": "method",
+          "startLine": 72,
+          "endLine": 74,
+          "tokens": 27
+        },
+        {
+          "name": "FakeTelegramService.deletedLocalFiles",
+          "kind": "method",
+          "startLine": 76,
+          "endLine": 78,
+          "tokens": 28
+        },
+        {
+          "name": "FakeTelegramService.trackedUploads",
+          "kind": "method",
+          "startLine": 80,
+          "endLine": 82,
+          "tokens": 29
+        },
+        {
+          "name": "FakeTelegramService.failingWith",
+          "kind": "method",
+          "startLine": 84,
+          "endLine": 87,
+          "tokens": 37
+        },
+        {
+          "name": "FakeTelegramService.withAuthState",
+          "kind": "method",
+          "startLine": 89,
+          "endLine": 92,
+          "tokens": 37
+        },
+        {
+          "name": "FakeTelegramService.authSubmissions",
+          "kind": "method",
+          "startLine": 94,
+          "endLine": 96,
+          "tokens": 27
+        },
+        {
+          "name": "FakeTelegramService.withOwnChatId",
+          "kind": "method",
+          "startLine": 98,
+          "endLine": 101,
+          "tokens": 36
+        },
+        {
+          "name": "FakeTelegramService.guarded",
+          "kind": "method",
+          "startLine": 103,
+          "endLine": 118,
+          "tokens": 186
+        },
+        {
+          "name": "FakeTelegramService.getFileMessages",
+          "kind": "method",
+          "startLine": 126,
+          "endLine": 133,
+          "tokens": 114
+        },
+        {
+          "name": "FakeTelegramService.searchFileMessages",
+          "kind": "method",
+          "startLine": 135,
+          "endLine": 143,
+          "tokens": 142
+        },
+        {
+          "name": "FakeTelegramService.getFileMessage",
+          "kind": "method",
+          "startLine": 145,
+          "endLine": 151,
+          "tokens": 105
+        },
+        {
+          "name": "FakeTelegramService.matchesType",
+          "kind": "method",
+          "startLine": 153,
+          "endLine": 158,
+          "tokens": 76
+        },
+        {
+          "name": "FakeTelegramService.startDownload",
+          "kind": "method",
+          "startLine": 162,
+          "endLine": 166,
+          "tokens": 65
+        },
+        {
+          "name": "FakeTelegramService.getFileState",
+          "kind": "method",
+          "startLine": 168,
+          "endLine": 177,
+          "tokens": 102
+        },
+        {
+          "name": "FakeTelegramService.sendDocument",
+          "kind": "method",
+          "startLine": 181,
+          "endLine": 184,
+          "tokens": 53
+        },
+        {
+          "name": "FakeTelegramService.sendPhoto",
+          "kind": "method",
+          "startLine": 186,
+          "endLine": 189,
+          "tokens": 52
+        },
+        {
+          "name": "FakeTelegramService.sendFile",
+          "kind": "method",
+          "startLine": 191,
+          "endLine": 202,
+          "tokens": 174
+        },
+        {
+          "name": "FakeTelegramService.deleteMessages",
+          "kind": "method",
+          "startLine": 204,
+          "endLine": 212,
+          "tokens": 95
+        },
+        {
+          "name": "FakeTelegramService.deleteLocalFile",
+          "kind": "method",
+          "startLine": 214,
+          "endLine": 220,
+          "tokens": 56
+        },
+        {
+          "name": "FakeTelegramService.isAuthorized",
+          "kind": "method",
+          "startLine": 224,
+          "endLine": 227,
+          "tokens": 29
+        },
+        {
+          "name": "FakeTelegramService.getAuthState",
+          "kind": "method",
+          "startLine": 231,
+          "endLine": 234,
+          "tokens": 23
+        },
+        {
+          "name": "FakeTelegramService.submitPhoneNumber",
+          "kind": "method",
+          "startLine": 236,
+          "endLine": 242,
+          "tokens": 63
+        },
+        {
+          "name": "FakeTelegramService.submitAuthCode",
+          "kind": "method",
+          "startLine": 244,
+          "endLine": 250,
+          "tokens": 58
+        },
+        {
+          "name": "FakeTelegramService.submitAuthPassword",
+          "kind": "method",
+          "startLine": 252,
+          "endLine": 258,
+          "tokens": 62
+        },
+        {
+          "name": "FakeTelegramService.getOwnChatId",
+          "kind": "method",
+          "startLine": 260,
+          "endLine": 263,
+          "tokens": 32
+        }
+      ],
+      "symbolSource": "ts",
+      "skeleton": "public class FakeTelegramService implements TelegramService {\n    public FakeTelegramService inState(SessionState state) {\n    public FakeTelegramService withMessages(TelegramFileMessage... fileMessages) {\n    public FakeTelegramService withFileState(TelegramFileState fileState) {\n    public FakeTelegramService withUploadResult(TelegramFileMessage uploadResult) {\n    public List<String> deletedMessages() {\n    public List<Long> deletedLocalFiles() {\n    public Map<Integer, String> trackedUploads() {\n    public FakeTelegramService failingWith(RuntimeException failure) {\n    public FakeTelegramService withAuthState(String authState) {\n    public List<String> authSubmissions() {\n    public FakeTelegramService withOwnChatId(long ownChatId) {\n    private <T> CompletableFuture<T> guarded(Callable<T> answer) {\n    @Override\n    @Override\n    @Override\n    private boolean matchesType(TelegramFileMessage message, String type) {\n    @Override\n    @Override\n    @Override\n    @Override\n    private CompletableFuture<TelegramFileMessage> sendFile(long chatId, String filePath, String type) {\n    @Override\n    @Override\n    @Override\n    @Override\n    @Override\n    @Override\n    @Override\n    @Override"
+    },
+    "src/test/java/com/zademy/nekolu/service/FakeTelegramServiceTest.java": {
+      "description": "Contract tests for the file-message operations of the TelegramService seam,",
+      "tokens": 3411,
+      "hash": "edc97b2a661d44bb",
+      "size": 11937,
+      "mtimeMs": 1787440997149.5896,
+      "updatedAt": "2026-08-23T00:00:00.288Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "FakeTelegramServiceTest",
+          "kind": "class",
+          "startLine": 34,
+          "endLine": 300,
+          "tokens": 3056
+        },
+        {
+          "name": "FakeTelegramServiceTest.getFileMessagesReturnsProgrammedMessagesForTheChat",
+          "kind": "method",
+          "startLine": 36,
+          "endLine": 45,
+          "tokens": 126
+        },
+        {
+          "name": "FakeTelegramServiceTest.searchFileMessagesFiltersByType",
+          "kind": "method",
+          "startLine": 47,
+          "endLine": 56,
+          "tokens": 117
+        },
+        {
+          "name": "FakeTelegramServiceTest.searchFileMessagesAllTypeReturnsEverything",
+          "kind": "method",
+          "startLine": 58,
+          "endLine": 65,
+          "tokens": 114
+        },
+        {
+          "name": "FakeTelegramServiceTest.searchFileMessagesFiltersByQueryOnFileName",
+          "kind": "method",
+          "startLine": 67,
+          "endLine": 76,
+          "tokens": 133
+        },
+        {
+          "name": "FakeTelegramServiceTest.getFileMessageFindsByChatAndMessageId",
+          "kind": "method",
+          "startLine": 78,
+          "endLine": 86,
+          "tokens": 100
+        },
+        {
+          "name": "FakeTelegramServiceTest.getFileMessageFailsWhenNotFound",
+          "kind": "method",
+          "startLine": 88,
+          "endLine": 96,
+          "tokens": 96
+        },
+        {
+          "name": "FakeTelegramServiceTest.unauthorizedSessionFailsEveryOperationWithTheTypedException",
+          "kind": "method",
+          "startLine": 98,
+          "endLine": 108,
+          "tokens": 138
+        },
+        {
+          "name": "FakeTelegramServiceTest.uninitializedSessionFailsEveryOperationWithTheTypedException",
+          "kind": "method",
+          "startLine": 110,
+          "endLine": 120,
+          "tokens": 139
+        },
+        {
+          "name": "FakeTelegramServiceTest.unauthorizedAndUninitializedMessagesAreDistinguishable",
+          "kind": "method",
+          "startLine": 122,
+          "endLine": 129,
+          "tokens": 156
+        },
+        {
+          "name": "FakeTelegramServiceTest.programmedFailurePropagatesThroughTheSeam",
+          "kind": "method",
+          "startLine": 131,
+          "endLine": 140,
+          "tokens": 127
+        },
+        {
+          "name": "FakeTelegramServiceTest.getOwnChatIdIsProgrammable",
+          "kind": "method",
+          "startLine": 142,
+          "endLine": 145,
+          "tokens": 48
+        },
+        {
+          "name": "FakeTelegramServiceTest.authWizardStateIsProgrammable",
+          "kind": "method",
+          "startLine": 147,
+          "endLine": 154,
+          "tokens": 112
+        },
+        {
+          "name": "FakeTelegramServiceTest.authSubmissionsRecordTheirPayloads",
+          "kind": "method",
+          "startLine": 156,
+          "endLine": 166,
+          "tokens": 130
+        },
+        {
+          "name": "FakeTelegramServiceTest.authSubmissionPropagatesTypedFailure",
+          "kind": "method",
+          "startLine": 168,
+          "endLine": 177,
+          "tokens": 124
+        },
+        {
+          "name": "FakeTelegramServiceTest.startDownloadReturnsInitialProgrammedState",
+          "kind": "method",
+          "startLine": 179,
+          "endLine": 189,
+          "tokens": 137
+        },
+        {
+          "name": "FakeTelegramServiceTest.startDownloadOnUnknownFileDefaultsToActiveEmptyState",
+          "kind": "method",
+          "startLine": 191,
+          "endLine": 197,
+          "tokens": 82
+        },
+        {
+          "name": "FakeTelegramServiceTest.getFileStateReflectsProgrammedCompletion",
+          "kind": "method",
+          "startLine": 199,
+          "endLine": 208,
+          "tokens": 118
+        },
+        {
+          "name": "FakeTelegramServiceTest.getFileStateFailsForUnknownFile",
+          "kind": "method",
+          "startLine": 210,
+          "endLine": 218,
+          "tokens": 96
+        },
+        {
+          "name": "FakeTelegramServiceTest.sendDocumentReturnsProgrammedUploadResult",
+          "kind": "method",
+          "startLine": 220,
+          "endLine": 230,
+          "tokens": 165
+        },
+        {
+          "name": "FakeTelegramServiceTest.sendPhotoDefaultsToSynthesizedUploadResult",
+          "kind": "method",
+          "startLine": 232,
+          "endLine": 242,
+          "tokens": 132
+        },
+        {
+          "name": "FakeTelegramServiceTest.deleteMessagesRecordsCallsForAssertion",
+          "kind": "method",
+          "startLine": 244,
+          "endLine": 251,
+          "tokens": 87
+        },
+        {
+          "name": "FakeTelegramServiceTest.deleteLocalFileRecordsCallsForAssertion",
+          "kind": "method",
+          "startLine": 253,
+          "endLine": 260,
+          "tokens": 76
+        },
+        {
+          "name": "FakeTelegramServiceTest.assertUniformIllegalState",
+          "kind": "method",
+          "startLine": 264,
+          "endLine": 269,
+          "tokens": 93
+        },
+        {
+          "name": "FakeTelegramServiceTest.assertUniformType",
+          "kind": "method",
+          "startLine": 271,
+          "endLine": 276,
+          "tokens": 96
+        },
+        {
+          "name": "FakeTelegramServiceTest.causeOf",
+          "kind": "method",
+          "startLine": 278,
+          "endLine": 281,
+          "tokens": 57
+        },
+        {
+          "name": "FakeTelegramServiceTest.photo",
+          "kind": "method",
+          "startLine": 283,
+          "endLine": 285,
+          "tokens": 47
+        },
+        {
+          "name": "FakeTelegramServiceTest.video",
+          "kind": "method",
+          "startLine": 287,
+          "endLine": 289,
+          "tokens": 47
+        },
+        {
+          "name": "FakeTelegramServiceTest.document",
+          "kind": "method",
+          "startLine": 291,
+          "endLine": 293,
+          "tokens": 48
+        },
+        {
+          "name": "FakeTelegramServiceTest.message",
+          "kind": "method",
+          "startLine": 295,
+          "endLine": 299,
+          "tokens": 84
+        }
+      ],
+      "symbolSource": "ts",
+      "skeleton": "class FakeTelegramServiceTest {\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    private static void assertUniformIllegalState(CompletableFuture<?>... futures) {\n    private static void assertUniformType(Class<? extends Throwable> expected, CompletableFuture<?>... futures) {\n    private static Throwable causeOf(CompletableFuture<?> future) {\n    private static TelegramFileMessage photo(long messageId, long chatId) {\n    private static TelegramFileMessage video(long messageId, long chatId) {\n    private static TelegramFileMessage document(long messageId, long chatId) {\n    private static TelegramFileMessage message(long messageId, long chatId, String fileName, String type) {"
+    },
+    "src/test/java/com/zademy/nekolu/service/impl/FileServiceImplTest.java": {
+      "description": "Unit tests for the file-management module through the TelegramService seam,",
+      "tokens": 3782,
+      "hash": "d07dbd9454d922ce",
+      "size": 14179,
+      "mtimeMs": 1787445510175.4905,
+      "updatedAt": "2026-08-23T00:38:30.221Z",
+      "source": "hook"
+    },
+    "src/test/java/com/zademy/nekolu/service/impl/TdLibPreconditionsTest.java": {
+      "description": "Unit tests for the centralized TDLib readiness preconditions used by the",
+      "tokens": 669,
+      "hash": "dbf4b389240bcc35",
+      "size": 2508,
+      "mtimeMs": 1787445108191.8928,
+      "updatedAt": "2026-08-23T00:31:48.232Z",
+      "source": "hook"
+    },
+    "src/test/java/com/zademy/nekolu/service/impl/UploadStagingAreaTest.java": {
+      "description": "Unit tests for the upload staging area against a real temporary",
+      "tokens": 931,
+      "hash": "437bd7d78bd79ca6",
+      "size": 3260,
+      "mtimeMs": 1787436915269.7422,
+      "updatedAt": "2026-08-23T00:00:00.289Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "UploadStagingAreaTest",
+          "kind": "class",
+          "startLine": 32,
+          "endLine": 101,
+          "tokens": 670
+        },
+        {
+          "name": "UploadStagingAreaTest.setUp",
+          "kind": "method",
+          "startLine": 39,
+          "endLine": 42,
+          "tokens": 30
+        },
+        {
+          "name": "UploadStagingAreaTest.stageMaterializesContentWithASanitizedName",
+          "kind": "method",
+          "startLine": 44,
+          "endLine": 54,
+          "tokens": 167
+        },
+        {
+          "name": "UploadStagingAreaTest.stageFallsBackToAGenericNameWhenMissing",
+          "kind": "method",
+          "startLine": 56,
+          "endLine": 62,
+          "tokens": 73
+        },
+        {
+          "name": "UploadStagingAreaTest.discardRemovesTheStagedFile",
+          "kind": "method",
+          "startLine": 64,
+          "endLine": 71,
+          "tokens": 66
+        },
+        {
+          "name": "UploadStagingAreaTest.purgeExpiredRemovesOnlyOldLeftovers",
+          "kind": "method",
+          "startLine": 73,
+          "endLine": 84,
+          "tokens": 150
+        },
+        {
+          "name": "UploadStagingAreaTest.stageSurfacesDiskFailuresAsStagingException",
+          "kind": "method",
+          "startLine": 86,
+          "endLine": 100,
+          "tokens": 153
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "tdlib/db.sqlite-shm": {
+      "description": "",
+      "tokens": 8738,
+      "hash": "820c458c5559bd88",
+      "size": 32768,
+      "mtimeMs": 1787442445646.6292,
+      "updatedAt": "2026-08-23T00:00:00.289Z",
+      "source": "scan"
+    },
+    "tdlib/td.binlog": {
+      "description": "",
+      "tokens": 210562,
+      "hash": "60026a9a5ec00e63",
+      "size": 833176,
+      "mtimeMs": 1787443178601.5315,
+      "updatedAt": "2026-08-23T00:00:00.317Z",
+      "source": "scan"
+    },
+    "tdlib.log": {
+      "description": "",
+      "tokens": 0,
+      "hash": "e3b0c44298fc1c14",
+      "size": 0,
+      "mtimeMs": 1775348013088.2634,
+      "updatedAt": "2026-08-23T00:00:00.318Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/UploadCommand.java": {
+      "description": "The single upload command: everything an upload needs, travelling as one",
+      "tokens": 298,
+      "hash": "7b42a80c6a399d40",
+      "size": 1117,
+      "mtimeMs": 1787445362504.4915,
+      "updatedAt": "2026-08-23T00:36:02.542Z",
+      "source": "hook"
+    },
+    "src/main/resources/static/css/tokens.css": {
+      "description": "Styles: 58 vars",
+      "tokens": 708,
+      "hash": "d146805744d8f11e",
+      "size": 2480,
+      "mtimeMs": 1787445971486.657,
+      "updatedAt": "2026-08-23T00:46:11.526Z",
+      "source": "hook"
+    },
+    "src/main/resources/static/js/theme.js": {
+      "description": "Declares apply",
+      "tokens": 190,
+      "hash": "12aaa9b029f31820",
+      "size": 663,
+      "mtimeMs": 1787446033983.2356,
+      "updatedAt": "2026-08-23T00:47:14.024Z",
+      "source": "hook"
+    }
+  },
+  "preamble": [
+    "> Project structure index. Auto-maintained by OpenWolf hooks and daemon.",
+    "> Run `openwolf scan` to generate, or wait for the first Claude Code session.",
+    "> Status: Pending initial scan"
+  ]
+}
