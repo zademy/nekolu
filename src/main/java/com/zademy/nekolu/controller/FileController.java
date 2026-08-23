@@ -559,13 +559,12 @@ public class FileController {
             try (java.io.InputStream content = file.getInputStream()) {
                 java.util.List<String> parsedTags = parseTags(tags);
 
-                CompletableFuture<UploadResponse> uploadFuture = "photo".equalsIgnoreCase(type)
-                    ? fileService.uploadStagedPhoto(
-                        file.getOriginalFilename(), content, targetChatId, caption,
-                        virtualPath, parsedTags, origin, archived)
-                    : fileService.uploadStagedFile(
-                        file.getOriginalFilename(), content, targetChatId, caption,
-                        virtualPath, parsedTags, origin, archived);
+                com.zademy.nekolu.dto.UploadCommand uploadCommand = new com.zademy.nekolu.dto.UploadCommand(
+                    file.getOriginalFilename(), content, targetChatId, caption,
+                    virtualPath, parsedTags, origin, archived,
+                    "photo".equalsIgnoreCase(type));
+
+                CompletableFuture<UploadResponse> uploadFuture = fileService.upload(uploadCommand);
 
                 return uploadFuture.thenApply(response -> {
                     logger.info("[UploadController] Upload completed - Status: {}, Message ID: {}, Chat ID: {}",

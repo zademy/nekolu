@@ -7,7 +7,6 @@
 package com.zademy.nekolu.service.impl;
 
 import java.io.File;
-import java.io.InputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -43,6 +42,7 @@ import com.zademy.nekolu.dto.FileExportResponse;
 import com.zademy.nekolu.dto.FileInfoResponse;
 import com.zademy.nekolu.dto.FileStatsResponse;
 import com.zademy.nekolu.dto.FileStreamResponse;
+import com.zademy.nekolu.dto.UploadCommand;
 import com.zademy.nekolu.dto.UploadResponse;
 import com.zademy.nekolu.exception.Exceptions;
 import com.zademy.nekolu.model.TelegramFileMessage;
@@ -675,96 +675,10 @@ public class FileServiceImpl implements FileService {
         return telegramService.getOwnChatId();
     }
 
-    /**
-     * Uploads a file to Telegram as a document.
-     * Requires a target chatId to be specified.
-     */
     @Override
-    public CompletableFuture<UploadResponse> uploadFile(java.io.File file, long chatId, String caption) {
-        return uploadFile(file, chatId, caption, "/", List.of(), "telegram-upload", false);
-    }
-
-    /**
-     * Detects whether the file is an image so the correct type can be used.
-     */
-    @Override
-    public boolean isImageFile(java.io.File file) {
-        String name = file.getName().toLowerCase();
-        return name.endsWith(MediaConstants.EXTENSION_JPG) || name.endsWith(MediaConstants.EXTENSION_JPEG) ||
-               name.endsWith(MediaConstants.EXTENSION_PNG) || name.endsWith(MediaConstants.EXTENSION_GIF) ||
-               name.endsWith(MediaConstants.EXTENSION_WEBP) || name.endsWith(MediaConstants.EXTENSION_BMP);
-    }
-
-    @Override
-    public CompletableFuture<UploadResponse> uploadPhoto(java.io.File file, long chatId, String caption) {
-        return uploadPhoto(file, chatId, caption, "/", List.of(), "telegram-upload", false);
-    }
-
-    @Override
-    public CompletableFuture<UploadResponse> uploadFile(
-            File file,
-            long chatId,
-            String caption,
-            String virtualPath,
-            List<String> tags,
-            String origin,
-            boolean archived) {
-        return uploadManaged(file, chatId, caption, virtualPath, tags, false);
-    }
-
-    @Override
-    public CompletableFuture<UploadResponse> uploadPhoto(
-            File file,
-            long chatId,
-            String caption,
-            String virtualPath,
-            List<String> tags,
-            String origin,
-            boolean archived) {
-        return uploadManaged(file, chatId, caption, virtualPath, tags, true);
-    }
-
-    @Override
-    public CompletableFuture<UploadResponse> uploadStagedFile(
-            String originalFilename,
-            InputStream content,
-            long chatId,
-            String caption,
-            String virtualPath,
-            List<String> tags,
-            String origin,
-            boolean archived) {
-        return uploadStaged(originalFilename, content, chatId, caption, virtualPath, tags, false);
-    }
-
-    @Override
-    public CompletableFuture<UploadResponse> uploadStagedPhoto(
-            String originalFilename,
-            InputStream content,
-            long chatId,
-            String caption,
-            String virtualPath,
-            List<String> tags,
-            String origin,
-            boolean archived) {
-        return uploadStaged(originalFilename, content, chatId, caption, virtualPath, tags, true);
-    }
-
-    /**
-     * Stages the incoming upload and publishes it through the seam. The
-     * staging area materializes the file and discards it when publication
-     * fails; the seam cleans it up once Telegram confirms the transfer.
-     */
-    private CompletableFuture<UploadResponse> uploadStaged(
-            String originalFilename,
-            InputStream content,
-            long chatId,
-            String caption,
-            String virtualPath,
-            List<String> tags,
-            boolean photoMode) {
-        File staged = stagingArea.stage(originalFilename, content);
-        return uploadManaged(staged, chatId, caption, virtualPath, tags, photoMode)
+    public CompletableFuture<UploadResponse> upload(UploadCommand command) {
+        File staged = stagingArea.stage(command.originalFilename(), command.content());
+        return publishStaged(staged, command)
             .whenComplete((response, error) -> {
                 if (error != null) {
                     stagingArea.discard(staged);
@@ -773,36 +687,32 @@ public class FileServiceImpl implements FileService {
     }
 
     /**
-     * Uploads through the seam, which registers the staged source for
-     * tracking and returns the created file message in domain types.
+     * Publishes the staged file through the seam. The staging area
+     * discards failed publications; the seam cleans the staged source once
+     * Telegram confirms the transfer.
      */
-    private CompletableFuture<UploadResponse> uploadManaged(
-            File file,
-            long chatId,
-            String caption,
-            String virtualPath,
-            List<String> tags,
-            boolean photoMode) {
-        if (file == null || !file.exists() || !file.canRead()) {
+    private CompletableFuture<UploadResponse> publishStaged(File staged, UploadCommand command) {
+        if (!staged.exists() || !staged.canRead()) {
             return CompletableFuture.failedFuture(new IllegalArgumentException("File does not exist or is not readable"));
         }
 
-        String checksum = calculateSha256(file);
-        List<String> normalizedTags = tags != null ? tags : List.of();
-        String normalizedPath = virtualPath != null && !virtualPath.isBlank() ? virtualPath : "/";
+        String checksum = calculateSha256(staged);
+        List<String> normalizedTags = command.tags() != null ? command.tags() : List.of();
+        String normalizedPath = command.virtualPath() != null && !command.virtualPath().isBlank()
+            ? command.virtualPath() : "/";
 
-        CompletableFuture<TelegramFileMessage> sendFuture = photoMode
-            ? telegramService.sendPhoto(chatId, file.getAbsolutePath(), caption)
-            : telegramService.sendDocument(chatId, file.getAbsolutePath(), caption);
+        CompletableFuture<TelegramFileMessage> sendFuture = command.photoMode()
+            ? telegramService.sendPhoto(command.chatId(), staged.getAbsolutePath(), command.caption())
+            : telegramService.sendDocument(command.chatId(), staged.getAbsolutePath(), command.caption());
 
         return sendFuture.thenApply(uploaded -> new UploadResponse(
             uploaded.messageId(),
             uploaded.chatId(),
             UploadResponse.STATUS_COMPLETED,
-            uploaded.fileName() != null && !uploaded.fileName().isBlank() ? uploaded.fileName() : file.getName(),
-            uploaded.fileSize() > 0 ? uploaded.fileSize() : file.length(),
-            caption,
-            photoMode ? "Photo uploaded successfully" : "File uploaded successfully",
+            uploaded.fileName() != null && !uploaded.fileName().isBlank() ? uploaded.fileName() : command.originalFilename(),
+            uploaded.fileSize() > 0 ? uploaded.fileSize() : staged.length(),
+            command.caption(),
+            command.photoMode() ? "Photo uploaded successfully" : "File uploaded successfully",
             false,
             "telegram-" + uploaded.fileId(),
             1,
@@ -811,6 +721,7 @@ public class FileServiceImpl implements FileService {
             normalizedTags
         ));
     }
+
 
     private String calculateSha256(File file) {
         try (var inputStream = java.nio.file.Files.newInputStream(file.toPath())) {

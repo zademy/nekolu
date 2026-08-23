@@ -21,6 +21,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.zademy.nekolu.dto.BulkDeleteRequest;
+import com.zademy.nekolu.dto.UploadCommand;
 import com.zademy.nekolu.dto.BulkDeleteResponse;
 import com.zademy.nekolu.dto.DeleteMessageResponse;
 import com.zademy.nekolu.dto.DownloadResponse;
@@ -231,11 +232,14 @@ class FileServiceImplTest {
     }
 
     @Test
-    void uploadFileReturnsCompletedResponse(@TempDir File tempDir) throws Exception {
-        File staged = Files.writeString(tempDir.toPath().resolve("report.pdf"), "payload").toFile();
+    void uploadReturnsCompletedResponse(@TempDir File tempDir) throws Exception {
+        Files.writeString(tempDir.toPath().resolve("report.pdf"), "payload");
         telegram.withUploadResult(message(77, 1, 700, null, 0, "document", 1700000000));
 
-        UploadResponse response = fileService.uploadFile(staged, 1, "caption").get();
+        UploadResponse response = fileService.upload(new UploadCommand(
+            "report.pdf",
+            new java.io.ByteArrayInputStream("payload".getBytes()),
+            1, "caption", "/", List.of(), "telegram-upload", false, false)).get();
 
         assertEquals(UploadResponse.STATUS_COMPLETED, response.status());
         assertEquals(77, response.messageId());
@@ -246,12 +250,12 @@ class FileServiceImplTest {
     }
 
     @Test
-    void uploadStagedFileCompletesEndToEndWithoutTelegram() throws Exception {
+    void uploadCompletesEndToEndWithoutTelegram() throws Exception {
         telegram.withUploadResult(message(77, 1, 700, null, 0, "document", 1700000000));
 
-        UploadResponse response = fileService.uploadStagedFile(
+        UploadResponse response = fileService.upload(new UploadCommand(
             "incoming report.pdf", new java.io.ByteArrayInputStream("payload".getBytes()),
-            1, "caption", "/", List.of(), "telegram-upload", false).get();
+            1, "caption", "/", List.of(), "telegram-upload", false, false)).get();
 
         assertEquals(UploadResponse.STATUS_COMPLETED, response.status());
         assertEquals(77, response.messageId());
@@ -262,27 +266,17 @@ class FileServiceImplTest {
     }
 
     @Test
-    void uploadStagedFileDiscardsTheStagedFileOnFailure() throws Exception {
+    void uploadDiscardsTheStagedFileOnFailure() throws Exception {
         telegram.failingWith(new RuntimeException("Telegram error 400: CHAT_ID_INVALID"));
 
         Exception thrown = assertThrows(ExecutionException.class,
-            () -> fileService.uploadStagedFile(
+            () -> fileService.upload(new UploadCommand(
                 "doomed.pdf", new java.io.ByteArrayInputStream("payload".getBytes()),
-                1, null, "/", List.of(), "telegram-upload", false).get());
+                1, null, "/", List.of(), "telegram-upload", false, false)).get());
 
         assertTrue(thrown.getCause().getMessage().contains("CHAT_ID_INVALID"));
         // The failed staging attempt left nothing behind
         assertEquals(0, stagingDir.listFiles().length);
-    }
-
-    @Test
-    void uploadFileFailsForMissingLocalFile() {
-        telegram.withUploadResult(message(77, 1, 700, "x.pdf", 10, "document", 1700000000));
-
-        ExecutionException thrown = assertThrows(ExecutionException.class,
-            () -> fileService.uploadFile(new File("/nonexistent/report.pdf"), 1, null).get());
-
-        assertTrue(thrown.getCause() instanceof IllegalArgumentException);
     }
 
     @Test

@@ -6,8 +6,6 @@
 
 package com.zademy.nekolu.service;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -23,6 +21,7 @@ import com.zademy.nekolu.dto.FileExportResponse;
 import com.zademy.nekolu.dto.FileInfoResponse;
 import com.zademy.nekolu.dto.FileStatsResponse;
 import com.zademy.nekolu.dto.FileStreamResponse;
+import com.zademy.nekolu.dto.UploadCommand;
 import com.zademy.nekolu.dto.UploadResponse;
 
 /**
@@ -159,91 +158,15 @@ public interface FileService {
     CompletableFuture<Long> getOwnChatId();
 
     /**
-     * Uploads a file to Telegram as a document.
+     * Stages an incoming upload and publishes it to Telegram — as a photo
+     * or a document, per the command. The staging area owns materialization,
+     * cleanup on failure, and leftover purging; the caller supplies the
+     * command and nothing else.
      *
-     * @param file file to upload
-     * @param chatId target chat ID
-     * @param caption optional caption
+     * @param command the upload command
      * @return upload response
      */
-    CompletableFuture<UploadResponse> uploadFile(File file, long chatId, String caption);
-
-    CompletableFuture<UploadResponse> uploadFile(
-            File file,
-            long chatId,
-            String caption,
-            String virtualPath,
-            List<String> tags,
-            String origin,
-            boolean archived);
-
-    /**
-     * Detects whether the file is an image.
-     *
-     * @param file file to check
-     * @return true if it is an image
-     */
-    boolean isImageFile(File file);
-
-    /**
-     * Uploads a photo to Telegram.
-     *
-     * @param file image file
-     * @param chatId target chat ID
-     * @param caption optional caption
-     * @return upload response
-     */
-    CompletableFuture<UploadResponse> uploadPhoto(File file, long chatId, String caption);
-
-    CompletableFuture<UploadResponse> uploadPhoto(
-            File file,
-            long chatId,
-            String caption,
-            String virtualPath,
-            List<String> tags,
-            String origin,
-            boolean archived);
-
-    /**
-     * Stages an incoming upload and publishes it as a document.
-     * The staging area owns materialization, cleanup on failure, and
-     * leftover purging; the caller only supplies the stream.
-     *
-     * @param originalFilename the client-provided file name
-     * @param content the upload content
-     * @param chatId target chat ID
-     * @param caption optional caption
-     * @param virtualPath logical virtual path
-     * @param tags logical tags
-     * @param origin logical origin
-     * @param archived whether the file starts archived
-     * @return upload response
-     */
-    CompletableFuture<UploadResponse> uploadStagedFile(
-            String originalFilename,
-            InputStream content,
-            long chatId,
-            String caption,
-            String virtualPath,
-            List<String> tags,
-            String origin,
-            boolean archived);
-
-    /**
-     * Stages an incoming upload and publishes it as a photo, with the same
-     * staging contract as {@link #uploadStagedFile(String, InputStream, long, String, String, List, String, boolean)}.
-     *
-     * @return upload response
-     */
-    CompletableFuture<UploadResponse> uploadStagedPhoto(
-            String originalFilename,
-            InputStream content,
-            long chatId,
-            String caption,
-            String virtualPath,
-            List<String> tags,
-            String origin,
-            boolean archived);
+    CompletableFuture<UploadResponse> upload(UploadCommand command);
 
     /**
      * Deletes a Telegram message.
