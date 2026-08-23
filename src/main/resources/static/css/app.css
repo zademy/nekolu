@@ -1677,10 +1677,10 @@ div.dt-container .dt-paging button:hover {
 }
 
 .tg-grid-wrapper .gridjs-footer {
-  margin-top: 10px;
-  border: 0;
-  background: transparent;
-  padding: 8px 2px 2px;
+  margin-top: 0;
+  border-top: 1px solid var(--borderColor-default);
+  background: var(--bgColor-default);
+  padding: 10px 16px 12px;
   border-radius: 0;
   box-shadow: none;
   display: flex;
@@ -2246,7 +2246,9 @@ a { color: var(--fgColor-accent); }
   background: var(--bgColor-default);
   border-top: 1px solid var(--borderColor-default);
   box-shadow: none;
-  padding: 8px 16px;
+  padding: 10px 16px 12px;
+  margin-top: 0;
+  min-height: 44px;
 }
 
 .gridjs-pagination { background: transparent; color: var(--fgColor-muted); }
@@ -2255,6 +2257,7 @@ a { color: var(--fgColor-accent); }
 .gridjs-pagination .gridjs-summary {
   color: var(--fgColor-muted);
   font-size: 0.8125rem;
+  line-height: 32px;
 }
 
 .gridjs-pagination button {
@@ -2262,8 +2265,9 @@ a { color: var(--fgColor-accent); }
   border: 1px solid var(--borderColor-default);
   border-radius: 6px;
   color: var(--fgColor-default);
-  padding: 4px 10px;
+  padding: 5px 12px;
   font-size: 0.8125rem;
+  min-height: 32px;
   margin-right: 4px;
   cursor: pointer;
 }
@@ -2341,7 +2345,15 @@ a { color: var(--fgColor-accent); }
   align-items: center;
   justify-content: center;
   font-size: 0.875rem;
+  flex-shrink: 0;
 }
+
+/* Respetar las clases por tipo dentro de Grid.js */
+.gridjs-td .file-icon.photo { color: var(--bgColor-accent-emphasis); background: var(--bgColor-accent-muted); }
+.gridjs-td .file-icon.video { color: var(--bgColor-danger-emphasis); background: var(--bgColor-danger-muted); }
+.gridjs-td .file-icon.audio { color: var(--bgColor-attention-emphasis); background: var(--bgColor-attention-muted); }
+.gridjs-td .file-icon.document { color: var(--fgColor-muted); background: var(--bgColor-muted); }
+.gridjs-td .file-icon.voice { color: var(--bgColor-success-emphasis); background: var(--bgColor-success-muted); }
 
 /* Resaltado de búsqueda */
 .gridjs-td mark, .gridjs-th mark {
