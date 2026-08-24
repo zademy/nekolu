@@ -22,6 +22,10 @@
 
 ---
 
+https://github.com/user-attachments/assets/802d8d7d-5b2c-41d1-bd57-55e12f51819b
+
+---
+
 ## What is Nekolu?
 
 Nekolu turns a Telegram account into a private cloud drive. Files are stored as Telegram messages in your own chat (Saved Messages) or in private channels that Nekolu manages as folders. You upload, browse, search, preview, download, and organize files through a web interface — the Telegram app is the storage, Nekolu is the workspace on top.

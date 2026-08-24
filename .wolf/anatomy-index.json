@@ -1,31 +1,40 @@
 {
   "version": 1,
   "meta": {
-    "lastScanned": "2026-08-23T05:54:56.831Z",
-    "fileCount": 153,
+    "lastScanned": "2026-08-24T00:00:00.333Z",
+    "fileCount": 233,
     "hits": 0,
     "misses": 0,
-    "renderedHash": "f3a820559098c59f134299b3d5ed92fb2a868c033ec47d951634f2ebbcd13351",
-    "storeUpdatedAt": "2026-08-23T05:54:56.844Z",
-    "rootHash": "541e189de3608232"
+    "renderedHash": "1904721fe930ebccb3cb115e7214aec359b970f6a65f274be77c3e69f7abe5f8",
+    "storeUpdatedAt": "2026-08-24T00:00:00.334Z",
+    "rootHash": "658212f7259cbe8c"
   },
   "files": {
     ".classpath": {
       "description": "",
-      "tokens": 614,
-      "hash": "5447726d8adcb09f",
-      "size": 2300,
-      "mtimeMs": 1787432308702.6658,
-      "updatedAt": "2026-08-23T00:00:00.184Z",
+      "tokens": 530,
+      "hash": "b346c988bf9f032b",
+      "size": 1984,
+      "mtimeMs": 1787444357040.1096,
+      "updatedAt": "2026-08-24T00:00:00.045Z",
+      "source": "scan"
+    },
+    ".dockerignore": {
+      "description": "Docker ignore rules",
+      "tokens": 10,
+      "hash": "502696348e859d02",
+      "size": 37,
+      "mtimeMs": 1787463600617.7332,
+      "updatedAt": "2026-08-24T00:00:00.045Z",
       "source": "scan"
     },
     ".factorypath": {
       "description": "",
       "tokens": 46,
-      "hash": "be01b72dab008fdb",
+      "hash": "a9fd7a8cb7290795",
       "size": 170,
-      "mtimeMs": 1787432308731.279,
-      "updatedAt": "2026-08-23T00:00:00.185Z",
+      "mtimeMs": 1787444357043.0078,
+      "updatedAt": "2026-08-24T00:00:00.046Z",
       "source": "scan"
     },
     ".gitattributes": {
@@ -34,7 +43,7 @@
       "hash": "5775a77ad2f6d12d",
       "size": 38,
       "mtimeMs": 1775327908829.9043,
-      "updatedAt": "2026-08-23T00:00:00.185Z",
+      "updatedAt": "2026-08-24T00:00:00.047Z",
       "source": "scan"
     },
     ".github/workflows/generate-changelog.yml": {
@@ -43,16 +52,16 @@
       "hash": "3faf1790936a1297",
       "size": 2705,
       "mtimeMs": 1775327908748.9465,
-      "updatedAt": "2026-08-23T00:00:00.186Z",
+      "updatedAt": "2026-08-24T00:00:00.050Z",
       "source": "scan"
     },
     ".gitignore": {
       "description": "Git ignore rules",
-      "tokens": 250,
-      "hash": "85d0837b00660983",
-      "size": 937,
-      "mtimeMs": 1775328806270.0864,
-      "updatedAt": "2026-08-23T00:00:00.186Z",
+      "tokens": 278,
+      "hash": "4a7754e8cfadad00",
+      "size": 1041,
+      "mtimeMs": 1787455096349.722,
+      "updatedAt": "2026-08-24T00:00:00.050Z",
       "source": "scan"
     },
     ".mvn/wrapper/maven-wrapper.properties": {
@@ -61,7 +70,7 @@
       "hash": "b0ffaf47bfff05e4",
       "size": 168,
       "mtimeMs": 1775327908764.0347,
-      "updatedAt": "2026-08-23T00:00:00.187Z",
+      "updatedAt": "2026-08-24T00:00:00.051Z",
       "source": "scan"
     },
     ".playwright-mcp/console-2026-08-22T23-38-08-399Z.log": {
@@ -70,7 +79,7 @@
       "hash": "81544037b87433ee",
       "size": 1119,
       "mtimeMs": 1787442285737.5422,
-      "updatedAt": "2026-08-23T00:00:00.188Z",
+      "updatedAt": "2026-08-24T00:00:00.053Z",
       "source": "scan"
     },
     ".playwright-mcp/console-2026-08-22T23-50-13-302Z.log": {
@@ -79,7 +88,277 @@
       "hash": "a304adb2bc10a864",
       "size": 129,
       "mtimeMs": 1787442613646.076,
-      "updatedAt": "2026-08-23T00:00:00.188Z",
+      "updatedAt": "2026-08-24T00:00:00.054Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-22T23-56-13-742Z.log": {
+      "description": "",
+      "tokens": 124,
+      "hash": "3c62c54dd32febb0",
+      "size": 464,
+      "mtimeMs": 1787443328383.3892,
+      "updatedAt": "2026-08-24T00:00:00.055Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T00-50-26-547Z.log": {
+      "description": "",
+      "tokens": 66,
+      "hash": "9cc129b41da0e268",
+      "size": 245,
+      "mtimeMs": 1787446376814.0752,
+      "updatedAt": "2026-08-24T00:00:00.056Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T00-54-01-930Z.log": {
+      "description": "",
+      "tokens": 51,
+      "hash": "0f43588a01a2bd30",
+      "size": 189,
+      "mtimeMs": 1787446442562.704,
+      "updatedAt": "2026-08-24T00:00:00.057Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T00-56-55-947Z.log": {
+      "description": "",
+      "tokens": 35,
+      "hash": "4b276102bdd56147",
+      "size": 129,
+      "mtimeMs": 1787446618576.5188,
+      "updatedAt": "2026-08-24T00:00:00.058Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T00-57-50-119Z.log": {
+      "description": "",
+      "tokens": 62,
+      "hash": "e1f866a57391a729",
+      "size": 232,
+      "mtimeMs": 1787446760186.4534,
+      "updatedAt": "2026-08-24T00:00:00.059Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T01-03-10-129Z.log": {
+      "description": "",
+      "tokens": 51,
+      "hash": "17cc8ee4bbc2cda7",
+      "size": 189,
+      "mtimeMs": 1787446990367.353,
+      "updatedAt": "2026-08-24T00:00:00.061Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T01-03-31-853Z.log": {
+      "description": "",
+      "tokens": 128,
+      "hash": "c429148e23fb3b97",
+      "size": 477,
+      "mtimeMs": 1787447162310.6357,
+      "updatedAt": "2026-08-24T00:00:00.062Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T01-12-14-720Z.log": {
+      "description": "",
+      "tokens": 31,
+      "hash": "1a9f5e61b4551cc5",
+      "size": 116,
+      "mtimeMs": 1787447594826.1323,
+      "updatedAt": "2026-08-24T00:00:00.063Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T01-17-17-377Z.log": {
+      "description": "",
+      "tokens": 93,
+      "hash": "6b5647be5d979ed5",
+      "size": 348,
+      "mtimeMs": 1787447987542.1428,
+      "updatedAt": "2026-08-24T00:00:00.064Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T01-20-34-595Z.log": {
+      "description": "",
+      "tokens": 51,
+      "hash": "382eb3d76f43b284",
+      "size": 189,
+      "mtimeMs": 1787448034838.996,
+      "updatedAt": "2026-08-24T00:00:00.065Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T01-23-02-002Z.log": {
+      "description": "",
+      "tokens": 66,
+      "hash": "c9d4eec02f8ad8d1",
+      "size": 245,
+      "mtimeMs": 1787448302136.472,
+      "updatedAt": "2026-08-24T00:00:00.066Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T01-32-06-759Z.log": {
+      "description": "",
+      "tokens": 62,
+      "hash": "2030f8d51e049091",
+      "size": 232,
+      "mtimeMs": 1787448860165.6177,
+      "updatedAt": "2026-08-24T00:00:00.067Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T01-38-51-837Z.log": {
+      "description": "",
+      "tokens": 97,
+      "hash": "e7dc227a7d919aeb",
+      "size": 361,
+      "mtimeMs": 1787449222054.0757,
+      "updatedAt": "2026-08-24T00:00:00.068Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T01-44-15-851Z.log": {
+      "description": "",
+      "tokens": 93,
+      "hash": "098056a66e625f0b",
+      "size": 348,
+      "mtimeMs": 1787449614543.8293,
+      "updatedAt": "2026-08-24T00:00:00.069Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T01-49-17-779Z.log": {
+      "description": "",
+      "tokens": 51,
+      "hash": "80a671d6652cb735",
+      "size": 189,
+      "mtimeMs": 1787449758031.8074,
+      "updatedAt": "2026-08-24T00:00:00.070Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T01-50-34-511Z.log": {
+      "description": "",
+      "tokens": 35,
+      "hash": "127c184df9e10e4f",
+      "size": 129,
+      "mtimeMs": 1787449834690.0583,
+      "updatedAt": "2026-08-24T00:00:00.070Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T01-55-29-319Z.log": {
+      "description": "",
+      "tokens": 31,
+      "hash": "48742727cc5f989d",
+      "size": 116,
+      "mtimeMs": 1787450189376.9612,
+      "updatedAt": "2026-08-24T00:00:00.071Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T01-59-16-975Z.log": {
+      "description": "",
+      "tokens": 31,
+      "hash": "570e6e3377df7aeb",
+      "size": 116,
+      "mtimeMs": 1787450447039.1853,
+      "updatedAt": "2026-08-24T00:00:00.072Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T02-09-30-762Z.log": {
+      "description": "",
+      "tokens": 867,
+      "hash": "7c7a95c94a37f29d",
+      "size": 3248,
+      "mtimeMs": 1787451870878.5205,
+      "updatedAt": "2026-08-24T00:00:00.073Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T02-30-29-573Z.log": {
+      "description": "Declares at",
+      "tokens": 37,
+      "hash": "1ed9ac30268ec8ff",
+      "size": 136,
+      "mtimeMs": 1787452243911.9175,
+      "updatedAt": "2026-08-24T00:00:00.074Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T02-31-32-400Z.log": {
+      "description": "",
+      "tokens": 31,
+      "hash": "b1420023216f4508",
+      "size": 116,
+      "mtimeMs": 1787452354567.792,
+      "updatedAt": "2026-08-24T00:00:00.076Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T02-35-22-678Z.log": {
+      "description": "",
+      "tokens": 51,
+      "hash": "b6fe9229636af963",
+      "size": 189,
+      "mtimeMs": 1787452522986.4277,
+      "updatedAt": "2026-08-24T00:00:00.077Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T02-37-49-268Z.log": {
+      "description": "",
+      "tokens": 51,
+      "hash": "eff7f3fff45d8a1b",
+      "size": 189,
+      "mtimeMs": 1787452669489.2834,
+      "updatedAt": "2026-08-24T00:00:00.077Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T02-38-10-285Z.log": {
+      "description": "",
+      "tokens": 35,
+      "hash": "a19ffb4196e13614",
+      "size": 129,
+      "mtimeMs": 1787452690504.4324,
+      "updatedAt": "2026-08-24T00:00:00.078Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T02-38-46-461Z.log": {
+      "description": "",
+      "tokens": 93,
+      "hash": "ed87941c18de28e0",
+      "size": 348,
+      "mtimeMs": 1787452846525.7473,
+      "updatedAt": "2026-08-24T00:00:00.079Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T02-43-47-252Z.log": {
+      "description": "",
+      "tokens": 186,
+      "hash": "4e93af0b5858f8ad",
+      "size": 696,
+      "mtimeMs": 1787453237438.549,
+      "updatedAt": "2026-08-24T00:00:00.080Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T02-50-19-321Z.log": {
+      "description": "",
+      "tokens": 62,
+      "hash": "9fb41d5382be6201",
+      "size": 232,
+      "mtimeMs": 1787453509700.2798,
+      "updatedAt": "2026-08-24T00:00:00.081Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T02-54-28-473Z.log": {
+      "description": "",
+      "tokens": 1207,
+      "hash": "f291c2934bec998e",
+      "size": 4524,
+      "mtimeMs": 1787454869398.5544,
+      "updatedAt": "2026-08-24T00:00:00.082Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T03-42-54-777Z.log": {
+      "description": "",
+      "tokens": 51,
+      "hash": "4c14c7698f5354de",
+      "size": 189,
+      "mtimeMs": 1787456575130.4773,
+      "updatedAt": "2026-08-24T00:00:00.083Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/console-2026-08-23T20-17-22-943Z.log": {
+      "description": "",
+      "tokens": 35,
+      "hash": "4e0a1bd2271eb43b",
+      "size": 129,
+      "mtimeMs": 1787516243268.5796,
+      "updatedAt": "2026-08-24T00:00:00.084Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-38-09-061Z.yml": {
@@ -88,7 +367,7 @@
       "hash": "dcf84f63232dd052",
       "size": 713,
       "mtimeMs": 1787441889061.8452,
-      "updatedAt": "2026-08-23T00:00:00.188Z",
+      "updatedAt": "2026-08-24T00:00:00.086Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-50-13-675Z.yml": {
@@ -97,7 +376,7 @@
       "hash": "ca1767def381f6f9",
       "size": 4418,
       "mtimeMs": 1787442613676.176,
-      "updatedAt": "2026-08-23T00:00:00.190Z",
+      "updatedAt": "2026-08-24T00:00:00.087Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-50-28-755Z.yml": {
@@ -106,7 +385,7 @@
       "hash": "4ed537125e7abf4d",
       "size": 9247,
       "mtimeMs": 1787442628755.8079,
-      "updatedAt": "2026-08-23T00:00:00.190Z",
+      "updatedAt": "2026-08-24T00:00:00.090Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-50-59-646Z.yml": {
@@ -115,7 +394,7 @@
       "hash": "c0df22cef8286c8b",
       "size": 5461,
       "mtimeMs": 1787442659646.3726,
-      "updatedAt": "2026-08-23T00:00:00.190Z",
+      "updatedAt": "2026-08-24T00:00:00.091Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-51-23-241Z.yml": {
@@ -124,7 +403,7 @@
       "hash": "e3b0c44298fc1c14",
       "size": 0,
       "mtimeMs": 1787442683241.2114,
-      "updatedAt": "2026-08-23T00:00:00.191Z",
+      "updatedAt": "2026-08-24T00:00:00.091Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-51-31-885Z.yml": {
@@ -133,7 +412,7 @@
       "hash": "eadf912d11102352",
       "size": 5457,
       "mtimeMs": 1787442691885.7202,
-      "updatedAt": "2026-08-23T00:00:00.191Z",
+      "updatedAt": "2026-08-24T00:00:00.093Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-51-46-148Z.yml": {
@@ -142,7 +421,7 @@
       "hash": "31f4fa8bb7895321",
       "size": 42328,
       "mtimeMs": 1787442706148.8796,
-      "updatedAt": "2026-08-23T00:00:00.192Z",
+      "updatedAt": "2026-08-24T00:00:00.099Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-52-04-660Z.yml": {
@@ -151,7 +430,7 @@
       "hash": "26e0c47373ec3520",
       "size": 44437,
       "mtimeMs": 1787442724660.6519,
-      "updatedAt": "2026-08-23T00:00:00.193Z",
+      "updatedAt": "2026-08-24T00:00:00.103Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-52-14-584Z.yml": {
@@ -160,7 +439,7 @@
       "hash": "468becd2270e9228",
       "size": 42528,
       "mtimeMs": 1787442734584.921,
-      "updatedAt": "2026-08-23T00:00:00.194Z",
+      "updatedAt": "2026-08-24T00:00:00.108Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-52-28-052Z.yml": {
@@ -169,7 +448,7 @@
       "hash": "ebfd71e7f66df05b",
       "size": 3513,
       "mtimeMs": 1787442748053.1736,
-      "updatedAt": "2026-08-23T00:00:00.194Z",
+      "updatedAt": "2026-08-24T00:00:00.109Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-52-45-887Z.yml": {
@@ -178,7 +457,7 @@
       "hash": "e11aa48414b1f910",
       "size": 6381,
       "mtimeMs": 1787442765887.8777,
-      "updatedAt": "2026-08-23T00:00:00.195Z",
+      "updatedAt": "2026-08-24T00:00:00.111Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-53-09-414Z.yml": {
@@ -187,7 +466,7 @@
       "hash": "1542a2afa9e62317",
       "size": 6309,
       "mtimeMs": 1787442789415.572,
-      "updatedAt": "2026-08-23T00:00:00.195Z",
+      "updatedAt": "2026-08-24T00:00:00.113Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-53-20-974Z.yml": {
@@ -196,7 +475,7 @@
       "hash": "1542a2afa9e62317",
       "size": 6309,
       "mtimeMs": 1787442800975.134,
-      "updatedAt": "2026-08-23T00:00:00.196Z",
+      "updatedAt": "2026-08-24T00:00:00.115Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-55-55-915Z.yml": {
@@ -205,7 +484,7 @@
       "hash": "4381782958c5e647",
       "size": 6387,
       "mtimeMs": 1787442955915.7546,
-      "updatedAt": "2026-08-23T00:00:00.196Z",
+      "updatedAt": "2026-08-24T00:00:00.116Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-56-13-826Z.yml": {
@@ -214,7 +493,7 @@
       "hash": "597c17ad4a656301",
       "size": 5461,
       "mtimeMs": 1787442973827.088,
-      "updatedAt": "2026-08-23T00:00:00.197Z",
+      "updatedAt": "2026-08-24T00:00:00.117Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-56-37-844Z.yml": {
@@ -223,7 +502,7 @@
       "hash": "57469dc0b6dde006",
       "size": 44142,
       "mtimeMs": 1787442997845.0183,
-      "updatedAt": "2026-08-23T00:00:00.198Z",
+      "updatedAt": "2026-08-24T00:00:00.121Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-57-03-734Z.yml": {
@@ -232,7 +511,7 @@
       "hash": "f50826a6cb670e9b",
       "size": 44142,
       "mtimeMs": 1787443023734.7751,
-      "updatedAt": "2026-08-23T00:00:00.198Z",
+      "updatedAt": "2026-08-24T00:00:00.126Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-57-08-753Z.yml": {
@@ -241,7 +520,7 @@
       "hash": "31562146c9e4deb8",
       "size": 5457,
       "mtimeMs": 1787443028753.35,
-      "updatedAt": "2026-08-23T00:00:00.199Z",
+      "updatedAt": "2026-08-24T00:00:00.127Z",
       "source": "scan"
     },
     ".playwright-mcp/page-2026-08-22T23-57-22-109Z.yml": {
@@ -250,7 +529,448 @@
       "hash": "4dfc76ffa9fe4b98",
       "size": 42449,
       "mtimeMs": 1787443042110.472,
-      "updatedAt": "2026-08-23T00:00:00.200Z",
+      "updatedAt": "2026-08-24T00:00:00.131Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T00-50-26-848Z.yml": {
+      "description": "Declares for",
+      "tokens": 1284,
+      "hash": "776fbbe98fafb526",
+      "size": 4556,
+      "mtimeMs": 1787446226849.1016,
+      "updatedAt": "2026-08-24T00:00:00.133Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T00-56-58-576Z.yml": {
+      "description": "Declares for",
+      "tokens": 1524,
+      "hash": "d974f52f11696415",
+      "size": 5412,
+      "mtimeMs": 1787446618576.744,
+      "updatedAt": "2026-08-24T00:00:00.134Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T00-57-50-203Z.yml": {
+      "description": "Declares for",
+      "tokens": 957,
+      "hash": "14312e92b36fdd28",
+      "size": 3413,
+      "mtimeMs": 1787446670204.1123,
+      "updatedAt": "2026-08-24T00:00:00.135Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-03-32-341Z.yml": {
+      "description": "Declares for",
+      "tokens": 1284,
+      "hash": "ac22040a65a5e744",
+      "size": 4556,
+      "mtimeMs": 1787447012342.3718,
+      "updatedAt": "2026-08-24T00:00:00.136Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-09-16-095Z.yml": {
+      "description": "Declares for",
+      "tokens": 1284,
+      "hash": "776fbbe98fafb526",
+      "size": 4556,
+      "mtimeMs": 1787447356096.797,
+      "updatedAt": "2026-08-24T00:00:00.137Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-12-14-844Z.yml": {
+      "description": "Declares for",
+      "tokens": 1338,
+      "hash": "776d01ff71632833",
+      "size": 4743,
+      "mtimeMs": 1787447534845.5027,
+      "updatedAt": "2026-08-24T00:00:00.137Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-16-00-231Z.yml": {
+      "description": "Declares for",
+      "tokens": 1336,
+      "hash": "6cb56296d9e64929",
+      "size": 4735,
+      "mtimeMs": 1787447760238.7605,
+      "updatedAt": "2026-08-24T00:00:00.138Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-17-17-554Z.yml": {
+      "description": "Declares for",
+      "tokens": 1338,
+      "hash": "24888881ebddef75",
+      "size": 4743,
+      "mtimeMs": 1787447837555.3726,
+      "updatedAt": "2026-08-24T00:00:00.139Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-23-02-156Z.yml": {
+      "description": "Declares for",
+      "tokens": 1284,
+      "hash": "ac22040a65a5e744",
+      "size": 4556,
+      "mtimeMs": 1787448182156.4648,
+      "updatedAt": "2026-08-24T00:00:00.140Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-27-41-778Z.yml": {
+      "description": "Declares for",
+      "tokens": 1338,
+      "hash": "21109e34ca4f293e",
+      "size": 4743,
+      "mtimeMs": 1787448461778.6294,
+      "updatedAt": "2026-08-24T00:00:00.141Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-32-06-857Z.yml": {
+      "description": "Declares for",
+      "tokens": 1338,
+      "hash": "32cea05a305507d1",
+      "size": 4743,
+      "mtimeMs": 1787448726874.3787,
+      "updatedAt": "2026-08-24T00:00:00.141Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-38-52-077Z.yml": {
+      "description": "Declares for",
+      "tokens": 1284,
+      "hash": "776fbbe98fafb526",
+      "size": 4556,
+      "mtimeMs": 1787449132077.639,
+      "updatedAt": "2026-08-24T00:00:00.142Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-44-17-672Z.yml": {
+      "description": "Declares for",
+      "tokens": 1296,
+      "hash": "d38b2ff065b52f2f",
+      "size": 4596,
+      "mtimeMs": 1787449457672.9883,
+      "updatedAt": "2026-08-24T00:00:00.143Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-50-34-683Z.yml": {
+      "description": "Declares for",
+      "tokens": 1536,
+      "hash": "415bdaac94968ac9",
+      "size": 5452,
+      "mtimeMs": 1787449834684.58,
+      "updatedAt": "2026-08-24T00:00:00.144Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-50-59-753Z.yml": {
+      "description": "Declares for",
+      "tokens": 11521,
+      "hash": "b1e5080e2c3759d2",
+      "size": 40775,
+      "mtimeMs": 1787449859754.359,
+      "updatedAt": "2026-08-24T00:00:00.146Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-54-38-439Z.yml": {
+      "description": "Declares for",
+      "tokens": 1590,
+      "hash": "39c9c1c1f3828b6c",
+      "size": 5641,
+      "mtimeMs": 1787450078439.339,
+      "updatedAt": "2026-08-24T00:00:00.147Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-54-52-096Z.yml": {
+      "description": "Declares for",
+      "tokens": 1832,
+      "hash": "4c628270e402e67f",
+      "size": 6497,
+      "mtimeMs": 1787450092103.942,
+      "updatedAt": "2026-08-24T00:00:00.148Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-55-02-096Z.yml": {
+      "description": "Declares for",
+      "tokens": 1590,
+      "hash": "f0827eafceef3802",
+      "size": 5641,
+      "mtimeMs": 1787450102097.1655,
+      "updatedAt": "2026-08-24T00:00:00.149Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-55-29-402Z.yml": {
+      "description": "Declares for",
+      "tokens": 1639,
+      "hash": "5170f70d4e12fd49",
+      "size": 5818,
+      "mtimeMs": 1787450129406.5847,
+      "updatedAt": "2026-08-24T00:00:00.150Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-59-17-060Z.yml": {
+      "description": "Declares for",
+      "tokens": 1669,
+      "hash": "3a47402a4d32cc6b",
+      "size": 5925,
+      "mtimeMs": 1787450357061.4285,
+      "updatedAt": "2026-08-24T00:00:00.150Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T01-59-35-808Z.yml": {
+      "description": "Declares for",
+      "tokens": 1669,
+      "hash": "3a47402a4d32cc6b",
+      "size": 5925,
+      "mtimeMs": 1787450375809.5667,
+      "updatedAt": "2026-08-24T00:00:00.151Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-05-29-774Z.yml": {
+      "description": "Declares for",
+      "tokens": 936,
+      "hash": "46feeac782232b93",
+      "size": 3339,
+      "mtimeMs": 1787450729775.1619,
+      "updatedAt": "2026-08-24T00:00:00.152Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-05-43-507Z.yml": {
+      "description": "Declares for",
+      "tokens": 1766,
+      "hash": "76456b475e834d16",
+      "size": 6269,
+      "mtimeMs": 1787450743508.6667,
+      "updatedAt": "2026-08-24T00:00:00.152Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-09-30-866Z.yml": {
+      "description": "Declares for",
+      "tokens": 970,
+      "hash": "8d6ea671cee62baf",
+      "size": 3456,
+      "mtimeMs": 1787450970866.8408,
+      "updatedAt": "2026-08-24T00:00:00.153Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-09-59-619Z.yml": {
+      "description": "Declares for",
+      "tokens": 1832,
+      "hash": "f568de361a6a9944",
+      "size": 6497,
+      "mtimeMs": 1787450999619.6877,
+      "updatedAt": "2026-08-24T00:00:00.154Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-29-08-451Z.yml": {
+      "description": "Declares for",
+      "tokens": 1435,
+      "hash": "ca310fa391d4f084",
+      "size": 5100,
+      "mtimeMs": 1787452148451.3635,
+      "updatedAt": "2026-08-24T00:00:00.155Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-29-22-352Z.yml": {
+      "description": "Declares for",
+      "tokens": 2857,
+      "hash": "2a8547f0eee4fee3",
+      "size": 10100,
+      "mtimeMs": 1787452162353.0112,
+      "updatedAt": "2026-08-24T00:00:00.156Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-29-47-284Z.yml": {
+      "description": "Declares for",
+      "tokens": 1851,
+      "hash": "75babba2935a9c90",
+      "size": 6567,
+      "mtimeMs": 1787452187285.5662,
+      "updatedAt": "2026-08-24T00:00:00.157Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-30-09-430Z.yml": {
+      "description": "Declares for",
+      "tokens": 1886,
+      "hash": "4cce8cfa5976686d",
+      "size": 6689,
+      "mtimeMs": 1787452209430.388,
+      "updatedAt": "2026-08-24T00:00:00.157Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-30-29-649Z.yml": {
+      "description": "Declares for",
+      "tokens": 1619,
+      "hash": "54217ee978da1031",
+      "size": 5742,
+      "mtimeMs": 1787452229649.605,
+      "updatedAt": "2026-08-24T00:00:00.158Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-31-32-508Z.yml": {
+      "description": "Declares for",
+      "tokens": 1619,
+      "hash": "adb096b3afce2d6c",
+      "size": 5742,
+      "mtimeMs": 1787452292509.263,
+      "updatedAt": "2026-08-24T00:00:00.159Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-38-10-499Z.yml": {
+      "description": "Declares for",
+      "tokens": 936,
+      "hash": "9b130cd6eeccd8c3",
+      "size": 3339,
+      "mtimeMs": 1787452690499.8718,
+      "updatedAt": "2026-08-24T00:00:00.159Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-38-24-795Z.yml": {
+      "description": "Declares for",
+      "tokens": 1776,
+      "hash": "f411627fdedb08c6",
+      "size": 6303,
+      "mtimeMs": 1787452704808.707,
+      "updatedAt": "2026-08-24T00:00:00.160Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-38-46-542Z.yml": {
+      "description": "Declares for",
+      "tokens": 1048,
+      "hash": "657905d01380f8b9",
+      "size": 3732,
+      "mtimeMs": 1787452726542.5217,
+      "updatedAt": "2026-08-24T00:00:00.161Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-43-47-456Z.yml": {
+      "description": "Declares for",
+      "tokens": 970,
+      "hash": "3e6b2a619962555a",
+      "size": 3456,
+      "mtimeMs": 1787453027457.4863,
+      "updatedAt": "2026-08-24T00:00:00.161Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-44-01-959Z.yml": {
+      "description": "Declares for",
+      "tokens": 1841,
+      "hash": "110149a13f5c20c1",
+      "size": 6531,
+      "mtimeMs": 1787453041971.1946,
+      "updatedAt": "2026-08-24T00:00:00.162Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-50-19-724Z.yml": {
+      "description": "Declares for",
+      "tokens": 970,
+      "hash": "ab23ab3e6c3229e4",
+      "size": 3456,
+      "mtimeMs": 1787453419726.8613,
+      "updatedAt": "2026-08-24T00:00:00.163Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T02-54-29-502Z.yml": {
+      "description": "Declares for",
+      "tokens": 988,
+      "hash": "73b15f5fa00d7733",
+      "size": 3521,
+      "mtimeMs": 1787453669504.8228,
+      "updatedAt": "2026-08-24T00:00:00.164Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T20-17-23-255Z.yml": {
+      "description": "Declares for",
+      "tokens": 1296,
+      "hash": "2bfec3b5b7d7a2e3",
+      "size": 4596,
+      "mtimeMs": 1787516243270.6826,
+      "updatedAt": "2026-08-24T00:00:00.164Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T20-17-57-284Z.yml": {
+      "description": "Declares for",
+      "tokens": 2658,
+      "hash": "454ca80e44aac9dd",
+      "size": 9403,
+      "mtimeMs": 1787516277303.6116,
+      "updatedAt": "2026-08-24T00:00:00.165Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T20-19-07-599Z.yml": {
+      "description": "Declares for",
+      "tokens": 1590,
+      "hash": "fdad9c80f916053a",
+      "size": 5641,
+      "mtimeMs": 1787516347606.3357,
+      "updatedAt": "2026-08-24T00:00:00.165Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T20-19-26-573Z.yml": {
+      "description": "Declares for",
+      "tokens": 12112,
+      "hash": "8d0cb3ffd0f9179c",
+      "size": 42847,
+      "mtimeMs": 1787516366583.013,
+      "updatedAt": "2026-08-24T00:00:00.166Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T20-20-38-517Z.yml": {
+      "description": "Declares for",
+      "tokens": 1048,
+      "hash": "9e8b334312719b19",
+      "size": 3732,
+      "mtimeMs": 1787516438524.525,
+      "updatedAt": "2026-08-24T00:00:00.167Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T20-21-02-314Z.yml": {
+      "description": "Declares for",
+      "tokens": 1841,
+      "hash": "2a97c6cba90a6dc2",
+      "size": 6531,
+      "mtimeMs": 1787516462329.3235,
+      "updatedAt": "2026-08-24T00:00:00.168Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T20-22-16-372Z.yml": {
+      "description": "Declares for",
+      "tokens": 1268,
+      "hash": "5624f14616fe958a",
+      "size": 4497,
+      "mtimeMs": 1787516536372.3733,
+      "updatedAt": "2026-08-24T00:00:00.168Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T20-22-31-188Z.yml": {
+      "description": "Declares for",
+      "tokens": 1268,
+      "hash": "5624f14616fe958a",
+      "size": 4497,
+      "mtimeMs": 1787516551189.5952,
+      "updatedAt": "2026-08-24T00:00:00.169Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T20-23-49-350Z.yml": {
+      "description": "",
+      "tokens": 52,
+      "hash": "cacffd9c628d2fe9",
+      "size": 182,
+      "mtimeMs": 1787516629362.8884,
+      "updatedAt": "2026-08-24T00:00:00.169Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T20-24-11-920Z.yml": {
+      "description": "",
+      "tokens": 5803,
+      "hash": "5676ad3910821d93",
+      "size": 20308,
+      "mtimeMs": 1787516651929.262,
+      "updatedAt": "2026-08-24T00:00:00.170Z",
+      "source": "scan"
+    },
+    ".playwright-mcp/page-2026-08-23T20-24-39-178Z.yml": {
+      "description": "",
+      "tokens": 27,
+      "hash": "80e4e702d8786457",
+      "size": 92,
+      "mtimeMs": 1787516679178.992,
+      "updatedAt": "2026-08-24T00:00:00.170Z",
       "source": "scan"
     },
     ".project": {
@@ -259,7 +979,7 @@
       "hash": "24cfe79cfd4c5358",
       "size": 831,
       "mtimeMs": 1787430521042.6738,
-      "updatedAt": "2026-08-23T00:00:00.200Z",
+      "updatedAt": "2026-08-24T00:00:00.171Z",
       "source": "scan"
     },
     ".qoder/rules/agents_reference.md": {
@@ -268,7 +988,7 @@
       "hash": "db8b5385fe61c045",
       "size": 3275,
       "mtimeMs": 1775327908767.6038,
-      "updatedAt": "2026-08-23T00:00:00.201Z",
+      "updatedAt": "2026-08-24T00:00:00.172Z",
       "source": "scan"
     },
     ".qoder/rules/anti_patterns.md": {
@@ -277,7 +997,7 @@
       "hash": "948426a8ee1d14d9",
       "size": 30080,
       "mtimeMs": 1775327908768.0796,
-      "updatedAt": "2026-08-23T00:00:00.202Z",
+      "updatedAt": "2026-08-24T00:00:00.175Z",
       "source": "scan"
     },
     ".qoder/rules/api_rest_conventions.md": {
@@ -286,7 +1006,7 @@
       "hash": "bee1485d4308b54c",
       "size": 5521,
       "mtimeMs": 1775327908768.616,
-      "updatedAt": "2026-08-23T00:00:00.202Z",
+      "updatedAt": "2026-08-24T00:00:00.176Z",
       "source": "scan"
     },
     ".qoder/rules/architecture.md": {
@@ -295,7 +1015,7 @@
       "hash": "5ed08bae675d9304",
       "size": 3173,
       "mtimeMs": 1775327908768.9353,
-      "updatedAt": "2026-08-23T00:00:00.203Z",
+      "updatedAt": "2026-08-24T00:00:00.177Z",
       "source": "scan"
     },
     ".qoder/rules/design_patterns.md": {
@@ -304,7 +1024,7 @@
       "hash": "4f27fc1432b0c603",
       "size": 31627,
       "mtimeMs": 1775327908769.521,
-      "updatedAt": "2026-08-23T00:00:00.203Z",
+      "updatedAt": "2026-08-24T00:00:00.179Z",
       "source": "scan"
     },
     ".qoder/rules/java_coding_standards.md": {
@@ -313,7 +1033,7 @@
       "hash": "0b18674a4bb10186",
       "size": 5112,
       "mtimeMs": 1775327908769.8445,
-      "updatedAt": "2026-08-23T00:00:00.204Z",
+      "updatedAt": "2026-08-24T00:00:00.180Z",
       "source": "scan"
     },
     ".qoder/rules/java_evolution_guide.md": {
@@ -322,7 +1042,7 @@
       "hash": "a0d15031d9e34769",
       "size": 14449,
       "mtimeMs": 1775327908770.166,
-      "updatedAt": "2026-08-23T00:00:00.204Z",
+      "updatedAt": "2026-08-24T00:00:00.182Z",
       "source": "scan"
     },
     ".qoder/rules/java_rules_compendium.md": {
@@ -331,7 +1051,7 @@
       "hash": "d98592eff0c49ac1",
       "size": 9374,
       "mtimeMs": 1775327908770.5107,
-      "updatedAt": "2026-08-23T00:00:00.205Z",
+      "updatedAt": "2026-08-24T00:00:00.183Z",
       "source": "scan"
     },
     ".qoder/rules/java_style_guide_formatting.md": {
@@ -340,7 +1060,7 @@
       "hash": "7e6c781fbc8b9431",
       "size": 20022,
       "mtimeMs": 1775327908770.9648,
-      "updatedAt": "2026-08-23T00:00:00.205Z",
+      "updatedAt": "2026-08-24T00:00:00.185Z",
       "source": "scan"
     },
     ".qoder/rules/java_style_guide_javadoc.md": {
@@ -349,7 +1069,7 @@
       "hash": "43e6c4122b9be1ee",
       "size": 11650,
       "mtimeMs": 1775327908771.3943,
-      "updatedAt": "2026-08-23T00:00:00.206Z",
+      "updatedAt": "2026-08-24T00:00:00.186Z",
       "source": "scan"
     },
     ".qoder/rules/java_style_guide_naming.md": {
@@ -358,7 +1078,7 @@
       "hash": "d16210dea3932922",
       "size": 15489,
       "mtimeMs": 1775327908771.766,
-      "updatedAt": "2026-08-23T00:00:00.206Z",
+      "updatedAt": "2026-08-24T00:00:00.188Z",
       "source": "scan"
     },
     ".qoder/rules/java_style_guide_programming_practices.md": {
@@ -367,7 +1087,7 @@
       "hash": "9e5ed366d7d6eb1f",
       "size": 14625,
       "mtimeMs": 1775327908772.1191,
-      "updatedAt": "2026-08-23T00:00:00.206Z",
+      "updatedAt": "2026-08-24T00:00:00.190Z",
       "source": "scan"
     },
     ".qoder/rules/java_style_guide_source_file_basics.md": {
@@ -376,7 +1096,7 @@
       "hash": "37a0354e1bacc098",
       "size": 4697,
       "mtimeMs": 1775327908772.5117,
-      "updatedAt": "2026-08-23T00:00:00.207Z",
+      "updatedAt": "2026-08-24T00:00:00.191Z",
       "source": "scan"
     },
     ".qoder/rules/java_style_guide_source_file_structure.md": {
@@ -385,7 +1105,7 @@
       "hash": "cb7d0e181c8a861f",
       "size": 7948,
       "mtimeMs": 1775327908772.8462,
-      "updatedAt": "2026-08-23T00:00:00.207Z",
+      "updatedAt": "2026-08-24T00:00:00.192Z",
       "source": "scan"
     },
     ".qoder/rules/java_style_guide_specific_constructs.md": {
@@ -394,7 +1114,7 @@
       "hash": "51b85c28c014a30b",
       "size": 14273,
       "mtimeMs": 1775327908773.156,
-      "updatedAt": "2026-08-23T00:00:00.208Z",
+      "updatedAt": "2026-08-24T00:00:00.194Z",
       "source": "scan"
     },
     ".qoder/rules/mcp_usage.md": {
@@ -403,7 +1123,7 @@
       "hash": "39d4d3035c499d4e",
       "size": 2940,
       "mtimeMs": 1775327908773.4683,
-      "updatedAt": "2026-08-23T00:00:00.208Z",
+      "updatedAt": "2026-08-24T00:00:00.194Z",
       "source": "scan"
     },
     ".qoder/rules/tdlib_integration.md": {
@@ -412,7 +1132,7 @@
       "hash": "7d12c641d3f1dfda",
       "size": 5516,
       "mtimeMs": 1775327908773.7861,
-      "updatedAt": "2026-08-23T00:00:00.208Z",
+      "updatedAt": "2026-08-24T00:00:00.195Z",
       "source": "scan"
     },
     ".settings/org.eclipse.core.resources.prefs": {
@@ -421,7 +1141,7 @@
       "hash": "4461930d47c463ad",
       "size": 150,
       "mtimeMs": 1787430520772.755,
-      "updatedAt": "2026-08-23T00:00:00.209Z",
+      "updatedAt": "2026-08-24T00:00:00.196Z",
       "source": "scan"
     },
     ".settings/org.eclipse.jdt.apt.core.prefs": {
@@ -429,17 +1149,17 @@
       "tokens": 58,
       "hash": "c5c3e3666f87a76a",
       "size": 214,
-      "mtimeMs": 1787432308730.8677,
-      "updatedAt": "2026-08-23T00:00:00.209Z",
+      "mtimeMs": 1787444357042.324,
+      "updatedAt": "2026-08-24T00:00:00.197Z",
       "source": "scan"
     },
     ".settings/org.eclipse.jdt.core.prefs": {
       "description": "",
-      "tokens": 347,
-      "hash": "b2e7e3ada8b1c89f",
-      "size": 1299,
-      "mtimeMs": 1787442288484.338,
-      "updatedAt": "2026-08-23T00:00:00.209Z",
+      "tokens": 344,
+      "hash": "49f706a7d2eaac6b",
+      "size": 1290,
+      "mtimeMs": 1787444357035.5818,
+      "updatedAt": "2026-08-24T00:00:00.198Z",
       "source": "scan"
     },
     ".settings/org.eclipse.m2e.core.prefs": {
@@ -448,7 +1168,7 @@
       "hash": "73e2bc42062725b3",
       "size": 86,
       "mtimeMs": 1787430519872.1392,
-      "updatedAt": "2026-08-23T00:00:00.210Z",
+      "updatedAt": "2026-08-24T00:00:00.199Z",
       "source": "scan"
     },
     "AGENTS.md": {
@@ -457,7 +1177,7 @@
       "hash": "f931a955a571d6cd",
       "size": 31408,
       "mtimeMs": 1787428102698.4385,
-      "updatedAt": "2026-08-23T00:00:00.217Z",
+      "updatedAt": "2026-08-24T00:00:00.199Z",
       "source": "scan"
     },
     "CLAUDE.md": {
@@ -466,7 +1186,7 @@
       "hash": "074d6b42b583729a",
       "size": 395,
       "mtimeMs": 1787428102035.7495,
-      "updatedAt": "2026-08-23T00:00:00.217Z",
+      "updatedAt": "2026-08-24T00:00:00.200Z",
       "source": "scan"
     },
     "CODE_OF_CONDUCT.md": {
@@ -475,16 +1195,16 @@
       "hash": "9cedbf8eff44fdd6",
       "size": 2562,
       "mtimeMs": 1775347023796.4685,
-      "updatedAt": "2026-08-23T00:00:00.218Z",
+      "updatedAt": "2026-08-24T00:00:00.201Z",
       "source": "scan"
     },
     "CONTEXT.md": {
       "description": "CONTEXT.md — Glosario del workspace",
-      "tokens": 662,
-      "hash": "378843b10bba93a6",
-      "size": 2715,
-      "mtimeMs": 1787433538739.8198,
-      "updatedAt": "2026-08-23T00:00:00.218Z",
+      "tokens": 727,
+      "hash": "2a033f50c5000e0d",
+      "size": 2978,
+      "mtimeMs": 1787520747144.5286,
+      "updatedAt": "2026-08-24T00:00:00.201Z",
       "source": "scan"
     },
     "CONTRIBUTING.adoc": {
@@ -493,7 +1213,7 @@
       "hash": "18a310f408135ace",
       "size": 3594,
       "mtimeMs": 1775347023796.5552,
-      "updatedAt": "2026-08-23T00:00:00.218Z",
+      "updatedAt": "2026-08-24T00:00:00.202Z",
       "source": "scan"
     },
     "docker-compose.yml": {
@@ -502,8 +1222,8 @@
       "hash": "815bc26b5d9c2d1d",
       "size": 997,
       "mtimeMs": 1787454982936.264,
-      "updatedAt": "2026-08-23T03:16:22.972Z",
-      "source": "hook"
+      "updatedAt": "2026-08-24T00:00:00.202Z",
+      "source": "scan"
     },
     "Dockerfile": {
       "description": "Docker container definition",
@@ -511,8 +1231,8 @@
       "hash": "0dcf494e9097427d",
       "size": 820,
       "mtimeMs": 1787463318134.2397,
-      "updatedAt": "2026-08-23T05:35:18.183Z",
-      "source": "hook"
+      "updatedAt": "2026-08-24T00:00:00.203Z",
+      "source": "scan"
     },
     "docs/adr/0001-recortar-drive-logico.md": {
       "description": "ADR-0001: Recortar el drive lógico en lugar de materializarlo",
@@ -520,7 +1240,7 @@
       "hash": "988f8910918997c2",
       "size": 2200,
       "mtimeMs": 1787433540598.654,
-      "updatedAt": "2026-08-23T00:00:00.221Z",
+      "updatedAt": "2026-08-24T00:00:00.203Z",
       "source": "scan"
     },
     "docs/agents/domain.md": {
@@ -529,7 +1249,7 @@
       "hash": "edc6d6131fdffc4b",
       "size": 2033,
       "mtimeMs": 1787428011269.2542,
-      "updatedAt": "2026-08-23T00:00:00.221Z",
+      "updatedAt": "2026-08-24T00:00:00.204Z",
       "source": "scan"
     },
     "docs/agents/issue-tracker.md": {
@@ -538,7 +1258,7 @@
       "hash": "afd6852a80185217",
       "size": 3731,
       "mtimeMs": 1787428006066.9058,
-      "updatedAt": "2026-08-23T00:00:00.222Z",
+      "updatedAt": "2026-08-24T00:00:00.204Z",
       "source": "scan"
     },
     "docs/agents/triage-labels.md": {
@@ -547,7 +1267,7 @@
       "hash": "4f53c9b40ce2651e",
       "size": 1045,
       "mtimeMs": 1787428007836.9783,
-      "updatedAt": "2026-08-23T00:00:00.223Z",
+      "updatedAt": "2026-08-24T00:00:00.205Z",
       "source": "scan"
     },
     "GEMINI.md": {
@@ -556,7 +1276,7 @@
       "hash": "e401f79554a8d796",
       "size": 297,
       "mtimeMs": 1787428102719.1704,
-      "updatedAt": "2026-08-23T00:00:00.223Z",
+      "updatedAt": "2026-08-24T00:00:00.205Z",
       "source": "scan"
     },
     "HELP.md": {
@@ -565,7 +1285,7 @@
       "hash": "62cd67853e159588",
       "size": 1547,
       "mtimeMs": 1775327908785.1736,
-      "updatedAt": "2026-08-23T00:00:00.223Z",
+      "updatedAt": "2026-08-24T00:00:00.205Z",
       "source": "scan"
     },
     "LICENSE": {
@@ -574,7 +1294,7 @@
       "hash": "fb881dd0593eb64b",
       "size": 1080,
       "mtimeMs": 1775347023796.612,
-      "updatedAt": "2026-08-23T00:00:00.223Z",
+      "updatedAt": "2026-08-24T00:00:00.206Z",
       "source": "scan"
     },
     "mvnw": {
@@ -583,7 +1303,7 @@
       "hash": "cae96cef89ebea35",
       "size": 11790,
       "mtimeMs": 1775327908819.6548,
-      "updatedAt": "2026-08-23T00:00:00.224Z",
+      "updatedAt": "2026-08-24T00:00:00.206Z",
       "source": "scan"
     },
     "mvnw.cmd": {
@@ -592,26 +1312,26 @@
       "hash": "4a361e1374a3e5ad",
       "size": 8292,
       "mtimeMs": 1775327908821.9539,
-      "updatedAt": "2026-08-23T00:00:00.224Z",
+      "updatedAt": "2026-08-24T00:00:00.207Z",
       "source": "scan"
     },
     "pom.xml": {
-      "description": "",
-      "tokens": 1531,
+      "description": "Maven project configuration",
+      "tokens": 1640,
       "hash": "a4b5ce59404803ed",
       "size": 5739,
       "mtimeMs": 1787444355590.4392,
-      "updatedAt": "2026-08-23T00:19:15.644Z",
-      "source": "hook"
+      "updatedAt": "2026-08-24T00:00:00.207Z",
+      "source": "scan"
     },
     "README.md": {
       "description": "Project documentation",
-      "tokens": 3854,
-      "hash": "4e96c584c2a70715",
-      "size": 15807,
-      "mtimeMs": 1787464496733.6082,
-      "updatedAt": "2026-08-23T05:54:56.830Z",
-      "source": "hook"
+      "tokens": 3876,
+      "hash": "2c9e54790f1f01f5",
+      "size": 15893,
+      "mtimeMs": 1787529138508.7896,
+      "updatedAt": "2026-08-24T00:00:00.208Z",
+      "source": "scan"
     },
     "SECURITY.md": {
       "description": "Security Policy",
@@ -619,7 +1339,7 @@
       "hash": "4eafb6651b0dc472",
       "size": 2965,
       "mtimeMs": 1775347023796.6628,
-      "updatedAt": "2026-08-23T00:00:00.228Z",
+      "updatedAt": "2026-08-24T00:00:00.208Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/Application.java": {
@@ -628,7 +1348,7 @@
       "hash": "e02850d018317cd4",
       "size": 451,
       "mtimeMs": 1775329436819.632,
-      "updatedAt": "2026-08-23T00:00:00.229Z",
+      "updatedAt": "2026-08-24T00:00:00.209Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/config/CacheConfig.java": {
@@ -637,7 +1357,7 @@
       "hash": "8011bf5dd02d6c76",
       "size": 1556,
       "mtimeMs": 1787433086549.7446,
-      "updatedAt": "2026-08-23T00:00:00.229Z",
+      "updatedAt": "2026-08-24T00:00:00.210Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/config/MetricsConfig.java": {
@@ -646,7 +1366,7 @@
       "hash": "b13f4097a46ca4d4",
       "size": 2113,
       "mtimeMs": 1776033768264.4817,
-      "updatedAt": "2026-08-23T00:00:00.230Z",
+      "updatedAt": "2026-08-24T00:00:00.210Z",
       "source": "scan",
       "symbols": [
         {
@@ -707,7 +1427,7 @@
       "hash": "548df7a22b83bf44",
       "size": 2429,
       "mtimeMs": 1787433537020.6355,
-      "updatedAt": "2026-08-23T00:00:00.230Z",
+      "updatedAt": "2026-08-24T00:00:00.210Z",
       "source": "scan",
       "symbols": [
         {
@@ -733,7 +1453,7 @@
       "hash": "28546da3635aa0d9",
       "size": 1841,
       "mtimeMs": 1776033641070.183,
-      "updatedAt": "2026-08-23T00:00:00.230Z",
+      "updatedAt": "2026-08-24T00:00:00.211Z",
       "source": "scan",
       "symbols": [
         {
@@ -759,7 +1479,7 @@
       "hash": "d0a71884f51ca132",
       "size": 1172,
       "mtimeMs": 1787441053892.2834,
-      "updatedAt": "2026-08-23T00:00:00.230Z",
+      "updatedAt": "2026-08-24T00:00:00.212Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/config/TelegramConfig.java": {
@@ -768,7 +1488,7 @@
       "hash": "d8db1debada2e15d",
       "size": 3699,
       "mtimeMs": 1775330066968.713,
-      "updatedAt": "2026-08-23T00:00:00.231Z",
+      "updatedAt": "2026-08-24T00:00:00.212Z",
       "source": "scan",
       "symbols": [
         {
@@ -892,7 +1612,7 @@
       "hash": "4aaf51339e43fff6",
       "size": 2601,
       "mtimeMs": 1787431761238.2117,
-      "updatedAt": "2026-08-23T00:00:00.231Z",
+      "updatedAt": "2026-08-24T00:00:00.213Z",
       "source": "scan",
       "symbols": [
         {
@@ -925,7 +1645,7 @@
       "hash": "3738cddc842c769f",
       "size": 1993,
       "mtimeMs": 1787441057398.727,
-      "updatedAt": "2026-08-23T00:00:00.231Z",
+      "updatedAt": "2026-08-24T00:00:00.213Z",
       "source": "scan",
       "symbols": [
         {
@@ -972,7 +1692,7 @@
       "hash": "6eed1036e9f1e326",
       "size": 1688,
       "mtimeMs": 1775329436820.0508,
-      "updatedAt": "2026-08-23T00:00:00.232Z",
+      "updatedAt": "2026-08-24T00:00:00.214Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/constants/MediaConstants.java": {
@@ -981,7 +1701,7 @@
       "hash": "8af1f9389ef768f6",
       "size": 2717,
       "mtimeMs": 1775329436820.1667,
-      "updatedAt": "2026-08-23T00:00:00.232Z",
+      "updatedAt": "2026-08-24T00:00:00.215Z",
       "source": "scan",
       "symbols": [
         {
@@ -1007,26 +1727,300 @@
       "hash": "1ace98b4a0ab4a4f",
       "size": 774,
       "mtimeMs": 1775329436820.2883,
-      "updatedAt": "2026-08-23T00:00:00.232Z",
+      "updatedAt": "2026-08-24T00:00:00.215Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/controller/FileController.java": {
-      "description": "Exposes REST endpoints for browsing, uploading, downloading, previewing, and organizing Telegram-bac",
-      "tokens": 9478,
-      "hash": "dd249189863efa66",
-      "size": 35542,
-      "mtimeMs": 1787445486578.5623,
-      "updatedAt": "2026-08-23T00:38:06.620Z",
-      "source": "hook"
+      "description": "Exposes REST endpoints for browsing, uploading, downloading, previewing, and organizing Telegram-backed files.",
+      "tokens": 10215,
+      "hash": "de6ca693153ba1cf",
+      "size": 35754,
+      "mtimeMs": 1787463893302.3508,
+      "updatedAt": "2026-08-24T00:00:00.216Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "FileController",
+          "kind": "class",
+          "startLine": 59,
+          "endLine": 729,
+          "tokens": 9539
+        },
+        {
+          "name": "FileController.FileController",
+          "kind": "method",
+          "startLine": 68,
+          "endLine": 71,
+          "tokens": 52
+        },
+        {
+          "name": "FileController.listFiles",
+          "kind": "method",
+          "startLine": 73,
+          "endLine": 146,
+          "tokens": 942
+        },
+        {
+          "name": "FileController.getFileInfo",
+          "kind": "method",
+          "startLine": 148,
+          "endLine": 161,
+          "tokens": 236
+        },
+        {
+          "name": "FileController.downloadFileContent",
+          "kind": "method",
+          "startLine": 163,
+          "endLine": 187,
+          "tokens": 440
+        },
+        {
+          "name": "FileController.viewFileContent",
+          "kind": "method",
+          "startLine": 189,
+          "endLine": 207,
+          "tokens": 323
+        },
+        {
+          "name": "FileController.buildFileResponse",
+          "kind": "method",
+          "startLine": 209,
+          "endLine": 225,
+          "tokens": 228
+        },
+        {
+          "name": "FileController.buildFallbackFileResponse",
+          "kind": "method",
+          "startLine": 227,
+          "endLine": 235,
+          "tokens": 130
+        },
+        {
+          "name": "FileController.resolveFileName",
+          "kind": "method",
+          "startLine": 266,
+          "endLine": 287,
+          "tokens": 277
+        },
+        {
+          "name": "FileController.getThumbnail",
+          "kind": "method",
+          "startLine": 289,
+          "endLine": 310,
+          "tokens": 328
+        },
+        {
+          "name": "FileController.getStreamInfo",
+          "kind": "method",
+          "startLine": 312,
+          "endLine": 324,
+          "tokens": 227
+        },
+        {
+          "name": "FileController.downloadFile",
+          "kind": "method",
+          "startLine": 326,
+          "endLine": 339,
+          "tokens": 254
+        },
+        {
+          "name": "FileController.downloadFiles",
+          "kind": "method",
+          "startLine": 341,
+          "endLine": 354,
+          "tokens": 248
+        },
+        {
+          "name": "FileController.createBatchDownload",
+          "kind": "method",
+          "startLine": 356,
+          "endLine": 369,
+          "tokens": 236
+        },
+        {
+          "name": "FileController.getJobStatus",
+          "kind": "method",
+          "startLine": 371,
+          "endLine": 386,
+          "tokens": 230
+        },
+        {
+          "name": "FileController.getStats",
+          "kind": "method",
+          "startLine": 388,
+          "endLine": 399,
+          "tokens": 190
+        },
+        {
+          "name": "FileController.getFullStats",
+          "kind": "method",
+          "startLine": 401,
+          "endLine": 427,
+          "tokens": 383
+        },
+        {
+          "name": "FileController.exportFiles",
+          "kind": "method",
+          "startLine": 429,
+          "endLine": 448,
+          "tokens": 294
+        },
+        {
+          "name": "FileController.getRecentFiles",
+          "kind": "method",
+          "startLine": 450,
+          "endLine": 469,
+          "tokens": 340
+        },
+        {
+          "name": "FileController.uploadFile",
+          "kind": "method",
+          "startLine": 494,
+          "endLine": 596,
+          "tokens": 1580
+        },
+        {
+          "name": "FileController.failedUpload",
+          "kind": "method",
+          "startLine": 603,
+          "endLine": 614,
+          "tokens": 197
+        },
+        {
+          "name": "FileController.deleteMessage",
+          "kind": "method",
+          "startLine": 616,
+          "endLine": 647,
+          "tokens": 474
+        },
+        {
+          "name": "FileController.bulkDeleteMessages",
+          "kind": "method",
+          "startLine": 649,
+          "endLine": 676,
+          "tokens": 422
+        },
+        {
+          "name": "FileController.listFolderFiles",
+          "kind": "method",
+          "startLine": 680,
+          "endLine": 717,
+          "tokens": 496
+        },
+        {
+          "name": "FileController.parseTags",
+          "kind": "method",
+          "startLine": 719,
+          "endLine": 728,
+          "tokens": 91
+        }
+      ],
+      "symbolSource": "ts",
+      "skeleton": "@RestController\n    public FileController(FileService fileService, TelegramService telegramService) {\n    @GetMapping\n    @GetMapping(\"/{fileId}\")\n    @GetMapping(\"/{fileId}/content\")\n    @GetMapping(\"/{fileId}/view\")\n    private ResponseEntity<org.springframework.core.io.Resource> buildFileResponse(\n    private ResponseEntity<org.springframework.core.io.Resource> buildFallbackFileResponse(\n    private String resolveFileName(FileInfoResponse fileInfo) {\n    @GetMapping(\"/{fileId}/thumbnail\")\n    @GetMapping(\"/{fileId}/stream\")\n    @PostMapping(\"/{fileId}/download\")\n    @PostMapping(\"/download\")\n    @PostMapping(\"/batch-download\")\n    @GetMapping(\"/jobs/{jobId}\")\n    @GetMapping(\"/stats\")\n    @GetMapping(\"/stats/full\")\n    @GetMapping(\"/export\")\n    @GetMapping(\"/recent\")\n    @PostMapping(value = \"/upload\", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)\n    private ResponseEntity<UploadResponse> failedUpload(Throwable error,\n    @DeleteMapping(\"/message\")\n    @DeleteMapping(\"/bulk-delete\")\n    @GetMapping(\"/folders/{chatId}/files\")\n    private List<String> parseTags(String tags) {"
     },
     "src/main/java/com/zademy/nekolu/controller/GlobalExceptionHandler.java": {
       "description": "Centralizes exception handling for all REST controllers.",
-      "tokens": 2294,
+      "tokens": 2458,
       "hash": "8132b4ce46769d46",
       "size": 8602,
       "mtimeMs": 1787445068648.6733,
-      "updatedAt": "2026-08-23T00:31:08.691Z",
-      "source": "hook"
+      "updatedAt": "2026-08-24T00:00:00.217Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "GlobalExceptionHandler",
+          "kind": "class",
+          "startLine": 35,
+          "endLine": 152,
+          "tokens": 2097
+        },
+        {
+          "name": "GlobalExceptionHandler.handleValidation",
+          "kind": "method",
+          "startLine": 39,
+          "endLine": 49,
+          "tokens": 196
+        },
+        {
+          "name": "GlobalExceptionHandler.handleUnauthorized",
+          "kind": "method",
+          "startLine": 51,
+          "endLine": 57,
+          "tokens": 147
+        },
+        {
+          "name": "GlobalExceptionHandler.handleNotInitialized",
+          "kind": "method",
+          "startLine": 59,
+          "endLine": 65,
+          "tokens": 158
+        },
+        {
+          "name": "GlobalExceptionHandler.handleTelegramOperation",
+          "kind": "method",
+          "startLine": 67,
+          "endLine": 73,
+          "tokens": 156
+        },
+        {
+          "name": "GlobalExceptionHandler.handleTelegramNotFound",
+          "kind": "method",
+          "startLine": 75,
+          "endLine": 81,
+          "tokens": 149
+        },
+        {
+          "name": "GlobalExceptionHandler.handleIllegalState",
+          "kind": "method",
+          "startLine": 83,
+          "endLine": 89,
+          "tokens": 137
+        },
+        {
+          "name": "GlobalExceptionHandler.handleIllegalArgument",
+          "kind": "method",
+          "startLine": 91,
+          "endLine": 97,
+          "tokens": 140
+        },
+        {
+          "name": "GlobalExceptionHandler.handleTimeout",
+          "kind": "method",
+          "startLine": 99,
+          "endLine": 106,
+          "tokens": 152
+        },
+        {
+          "name": "GlobalExceptionHandler.handleCompletionException",
+          "kind": "method",
+          "startLine": 108,
+          "endLine": 126,
+          "tokens": 368
+        },
+        {
+          "name": "GlobalExceptionHandler.handleMaxUploadSize",
+          "kind": "method",
+          "startLine": 128,
+          "endLine": 135,
+          "tokens": 166
+        },
+        {
+          "name": "GlobalExceptionHandler.handleNotFound",
+          "kind": "method",
+          "startLine": 137,
+          "endLine": 142,
+          "tokens": 115
+        },
+        {
+          "name": "GlobalExceptionHandler.handleGeneric",
+          "kind": "method",
+          "startLine": 144,
+          "endLine": 151,
+          "tokens": 153
+        }
+      ],
+      "symbolSource": "ts",
+      "skeleton": "@RestControllerAdvice(basePackages = \"com.zademy.nekolu.controller\")\n    @ExceptionHandler(MethodArgumentNotValidException.class)\n    @ExceptionHandler(TelegramUnauthorizedException.class)\n    @ExceptionHandler(TelegramNotInitializedException.class)\n    @ExceptionHandler(TelegramOperationException.class)\n    @ExceptionHandler(TelegramNotFoundException.class)\n    @ExceptionHandler(IllegalStateException.class)\n    @ExceptionHandler(IllegalArgumentException.class)\n    @ExceptionHandler(TimeoutException.class)\n    @ExceptionHandler(CompletionException.class)\n    @ExceptionHandler(MaxUploadSizeExceededException.class)\n    @ExceptionHandler(NoResourceFoundException.class)\n    @ExceptionHandler(Exception.class)"
     },
     "src/main/java/com/zademy/nekolu/controller/SetupController.java": {
       "description": "First-run authentication wizard: shows the step TDLib is waiting for and",
@@ -1034,7 +2028,7 @@
       "hash": "9002e26c4e4bffb8",
       "size": 3533,
       "mtimeMs": 1787441051929.0037,
-      "updatedAt": "2026-08-23T00:00:00.234Z",
+      "updatedAt": "2026-08-24T00:00:00.217Z",
       "source": "scan",
       "symbols": [
         {
@@ -1102,7 +2096,7 @@
       "hash": "07259018f1e584eb",
       "size": 6831,
       "mtimeMs": 1787436902174.7478,
-      "updatedAt": "2026-08-23T00:00:00.236Z",
+      "updatedAt": "2026-08-24T00:00:00.218Z",
       "source": "scan",
       "symbols": [
         {
@@ -1163,7 +2157,7 @@
       "hash": "9505ea6e0225831b",
       "size": 1278,
       "mtimeMs": 1775329436820.7537,
-      "updatedAt": "2026-08-23T00:00:00.237Z",
+      "updatedAt": "2026-08-24T00:00:00.219Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/ApiErrorResponse.java": {
@@ -1172,7 +2166,7 @@
       "hash": "af69a9a86202e621",
       "size": 1075,
       "mtimeMs": 1776033460190.1062,
-      "updatedAt": "2026-08-23T00:00:00.237Z",
+      "updatedAt": "2026-08-24T00:00:00.220Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/BulkDeleteRequest.java": {
@@ -1181,7 +2175,7 @@
       "hash": "b8f37b786a2b48bd",
       "size": 1556,
       "mtimeMs": 1776033528601.995,
-      "updatedAt": "2026-08-23T00:00:00.237Z",
+      "updatedAt": "2026-08-24T00:00:00.220Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/BulkDeleteResponse.java": {
@@ -1190,7 +2184,7 @@
       "hash": "4b2d7bd28b2a72f6",
       "size": 1327,
       "mtimeMs": 1775329436822.1653,
-      "updatedAt": "2026-08-23T00:00:00.238Z",
+      "updatedAt": "2026-08-24T00:00:00.220Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/CreateFolderRequest.java": {
@@ -1199,7 +2193,7 @@
       "hash": "1ef81b44ec68637a",
       "size": 878,
       "mtimeMs": 1776033507996.889,
-      "updatedAt": "2026-08-23T00:00:00.238Z",
+      "updatedAt": "2026-08-24T00:00:00.220Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/CreateFolderResponse.java": {
@@ -1208,7 +2202,7 @@
       "hash": "49438b17063c1da1",
       "size": 950,
       "mtimeMs": 1775329436822.356,
-      "updatedAt": "2026-08-23T00:00:00.238Z",
+      "updatedAt": "2026-08-24T00:00:00.221Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/DeleteFolderResponse.java": {
@@ -1217,7 +2211,7 @@
       "hash": "92508f98e666c7a5",
       "size": 752,
       "mtimeMs": 1775329436822.438,
-      "updatedAt": "2026-08-23T00:00:00.240Z",
+      "updatedAt": "2026-08-24T00:00:00.221Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/DeleteMessageRequest.java": {
@@ -1226,7 +2220,7 @@
       "hash": "3080c1b80a4ab4ef",
       "size": 995,
       "mtimeMs": 1775329436822.5227,
-      "updatedAt": "2026-08-23T00:00:00.240Z",
+      "updatedAt": "2026-08-24T00:00:00.221Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/DeleteMessageResponse.java": {
@@ -1235,7 +2229,7 @@
       "hash": "93a98dbaeb2ebd51",
       "size": 1151,
       "mtimeMs": 1775329436822.6013,
-      "updatedAt": "2026-08-23T00:00:00.241Z",
+      "updatedAt": "2026-08-24T00:00:00.222Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/DownloadFilesRequest.java": {
@@ -1244,7 +2238,7 @@
       "hash": "0a67b1041a1db391",
       "size": 633,
       "mtimeMs": 1776033521878.865,
-      "updatedAt": "2026-08-23T00:00:00.242Z",
+      "updatedAt": "2026-08-24T00:00:00.222Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/DownloadJob.java": {
@@ -1253,7 +2247,7 @@
       "hash": "8bb0aa93cfee3c7e",
       "size": 1930,
       "mtimeMs": 1787432418338.084,
-      "updatedAt": "2026-08-23T00:00:00.243Z",
+      "updatedAt": "2026-08-24T00:00:00.222Z",
       "source": "scan",
       "symbols": [
         {
@@ -1272,7 +2266,7 @@
       "hash": "0d7710c362cb59cc",
       "size": 2139,
       "mtimeMs": 1787432416753.6145,
-      "updatedAt": "2026-08-23T00:00:00.243Z",
+      "updatedAt": "2026-08-24T00:00:00.223Z",
       "source": "scan",
       "symbols": [
         {
@@ -1298,17 +2292,69 @@
       "hash": "a790b5abdc6382f5",
       "size": 691,
       "mtimeMs": 1775329436823.079,
-      "updatedAt": "2026-08-23T00:00:00.243Z",
+      "updatedAt": "2026-08-24T00:00:00.223Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/FileInfoResponse.java": {
-      "description": "Detailed API representation of a Telegram-backed file, including TDLib metadata and logical drive me",
-      "tokens": 1772,
-      "hash": "04626f1e13b10165",
-      "size": 6645,
-      "mtimeMs": 1787445240708.1921,
-      "updatedAt": "2026-08-23T00:34:00.744Z",
-      "source": "hook"
+      "description": "Detailed API representation of a Telegram-backed file, including TDLib metadata and logical drive metadata.",
+      "tokens": 1914,
+      "hash": "31eb432c28839fa8",
+      "size": 6697,
+      "mtimeMs": 1787445275401.3672,
+      "updatedAt": "2026-08-24T00:00:00.224Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "FileInfoResponse",
+          "kind": "class",
+          "startLine": 18,
+          "endLine": 210,
+          "tokens": 1794
+        },
+        {
+          "name": "FileInfoResponse.FileInfoResponse",
+          "kind": "method",
+          "startLine": 102,
+          "endLine": 147,
+          "tokens": 318
+        },
+        {
+          "name": "FileInfoResponse.contentUrl",
+          "kind": "method",
+          "startLine": 153,
+          "endLine": 155,
+          "tokens": 34
+        },
+        {
+          "name": "FileInfoResponse.streamUrl",
+          "kind": "method",
+          "startLine": 157,
+          "endLine": 159,
+          "tokens": 33
+        },
+        {
+          "name": "FileInfoResponse.thumbnailUrl",
+          "kind": "method",
+          "startLine": 161,
+          "endLine": 163,
+          "tokens": 35
+        },
+        {
+          "name": "FileInfoResponse.fromMessage",
+          "kind": "method",
+          "startLine": 169,
+          "endLine": 186,
+          "tokens": 163
+        },
+        {
+          "name": "FileInfoResponse.withLocalState",
+          "kind": "method",
+          "startLine": 192,
+          "endLine": 209,
+          "tokens": 150
+        }
+      ],
+      "symbolSource": "ts"
     },
     "src/main/java/com/zademy/nekolu/dto/FileStatsResponse.java": {
       "description": "DTO for file statistics.",
@@ -1316,7 +2362,7 @@
       "hash": "5754488f5ad07d64",
       "size": 967,
       "mtimeMs": 1775329436823.3784,
-      "updatedAt": "2026-08-23T00:00:00.244Z",
+      "updatedAt": "2026-08-24T00:00:00.224Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/FileStreamResponse.java": {
@@ -1325,7 +2371,7 @@
       "hash": "33cc7eeb2e07c640",
       "size": 891,
       "mtimeMs": 1775329436823.4866,
-      "updatedAt": "2026-08-23T00:00:00.244Z",
+      "updatedAt": "2026-08-24T00:00:00.224Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/FolderInfo.java": {
@@ -1334,7 +2380,7 @@
       "hash": "236a0a7a10941317",
       "size": 801,
       "mtimeMs": 1775329436823.5981,
-      "updatedAt": "2026-08-23T00:00:00.245Z",
+      "updatedAt": "2026-08-24T00:00:00.225Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/FullStatsResponse.java": {
@@ -1343,7 +2389,7 @@
       "hash": "f1c17fd26bf13f48",
       "size": 704,
       "mtimeMs": 1775329436823.7095,
-      "updatedAt": "2026-08-23T00:00:00.246Z",
+      "updatedAt": "2026-08-24T00:00:00.225Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/NetworkStatsResponse.java": {
@@ -1352,7 +2398,7 @@
       "hash": "2a25dc40b53c2ad8",
       "size": 1720,
       "mtimeMs": 1775329436824.0261,
-      "updatedAt": "2026-08-23T00:00:00.247Z",
+      "updatedAt": "2026-08-24T00:00:00.225Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/StorageStatsResponse.java": {
@@ -1361,7 +2407,7 @@
       "hash": "4dad6319cb12fbfb",
       "size": 830,
       "mtimeMs": 1775329436824.1897,
-      "updatedAt": "2026-08-23T00:00:00.247Z",
+      "updatedAt": "2026-08-24T00:00:00.226Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/TelegramLimitsResponse.java": {
@@ -1370,7 +2416,16 @@
       "hash": "c612c3639c2c83c7",
       "size": 737,
       "mtimeMs": 1775329436825.177,
-      "updatedAt": "2026-08-23T00:00:00.248Z",
+      "updatedAt": "2026-08-24T00:00:00.226Z",
+      "source": "scan"
+    },
+    "src/main/java/com/zademy/nekolu/dto/UploadCommand.java": {
+      "description": "The single upload command: everything an upload needs, travelling as one",
+      "tokens": 319,
+      "hash": "7b42a80c6a399d40",
+      "size": 1117,
+      "mtimeMs": 1787445362504.4915,
+      "updatedAt": "2026-08-24T00:00:00.227Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/dto/UploadResponse.java": {
@@ -1379,7 +2434,7 @@
       "hash": "e783e6dbd8fdeee1",
       "size": 2606,
       "mtimeMs": 1775329436825.267,
-      "updatedAt": "2026-08-23T00:00:00.249Z",
+      "updatedAt": "2026-08-24T00:00:00.227Z",
       "source": "scan",
       "symbols": [
         {
@@ -1405,7 +2460,7 @@
       "hash": "8b98d43f843e5b14",
       "size": 683,
       "mtimeMs": 1787433465941.2275,
-      "updatedAt": "2026-08-23T00:00:00.249Z",
+      "updatedAt": "2026-08-24T00:00:00.227Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/exception/StagingException.java": {
@@ -1414,7 +2469,7 @@
       "hash": "5890fed9120205c3",
       "size": 436,
       "mtimeMs": 1787433466992.7922,
-      "updatedAt": "2026-08-23T00:00:00.249Z",
+      "updatedAt": "2026-08-24T00:00:00.227Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/exception/TelegramNotFoundException.java": {
@@ -1423,7 +2478,7 @@
       "hash": "26b64c30f13a99b5",
       "size": 454,
       "mtimeMs": 1787432732246.4373,
-      "updatedAt": "2026-08-23T00:00:00.250Z",
+      "updatedAt": "2026-08-24T00:00:00.228Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/exception/TelegramNotInitializedException.java": {
@@ -1432,7 +2487,7 @@
       "hash": "29f47032c2818242",
       "size": 450,
       "mtimeMs": 1787432729613.5044,
-      "updatedAt": "2026-08-23T00:00:00.250Z",
+      "updatedAt": "2026-08-24T00:00:00.228Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/exception/TelegramOperationException.java": {
@@ -1441,7 +2496,7 @@
       "hash": "bbffb51954c0609c",
       "size": 638,
       "mtimeMs": 1787432731105.5977,
-      "updatedAt": "2026-08-23T00:00:00.250Z",
+      "updatedAt": "2026-08-24T00:00:00.228Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/exception/TelegramUnauthorizedException.java": {
@@ -1450,7 +2505,7 @@
       "hash": "8d21c6b52e6bc9b8",
       "size": 624,
       "mtimeMs": 1787432728521.6226,
-      "updatedAt": "2026-08-23T00:00:00.250Z",
+      "updatedAt": "2026-08-24T00:00:00.228Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/model/TelegramFileMessage.java": {
@@ -1459,7 +2514,7 @@
       "hash": "5edfd8cac3abbc95",
       "size": 1723,
       "mtimeMs": 1787430926952.0845,
-      "updatedAt": "2026-08-23T00:00:00.251Z",
+      "updatedAt": "2026-08-24T00:00:00.230Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/model/TelegramFileState.java": {
@@ -1468,35 +2523,416 @@
       "hash": "3d18ce9796e70a69",
       "size": 1325,
       "mtimeMs": 1787431072130.0303,
-      "updatedAt": "2026-08-23T00:00:00.252Z",
+      "updatedAt": "2026-08-24T00:00:00.230Z",
       "source": "scan"
     },
     "src/main/java/com/zademy/nekolu/service/FileService.java": {
       "description": "Interface for the Telegram file management service.",
-      "tokens": 2195,
-      "hash": "a56ddba9ee26649e",
-      "size": 8228,
-      "mtimeMs": 1787445367951.9792,
-      "updatedAt": "2026-08-23T00:36:07.989Z",
-      "source": "hook"
+      "tokens": 1701,
+      "hash": "66f6c313f09bdce9",
+      "size": 5955,
+      "mtimeMs": 1787445511089.2126,
+      "updatedAt": "2026-08-24T00:00:00.231Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "FileService",
+          "kind": "section",
+          "startLine": 31,
+          "endLine": 196,
+          "tokens": 1432
+        },
+        {
+          "name": "FileService.searchFilesInChat",
+          "kind": "method",
+          "startLine": 41,
+          "endLine": 41,
+          "tokens": 29
+        },
+        {
+          "name": "FileService.searchFilesByType",
+          "kind": "method",
+          "startLine": 51,
+          "endLine": 51,
+          "tokens": 30
+        },
+        {
+          "name": "FileService.getFileInfo",
+          "kind": "method",
+          "startLine": 59,
+          "endLine": 59,
+          "tokens": 19
+        },
+        {
+          "name": "FileService.downloadFile",
+          "kind": "method",
+          "startLine": 67,
+          "endLine": 67,
+          "tokens": 19
+        },
+        {
+          "name": "FileService.downloadFiles",
+          "kind": "method",
+          "startLine": 75,
+          "endLine": 75,
+          "tokens": 23
+        },
+        {
+          "name": "FileService.searchFilesAdvanced",
+          "kind": "method",
+          "startLine": 92,
+          "endLine": 95,
+          "tokens": 73
+        },
+        {
+          "name": "FileService.streamFile",
+          "kind": "method",
+          "startLine": 103,
+          "endLine": 103,
+          "tokens": 16
+        },
+        {
+          "name": "FileService.getStreamInfo",
+          "kind": "method",
+          "startLine": 111,
+          "endLine": 111,
+          "tokens": 20
+        },
+        {
+          "name": "FileService.createBatchDownloadJob",
+          "kind": "method",
+          "startLine": 119,
+          "endLine": 119,
+          "tokens": 17
+        },
+        {
+          "name": "FileService.getBatchJobStatus",
+          "kind": "method",
+          "startLine": 127,
+          "endLine": 127,
+          "tokens": 14
+        },
+        {
+          "name": "FileService.getFileStats",
+          "kind": "method",
+          "startLine": 134,
+          "endLine": 134,
+          "tokens": 16
+        },
+        {
+          "name": "FileService.exportFiles",
+          "kind": "method",
+          "startLine": 143,
+          "endLine": 143,
+          "tokens": 24
+        },
+        {
+          "name": "FileService.getRecentFilesFromOwnChat",
+          "kind": "method",
+          "startLine": 151,
+          "endLine": 151,
+          "tokens": 24
+        },
+        {
+          "name": "FileService.getOwnChatId",
+          "kind": "method",
+          "startLine": 158,
+          "endLine": 158,
+          "tokens": 13
+        },
+        {
+          "name": "FileService.upload",
+          "kind": "method",
+          "startLine": 169,
+          "endLine": 169,
+          "tokens": 20
+        },
+        {
+          "name": "FileService.deleteMessage",
+          "kind": "method",
+          "startLine": 179,
+          "endLine": 179,
+          "tokens": 31
+        },
+        {
+          "name": "FileService.bulkDeleteMessages",
+          "kind": "method",
+          "startLine": 187,
+          "endLine": 187,
+          "tokens": 26
+        },
+        {
+          "name": "FileService.getThumbnailResource",
+          "kind": "method",
+          "startLine": 195,
+          "endLine": 195,
+          "tokens": 24
+        }
+      ],
+      "symbolSource": "ts"
     },
     "src/main/java/com/zademy/nekolu/service/impl/FileServiceImpl.java": {
       "description": "Implementation of the Telegram file management service.",
-      "tokens": 11209,
-      "hash": "bc0ad0db65b83de2",
-      "size": 42032,
-      "mtimeMs": 1787445541124.7043,
-      "updatedAt": "2026-08-23T00:39:01.166Z",
-      "source": "hook"
+      "tokens": 12039,
+      "hash": "761a2a9bc6a592bd",
+      "size": 42135,
+      "mtimeMs": 1787464013908.7673,
+      "updatedAt": "2026-08-24T00:00:00.232Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "FileServiceImpl",
+          "kind": "class",
+          "startLine": 59,
+          "endLine": 1020,
+          "tokens": 11428
+        },
+        {
+          "name": "FileServiceImpl.FileServiceImpl",
+          "kind": "method",
+          "startLine": 80,
+          "endLine": 88,
+          "tokens": 101
+        },
+        {
+          "name": "FileServiceImpl.searchFilesInChat",
+          "kind": "method",
+          "startLine": 101,
+          "endLine": 115,
+          "tokens": 216
+        },
+        {
+          "name": "FileServiceImpl.matchesRequestedType",
+          "kind": "method",
+          "startLine": 117,
+          "endLine": 122,
+          "tokens": 76
+        },
+        {
+          "name": "FileServiceImpl.searchFilesByType",
+          "kind": "method",
+          "startLine": 128,
+          "endLine": 135,
+          "tokens": 101
+        },
+        {
+          "name": "FileServiceImpl.searchAllTypes",
+          "kind": "method",
+          "startLine": 137,
+          "endLine": 151,
+          "tokens": 209
+        },
+        {
+          "name": "FileServiceImpl.searchSingleType",
+          "kind": "method",
+          "startLine": 153,
+          "endLine": 160,
+          "tokens": 130
+        },
+        {
+          "name": "FileServiceImpl.getFileInfo",
+          "kind": "method",
+          "startLine": 165,
+          "endLine": 174,
+          "tokens": 103
+        },
+        {
+          "name": "FileServiceImpl.refreshDownloadStatus",
+          "kind": "method",
+          "startLine": 176,
+          "endLine": 190,
+          "tokens": 203
+        },
+        {
+          "name": "FileServiceImpl.refreshDownloadStatuses",
+          "kind": "method",
+          "startLine": 192,
+          "endLine": 205,
+          "tokens": 186
+        },
+        {
+          "name": "FileServiceImpl.downloadFile",
+          "kind": "method",
+          "startLine": 212,
+          "endLine": 244,
+          "tokens": 393
+        },
+        {
+          "name": "FileServiceImpl.downloadFiles",
+          "kind": "method",
+          "startLine": 249,
+          "endLine": 275,
+          "tokens": 296
+        },
+        {
+          "name": "FileServiceImpl.toFileInfo",
+          "kind": "method",
+          "startLine": 281,
+          "endLine": 285,
+          "tokens": 68
+        },
+        {
+          "name": "FileServiceImpl.mapStateToFileInfo",
+          "kind": "method",
+          "startLine": 292,
+          "endLine": 313,
+          "tokens": 163
+        },
+        {
+          "name": "FileServiceImpl.guessMimeTypeFromPath",
+          "kind": "method",
+          "startLine": 315,
+          "endLine": 335,
+          "tokens": 383
+        },
+        {
+          "name": "FileServiceImpl.extractFileExtension",
+          "kind": "method",
+          "startLine": 337,
+          "endLine": 344,
+          "tokens": 89
+        },
+        {
+          "name": "FileServiceImpl.guessTypeFromMime",
+          "kind": "method",
+          "startLine": 352,
+          "endLine": 358,
+          "tokens": 140
+        },
+        {
+          "name": "FileServiceImpl.searchFilesAdvanced",
+          "kind": "method",
+          "startLine": 370,
+          "endLine": 395,
+          "tokens": 388
+        },
+        {
+          "name": "FileServiceImpl.mergeUniqueFiles",
+          "kind": "method",
+          "startLine": 397,
+          "endLine": 404,
+          "tokens": 98
+        },
+        {
+          "name": "FileServiceImpl.filterAndSortFiles",
+          "kind": "method",
+          "startLine": 406,
+          "endLine": 418,
+          "tokens": 251
+        },
+        {
+          "name": "FileServiceImpl.fileNameMatches",
+          "kind": "method",
+          "startLine": 420,
+          "endLine": 423,
+          "tokens": 71
+        },
+        {
+          "name": "FileServiceImpl.getComparator",
+          "kind": "method",
+          "startLine": 425,
+          "endLine": 437,
+          "tokens": 270
+        },
+        {
+          "name": "FileServiceImpl.streamFile",
+          "kind": "method",
+          "startLine": 443,
+          "endLine": 458,
+          "tokens": 229
+        },
+        {
+          "name": "FileServiceImpl.downloadAndWait",
+          "kind": "method",
+          "startLine": 464,
+          "endLine": 479,
+          "tokens": 178
+        },
+        {
+          "name": "FileServiceImpl.awaitUploadRelease",
+          "kind": "method",
+          "startLine": 485,
+          "endLine": 489,
+          "tokens": 70
+        },
+        {
+          "name": "FileServiceImpl.pollUntilDownloaded",
+          "kind": "method",
+          "startLine": 491,
+          "endLine": 510,
+          "tokens": 281
+        },
+        {
+          "name": "FileServiceImpl.getStreamInfo",
+          "kind": "method",
+          "startLine": 515,
+          "endLine": 527,
+          "tokens": 130
+        },
+        {
+          "name": "FileServiceImpl.createBatchDownloadJob",
+          "kind": "method",
+          "startLine": 532,
+          "endLine": 563,
+          "tokens": 270
+        },
+        {
+          "name": "FileServiceImpl.updateJobStatus",
+          "kind": "method",
+          "startLine": 565,
+          "endLine": 571,
+          "tokens": 102
+        },
+        {
+          "name": "FileServiceImpl.updateBatchProgress",
+          "kind": "method",
+          "startLine": 573,
+          "endLine": 589,
+          "tokens": 227
+        }
+      ],
+      "symbolSource": "ts",
+      "skeleton": "@Service\n    public FileServiceImpl(\n    @Override\n    private boolean matchesRequestedType(FileInfoResponse file, String type) {\n    @Override\n    private CompletableFuture<List<FileInfoResponse>> searchAllTypes(int limit) {\n    private CompletableFuture<List<FileInfoResponse>> searchSingleType(String type, int limit, String offset) {\n    @Override\n    private CompletableFuture<FileInfoResponse> refreshDownloadStatus(FileInfoResponse cached) {\n    private CompletableFuture<List<FileInfoResponse>> refreshDownloadStatuses(List<FileInfoResponse> files) {\n    @Override\n    @Override\n    private FileInfoResponse toFileInfo(TelegramFileMessage message) {\n    private FileInfoResponse mapStateToFileInfo(TelegramFileState state) {\n    private String guessMimeTypeFromPath(String path) {\n    private String extractFileExtension(String path) {\n    private String guessTypeFromMime(String mimeType) {\n    @Override\n    private void mergeUniqueFiles(Set<Long> seenFileIds, List<FileInfoResponse> combined, List<FileInfoResponse> files) {\n    private List<FileInfoResponse> filterAndSortFiles(List<FileInfoResponse> files, AdvancedSearchOptions options) {\n    private boolean fileNameMatches(FileInfoResponse file, String filenameContains) {\n    private Comparator<FileInfoResponse> getComparator(String sort) {\n    @Override"
     },
     "src/main/java/com/zademy/nekolu/service/impl/TdLibPreconditions.java": {
       "description": "Centralizes TDLib precondition checks that are repeated across service methods.",
-      "tokens": 481,
+      "tokens": 515,
       "hash": "f5610da4f146feb9",
       "size": 1802,
       "mtimeMs": 1787445094724.6387,
-      "updatedAt": "2026-08-23T00:31:34.766Z",
-      "source": "hook"
+      "updatedAt": "2026-08-24T00:00:00.232Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "TdLibPreconditions",
+          "kind": "class",
+          "startLine": 21,
+          "endLine": 55,
+          "tokens": 358
+        },
+        {
+          "name": "TdLibPreconditions.TdLibPreconditions",
+          "kind": "method",
+          "startLine": 23,
+          "endLine": 23,
+          "tokens": 10
+        },
+        {
+          "name": "TdLibPreconditions.readinessFailure",
+          "kind": "method",
+          "startLine": 33,
+          "endLine": 41,
+          "tokens": 121
+        },
+        {
+          "name": "TdLibPreconditions.requireReadyOrThrow",
+          "kind": "method",
+          "startLine": 47,
+          "endLine": 54,
+          "tokens": 78
+        }
+      ],
+      "symbolSource": "ts"
     },
     "src/main/java/com/zademy/nekolu/service/impl/TelegramRateLimiter.java": {
       "description": "Token-bucket-style rate limiter that protects the TDLib client from",
@@ -1504,7 +2940,7 @@
       "hash": "6d9a05aa139114b0",
       "size": 2254,
       "mtimeMs": 1776033678209.6428,
-      "updatedAt": "2026-08-23T00:00:00.256Z",
+      "updatedAt": "2026-08-24T00:00:00.234Z",
       "source": "scan",
       "symbols": [
         {
@@ -1546,30 +2982,289 @@
       "symbolSource": "ts"
     },
     "src/main/java/com/zademy/nekolu/service/impl/TelegramServiceImpl.java": {
-      "description": "TDLib-backed implementation of Telegram operations such as authorization, downloads, folders, and te",
-      "tokens": 11191,
-      "hash": "fad330ef975cae2f",
-      "size": 41970,
-      "mtimeMs": 1787445194056.4355,
-      "updatedAt": "2026-08-23T00:33:14.099Z",
-      "source": "hook"
+      "description": "TDLib-backed implementation of Telegram operations such as authorization, downloads, folders, and telemetry retrieval.",
+      "tokens": 12047,
+      "hash": "5c0aa6c549f98077",
+      "size": 42169,
+      "mtimeMs": 1787464013908.2554,
+      "updatedAt": "2026-08-24T00:00:00.234Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "TelegramServiceImpl",
+          "kind": "class",
+          "startLine": 41,
+          "endLine": 986,
+          "tokens": 11652
+        },
+        {
+          "name": "TelegramServiceImpl.TelegramServiceImpl",
+          "kind": "method",
+          "startLine": 56,
+          "endLine": 59,
+          "tokens": 54
+        },
+        {
+          "name": "TelegramServiceImpl.init",
+          "kind": "method",
+          "startLine": 61,
+          "endLine": 73,
+          "tokens": 164
+        },
+        {
+          "name": "TelegramServiceImpl.send",
+          "kind": "method",
+          "startLine": 82,
+          "endLine": 97,
+          "tokens": 228
+        },
+        {
+          "name": "TelegramServiceImpl.holdPermitUntil",
+          "kind": "method",
+          "startLine": 103,
+          "endLine": 106,
+          "tokens": 49
+        },
+        {
+          "name": "TelegramServiceImpl.sendUnguarded",
+          "kind": "method",
+          "startLine": 115,
+          "endLine": 119,
+          "tokens": 87
+        },
+        {
+          "name": "TelegramServiceImpl.dispatch",
+          "kind": "method",
+          "startLine": 126,
+          "endLine": 143,
+          "tokens": 226
+        },
+        {
+          "name": "TelegramServiceImpl.unwrap",
+          "kind": "method",
+          "startLine": 145,
+          "endLine": 147,
+          "tokens": 29
+        },
+        {
+          "name": "TelegramServiceImpl.isAuthorized",
+          "kind": "method",
+          "startLine": 152,
+          "endLine": 155,
+          "tokens": 24
+        },
+        {
+          "name": "TelegramServiceImpl.setTdlibParameters",
+          "kind": "method",
+          "startLine": 162,
+          "endLine": 185,
+          "tokens": 374
+        },
+        {
+          "name": "TelegramServiceImpl.getAuthState",
+          "kind": "method",
+          "startLine": 189,
+          "endLine": 192,
+          "tokens": 23
+        },
+        {
+          "name": "TelegramServiceImpl.submitPhoneNumber",
+          "kind": "method",
+          "startLine": 199,
+          "endLine": 210,
+          "tokens": 167
+        },
+        {
+          "name": "TelegramServiceImpl.submitAuthCode",
+          "kind": "method",
+          "startLine": 212,
+          "endLine": 215,
+          "tokens": 53
+        },
+        {
+          "name": "TelegramServiceImpl.submitAuthPassword",
+          "kind": "method",
+          "startLine": 217,
+          "endLine": 220,
+          "tokens": 58
+        },
+        {
+          "name": "TelegramServiceImpl.startDownload",
+          "kind": "method",
+          "startLine": 224,
+          "endLine": 236,
+          "tokens": 154
+        },
+        {
+          "name": "TelegramServiceImpl.getFileState",
+          "kind": "method",
+          "startLine": 238,
+          "endLine": 247,
+          "tokens": 138
+        },
+        {
+          "name": "TelegramServiceImpl.toFileState",
+          "kind": "method",
+          "startLine": 249,
+          "endLine": 258,
+          "tokens": 113
+        },
+        {
+          "name": "TelegramServiceImpl.sendDocument",
+          "kind": "method",
+          "startLine": 260,
+          "endLine": 274,
+          "tokens": 211
+        },
+        {
+          "name": "TelegramServiceImpl.sendPhoto",
+          "kind": "method",
+          "startLine": 276,
+          "endLine": 291,
+          "tokens": 209
+        },
+        {
+          "name": "TelegramServiceImpl.trackedFileMessage",
+          "kind": "method",
+          "startLine": 303,
+          "endLine": 319,
+          "tokens": 309
+        },
+        {
+          "name": "TelegramServiceImpl.deleteMessages",
+          "kind": "method",
+          "startLine": 321,
+          "endLine": 329,
+          "tokens": 126
+        },
+        {
+          "name": "TelegramServiceImpl.deleteLocalFile",
+          "kind": "method",
+          "startLine": 331,
+          "endLine": 337,
+          "tokens": 72
+        },
+        {
+          "name": "TelegramServiceImpl.getFileMessages",
+          "kind": "method",
+          "startLine": 340,
+          "endLine": 350,
+          "tokens": 140
+        },
+        {
+          "name": "TelegramServiceImpl.searchFileMessages",
+          "kind": "method",
+          "startLine": 352,
+          "endLine": 364,
+          "tokens": 165
+        },
+        {
+          "name": "TelegramServiceImpl.getFileMessage",
+          "kind": "method",
+          "startLine": 366,
+          "endLine": 379,
+          "tokens": 180
+        },
+        {
+          "name": "TelegramServiceImpl.toFileMessages",
+          "kind": "method",
+          "startLine": 381,
+          "endLine": 390,
+          "tokens": 118
+        },
+        {
+          "name": "TelegramServiceImpl.toFileMessage",
+          "kind": "method",
+          "startLine": 408,
+          "endLine": 411,
+          "tokens": 56
+        },
+        {
+          "name": "TelegramServiceImpl.toFileMessage",
+          "kind": "method",
+          "startLine": 414,
+          "endLine": 434,
+          "tokens": 194
+        },
+        {
+          "name": "TelegramServiceImpl.contentOf",
+          "kind": "method",
+          "startLine": 440,
+          "endLine": 502,
+          "tokens": 1015
+        },
+        {
+          "name": "TelegramServiceImpl.thumbnailPathOf",
+          "kind": "method",
+          "startLine": 508,
+          "endLine": 517,
+          "tokens": 114
+        }
+      ],
+      "symbolSource": "ts",
+      "skeleton": "@Service\n    public TelegramServiceImpl(TelegramConfig telegramConfig, TelegramRateLimiter rateLimiter) {\n    @PostConstruct\n    private <T extends TdApi.Object> CompletableFuture<T> send(TdApi.Function<T> request) {\n    private void holdPermitUntil(CompletableFuture<?> future) {\n    private <T extends TdApi.Object> CompletableFuture<T> sendUnguarded(TdApi.Function<T> request) {\n    @SuppressWarnings(\"unchecked\")\n    private static Throwable unwrap(Throwable error) {\n    @Override\n    private void setTdlibParameters() {\n    @Override\n    @Override\n    @Override\n    @Override\n    @Override\n    @Override\n    private TelegramFileState toFileState(TdApi.File file) {\n    @Override\n    @Override\n    private CompletableFuture<TelegramFileMessage> trackedFileMessage(TdApi.Message message, String stagedFilePath) {\n    @Override\n    @Override\n    @Override\n    @Override\n    @Override\n    private List<TelegramFileMessage> toFileMessages(TdApi.Message[] messages) {\n    private TelegramFileMessage toFileMessage(TdApi.Message message) {\n    private TelegramFileMessage toFileMessage(TdApi.Message message, MessageContent content) {\n    private MessageContent contentOf(TdApi.MessageContent content) {\n    private String thumbnailPathOf(TdApi.File thumbnailFile) {"
     },
     "src/main/java/com/zademy/nekolu/service/impl/UploadStagingArea.java": {
       "description": "Deep module owning the staged-upload cycle: materializing an incoming",
-      "tokens": 1408,
+      "tokens": 1509,
       "hash": "2b5c8aaf517529b2",
       "size": 5282,
       "mtimeMs": 1787464069168.6624,
-      "updatedAt": "2026-08-23T05:47:49.225Z",
-      "source": "hook"
+      "updatedAt": "2026-08-24T00:00:00.235Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "UploadStagingArea",
+          "kind": "class",
+          "startLine": 35,
+          "endLine": 131,
+          "tokens": 1223
+        },
+        {
+          "name": "UploadStagingArea.UploadStagingArea",
+          "kind": "method",
+          "startLine": 49,
+          "endLine": 51,
+          "tokens": 44
+        },
+        {
+          "name": "UploadStagingArea.purgeExpired",
+          "kind": "method",
+          "startLine": 57,
+          "endLine": 79,
+          "tokens": 334
+        },
+        {
+          "name": "UploadStagingArea.stage",
+          "kind": "method",
+          "startLine": 87,
+          "endLine": 98,
+          "tokens": 177
+        },
+        {
+          "name": "UploadStagingArea.discard",
+          "kind": "method",
+          "startLine": 104,
+          "endLine": 123,
+          "tokens": 280
+        },
+        {
+          "name": "UploadStagingArea.sanitize",
+          "kind": "method",
+          "startLine": 125,
+          "endLine": 130,
+          "tokens": 78
+        }
+      ],
+      "symbolSource": "ts"
     },
     "src/main/java/com/zademy/nekolu/service/TelegramService.java": {
       "description": "The seam between the workspace and Telegram. This contract owns the whole",
       "tokens": 2842,
       "hash": "73b215232d9ee00f",
       "size": 9946,
-      "mtimeMs": 1787440974474.5396,
-      "updatedAt": "2026-08-23T00:00:00.258Z",
+      "mtimeMs": 1787464013908.5464,
+      "updatedAt": "2026-08-24T00:00:00.235Z",
       "source": "scan",
       "symbols": [
         {
@@ -1753,11 +3448,11 @@
     },
     "src/main/resources/application.example.properties": {
       "description": "Spring Boot application name",
-      "tokens": 734,
-      "hash": "bff03e0c40dae19b",
-      "size": 2749,
-      "mtimeMs": 1776033777262.1965,
-      "updatedAt": "2026-08-23T00:00:00.260Z",
+      "tokens": 776,
+      "hash": "33cbb2666c11bc23",
+      "size": 2910,
+      "mtimeMs": 1787445130589.0068,
+      "updatedAt": "2026-08-24T00:00:00.235Z",
       "source": "scan"
     },
     "src/main/resources/application.properties": {
@@ -1766,7 +3461,7 @@
       "hash": "5abdf3021f8e14f7",
       "size": 2669,
       "mtimeMs": 1787441690610.3745,
-      "updatedAt": "2026-08-23T00:00:00.260Z",
+      "updatedAt": "2026-08-24T00:00:00.237Z",
       "source": "scan"
     },
     "src/main/resources/logback-spring.xml": {
@@ -1775,7 +3470,7 @@
       "hash": "59b4493a71d04d76",
       "size": 974,
       "mtimeMs": 1776033665057.395,
-      "updatedAt": "2026-08-23T00:00:00.260Z",
+      "updatedAt": "2026-08-24T00:00:00.237Z",
       "source": "scan"
     },
     "src/main/resources/messages_es.properties": {
@@ -1784,7 +3479,7 @@
       "hash": "8afeae8ecfe03e54",
       "size": 2040,
       "mtimeMs": 1787441083422.7588,
-      "updatedAt": "2026-08-23T00:00:00.260Z",
+      "updatedAt": "2026-08-24T00:00:00.237Z",
       "source": "scan"
     },
     "src/main/resources/messages.properties": {
@@ -1793,16 +3488,25 @@
       "hash": "5742e135b1170095",
       "size": 1844,
       "mtimeMs": 1787441083419.404,
-      "updatedAt": "2026-08-23T00:00:00.261Z",
+      "updatedAt": "2026-08-24T00:00:00.237Z",
       "source": "scan"
     },
     "src/main/resources/static/css/app.css": {
-      "description": "Styles: 89 rules, 20 vars",
-      "tokens": 9229,
-      "hash": "2783d8c68882ecde",
-      "size": 32301,
-      "mtimeMs": 1775327993846.2698,
-      "updatedAt": "2026-08-23T00:00:00.262Z",
+      "description": "Styles: 91 rules, 20 vars",
+      "tokens": 13811,
+      "hash": "727c4ca00fd17e1f",
+      "size": 48356,
+      "mtimeMs": 1787453456141.8735,
+      "updatedAt": "2026-08-24T00:00:00.239Z",
+      "source": "scan"
+    },
+    "src/main/resources/static/css/tokens.css": {
+      "description": "Styles: 58 vars",
+      "tokens": 708,
+      "hash": "d146805744d8f11e",
+      "size": 2480,
+      "mtimeMs": 1787445971486.657,
+      "updatedAt": "2026-08-24T00:00:00.239Z",
       "source": "scan"
     },
     "src/main/resources/static/js/api-client.js": {
@@ -1811,7 +3515,7 @@
       "hash": "526a92cca6164480",
       "size": 6996,
       "mtimeMs": 1775329436826.8706,
-      "updatedAt": "2026-08-23T00:00:00.263Z",
+      "updatedAt": "2026-08-24T00:00:00.240Z",
       "source": "scan"
     },
     "src/main/resources/static/js/app.js": {
@@ -1820,7 +3524,7 @@
       "hash": "341d00f56672370f",
       "size": 6839,
       "mtimeMs": 1775329436826.976,
-      "updatedAt": "2026-08-23T00:00:00.264Z",
+      "updatedAt": "2026-08-24T00:00:00.242Z",
       "source": "scan"
     },
     "src/main/resources/static/js/grid-table.js": {
@@ -1829,7 +3533,16 @@
       "hash": "59b49f17a0d2bbc9",
       "size": 6992,
       "mtimeMs": 1775329436827.1917,
-      "updatedAt": "2026-08-23T00:00:00.264Z",
+      "updatedAt": "2026-08-24T00:00:00.243Z",
+      "source": "scan"
+    },
+    "src/main/resources/static/js/theme.js": {
+      "description": "Declares apply",
+      "tokens": 190,
+      "hash": "12aaa9b029f31820",
+      "size": 663,
+      "mtimeMs": 1787446033983.2356,
+      "updatedAt": "2026-08-24T00:00:00.243Z",
       "source": "scan"
     },
     "src/main/resources/static/vendors/dropzone/dropzone.css": {
@@ -1838,7 +3551,7 @@
       "hash": "7ad9dddaa00577b8",
       "size": 11792,
       "mtimeMs": 1775327993847.777,
-      "updatedAt": "2026-08-23T00:00:00.265Z",
+      "updatedAt": "2026-08-24T00:00:00.248Z",
       "source": "scan"
     },
     "src/main/resources/static/vendors/dropzone/dropzone.js": {
@@ -1847,7 +3560,7 @@
       "hash": "8239a30cc8a09d4d",
       "size": 270952,
       "mtimeMs": 1775330141690.374,
-      "updatedAt": "2026-08-23T00:00:00.268Z",
+      "updatedAt": "2026-08-24T00:00:00.250Z",
       "source": "scan"
     },
     "src/main/resources/templates/dashboard.html": {
@@ -1856,25 +3569,25 @@
       "hash": "fb04a833ac4f8ae6",
       "size": 14446,
       "mtimeMs": 1787442287731.3367,
-      "updatedAt": "2026-08-23T00:00:00.269Z",
+      "updatedAt": "2026-08-24T00:00:00.250Z",
       "source": "scan"
     },
     "src/main/resources/templates/files.html": {
       "description": "Files",
-      "tokens": 12158,
-      "hash": "ac60ab33cbd9acf0",
-      "size": 45592,
-      "mtimeMs": 1775327993850.2896,
-      "updatedAt": "2026-08-23T00:00:00.269Z",
+      "tokens": 12197,
+      "hash": "e8824e602b4336eb",
+      "size": 45738,
+      "mtimeMs": 1787451979850.3328,
+      "updatedAt": "2026-08-24T00:00:00.251Z",
       "source": "scan"
     },
     "src/main/resources/templates/folder-files.html": {
       "description": "Folder files",
-      "tokens": 12598,
-      "hash": "5bb1358ba64e2c4f",
-      "size": 47244,
-      "mtimeMs": 1775327993850.5,
-      "updatedAt": "2026-08-23T00:00:00.278Z",
+      "tokens": 12637,
+      "hash": "c7e6ec848f0926dd",
+      "size": 47390,
+      "mtimeMs": 1787451979850.5872,
+      "updatedAt": "2026-08-24T00:00:00.252Z",
       "source": "scan"
     },
     "src/main/resources/templates/folders.html": {
@@ -1883,25 +3596,25 @@
       "hash": "1d58c26f48df7fb4",
       "size": 15349,
       "mtimeMs": 1775327993851.1555,
-      "updatedAt": "2026-08-23T00:00:00.282Z",
+      "updatedAt": "2026-08-24T00:00:00.252Z",
       "source": "scan"
     },
     "src/main/resources/templates/layout/base.html": {
       "description": "Nekolu",
-      "tokens": 1270,
-      "hash": "62ef0f66edf8d289",
-      "size": 4759,
-      "mtimeMs": 1775329529396.1191,
-      "updatedAt": "2026-08-23T00:00:00.282Z",
+      "tokens": 1495,
+      "hash": "54e8b22c3bc960d0",
+      "size": 5605,
+      "mtimeMs": 1787452505565.5654,
+      "updatedAt": "2026-08-24T00:00:00.253Z",
       "source": "scan"
     },
     "src/main/resources/templates/setup.html": {
       "description": "Nekolu setup",
-      "tokens": 1843,
-      "hash": "4cac1b2946b1b518",
-      "size": 6909,
-      "mtimeMs": 1787441079840.8394,
-      "updatedAt": "2026-08-23T00:00:00.282Z",
+      "tokens": 2017,
+      "hash": "a563827dc897bdd6",
+      "size": 7561,
+      "mtimeMs": 1787448966962.0598,
+      "updatedAt": "2026-08-24T00:00:00.253Z",
       "source": "scan"
     },
     "src/main/resources/templates/stats.html": {
@@ -1910,7 +3623,7 @@
       "hash": "22e770485a0dfc62",
       "size": 19325,
       "mtimeMs": 1775327993852.1714,
-      "updatedAt": "2026-08-23T00:00:00.283Z",
+      "updatedAt": "2026-08-24T00:00:00.256Z",
       "source": "scan"
     },
     "src/test/java/com/zademy/nekolu/ApplicationTests.java": {
@@ -1919,7 +3632,7 @@
       "hash": "d08c2c4cef449523",
       "size": 1416,
       "mtimeMs": 1775329436827.3867,
-      "updatedAt": "2026-08-23T00:00:00.284Z",
+      "updatedAt": "2026-08-24T00:00:00.257Z",
       "source": "scan"
     },
     "src/test/java/com/zademy/nekolu/controller/FileControllerTest.java": {
@@ -1928,7 +3641,7 @@
       "hash": "e2b682be3d917ada",
       "size": 5965,
       "mtimeMs": 1787433092744.4338,
-      "updatedAt": "2026-08-23T00:00:00.284Z",
+      "updatedAt": "2026-08-24T00:00:00.258Z",
       "source": "scan",
       "symbols": [
         {
@@ -2003,7 +3716,7 @@
       "hash": "f9f83005e4e67e0c",
       "size": 6947,
       "mtimeMs": 1787441163986.5896,
-      "updatedAt": "2026-08-23T00:00:00.285Z",
+      "updatedAt": "2026-08-24T00:00:00.258Z",
       "source": "scan",
       "symbols": [
         {
@@ -2091,8 +3804,8 @@
       "tokens": 3133,
       "hash": "265ab73755ba9dbf",
       "size": 10964,
-      "mtimeMs": 1787440993012.8296,
-      "updatedAt": "2026-08-23T00:00:00.285Z",
+      "mtimeMs": 1787464013908.969,
+      "updatedAt": "2026-08-24T00:00:00.258Z",
       "source": "scan",
       "symbols": [
         {
@@ -2315,7 +4028,7 @@
       "hash": "edc97b2a661d44bb",
       "size": 11937,
       "mtimeMs": 1787440997149.5896,
-      "updatedAt": "2026-08-23T00:00:00.288Z",
+      "updatedAt": "2026-08-24T00:00:00.259Z",
       "source": "scan",
       "symbols": [
         {
@@ -2534,47 +4247,330 @@
     },
     "src/test/java/com/zademy/nekolu/service/impl/FileServiceImplTest.java": {
       "description": "Unit tests for the file-management module through the TelegramService seam,",
-      "tokens": 3782,
-      "hash": "d07dbd9454d922ce",
-      "size": 14179,
-      "mtimeMs": 1787445510175.4905,
-      "updatedAt": "2026-08-23T00:38:30.221Z",
-      "source": "hook"
+      "tokens": 4566,
+      "hash": "911ff18c5bee75c7",
+      "size": 15980,
+      "mtimeMs": 1787464137021.7603,
+      "updatedAt": "2026-08-24T00:00:00.259Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "FileServiceImplTest",
+          "kind": "class",
+          "startLine": 42,
+          "endLine": 377,
+          "tokens": 4134
+        },
+        {
+          "name": "FileServiceImplTest.setUp",
+          "kind": "method",
+          "startLine": 51,
+          "endLine": 59,
+          "tokens": 82
+        },
+        {
+          "name": "FileServiceImplTest.searchFilesByTypeReturnsOnlyFilesOfThatType",
+          "kind": "method",
+          "startLine": 61,
+          "endLine": 74,
+          "tokens": 177
+        },
+        {
+          "name": "FileServiceImplTest.searchFilesInChatFiltersByRequestedType",
+          "kind": "method",
+          "startLine": 76,
+          "endLine": 87,
+          "tokens": 136
+        },
+        {
+          "name": "FileServiceImplTest.searchFilesAdvancedWithPhotoTypeExcludesDocumentsFromOwnChat",
+          "kind": "method",
+          "startLine": 89,
+          "endLine": 102,
+          "tokens": 182
+        },
+        {
+          "name": "FileServiceImplTest.searchFilesAdvancedCombinesOwnChatAndGlobalSearch",
+          "kind": "method",
+          "startLine": 104,
+          "endLine": 121,
+          "tokens": 231
+        },
+        {
+          "name": "FileServiceImplTest.searchFilesAdvancedAppliesSizeAndNameFilters",
+          "kind": "method",
+          "startLine": 123,
+          "endLine": 140,
+          "tokens": 223
+        },
+        {
+          "name": "FileServiceImplTest.getRecentFilesFromOwnChatReturnsOwnChatMessages",
+          "kind": "method",
+          "startLine": 142,
+          "endLine": 154,
+          "tokens": 136
+        },
+        {
+          "name": "FileServiceImplTest.searchInChatFailsSilentlyWhenSessionIsUnauthorized",
+          "kind": "method",
+          "startLine": 156,
+          "endLine": 165,
+          "tokens": 116
+        },
+        {
+          "name": "FileServiceImplTest.searchByTypeFailsSilentlyWhenSessionIsUnauthorized",
+          "kind": "method",
+          "startLine": 167,
+          "endLine": 177,
+          "tokens": 144
+        },
+        {
+          "name": "FileServiceImplTest.downloadFileReturnsCompletedWhenAlreadyDownloaded",
+          "kind": "method",
+          "startLine": 179,
+          "endLine": 191,
+          "tokens": 196
+        },
+        {
+          "name": "FileServiceImplTest.downloadFileReturnsPendingAndStartsDownloadThroughSeam",
+          "kind": "method",
+          "startLine": 193,
+          "endLine": 201,
+          "tokens": 129
+        },
+        {
+          "name": "FileServiceImplTest.downloadFileWaitsForUploadReleaseBeforeStarting",
+          "kind": "method",
+          "startLine": 203,
+          "endLine": 218,
+          "tokens": 240
+        },
+        {
+          "name": "FileServiceImplTest.downloadFileReportsFailureWhenFileIsUnknown",
+          "kind": "method",
+          "startLine": 220,
+          "endLine": 226,
+          "tokens": 87
+        },
+        {
+          "name": "FileServiceImplTest.downloadFilesReportsEachFileIndividually",
+          "kind": "method",
+          "startLine": 228,
+          "endLine": 237,
+          "tokens": 142
+        },
+        {
+          "name": "FileServiceImplTest.getFileInfoMapsSeamStateIntoResponse",
+          "kind": "method",
+          "startLine": 239,
+          "endLine": 248,
+          "tokens": 114
+        },
+        {
+          "name": "FileServiceImplTest.uploadReturnsCompletedResponse",
+          "kind": "method",
+          "startLine": 250,
+          "endLine": 266,
+          "tokens": 250
+        },
+        {
+          "name": "FileServiceImplTest.uploadStagesWithOriginalFilenameSoTelegramSeesIt",
+          "kind": "method",
+          "startLine": 268,
+          "endLine": 286,
+          "tokens": 282
+        },
+        {
+          "name": "FileServiceImplTest.uploadCompletesEndToEndWithoutTelegram",
+          "kind": "method",
+          "startLine": 288,
+          "endLine": 304,
+          "tokens": 260
+        },
+        {
+          "name": "FileServiceImplTest.uploadDiscardsTheStagedFileOnFailure",
+          "kind": "method",
+          "startLine": 306,
+          "endLine": 318,
+          "tokens": 189
+        },
+        {
+          "name": "FileServiceImplTest.deleteMessageSucceedsAndResolvesFileThroughSeam",
+          "kind": "method",
+          "startLine": 320,
+          "endLine": 329,
+          "tokens": 144
+        },
+        {
+          "name": "FileServiceImplTest.deleteMessageReportsFailureWhenSeamFails",
+          "kind": "method",
+          "startLine": 331,
+          "endLine": 339,
+          "tokens": 122
+        },
+        {
+          "name": "FileServiceImplTest.bulkDeleteCountsSuccessesAndFailures",
+          "kind": "method",
+          "startLine": 341,
+          "endLine": 356,
+          "tokens": 202
+        },
+        {
+          "name": "FileServiceImplTest.photo",
+          "kind": "method",
+          "startLine": 360,
+          "endLine": 362,
+          "tokens": 62
+        },
+        {
+          "name": "FileServiceImplTest.video",
+          "kind": "method",
+          "startLine": 364,
+          "endLine": 366,
+          "tokens": 62
+        },
+        {
+          "name": "FileServiceImplTest.document",
+          "kind": "method",
+          "startLine": 368,
+          "endLine": 370,
+          "tokens": 63
+        },
+        {
+          "name": "FileServiceImplTest.message",
+          "kind": "method",
+          "startLine": 372,
+          "endLine": 376,
+          "tokens": 89
+        }
+      ],
+      "symbolSource": "ts",
+      "skeleton": "class FileServiceImplTest {\n    @BeforeEach\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    @Test\n    private static TelegramFileMessage photo(long messageId, long chatId, long fileId, String fileName, long size, int date) {\n    private static TelegramFileMessage video(long messageId, long chatId, long fileId, String fileName, long size, int date) {\n    private static TelegramFileMessage document(long messageId, long chatId, long fileId, String fileName, long size, int date) {\n    private static TelegramFileMessage message(long messageId, long chatId, long fileId, String fileName, long size, String type, int date) {"
     },
     "src/test/java/com/zademy/nekolu/service/impl/TdLibPreconditionsTest.java": {
       "description": "Unit tests for the centralized TDLib readiness preconditions used by the",
-      "tokens": 669,
+      "tokens": 717,
       "hash": "dbf4b389240bcc35",
       "size": 2508,
       "mtimeMs": 1787445108191.8928,
-      "updatedAt": "2026-08-23T00:31:48.232Z",
-      "source": "hook"
+      "updatedAt": "2026-08-24T00:00:00.259Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "TdLibPreconditionsTest",
+          "kind": "class",
+          "startLine": 27,
+          "endLine": 66,
+          "tokens": 485
+        },
+        {
+          "name": "TdLibPreconditionsTest.readinessFailureIsPresentWhenClientIsNotInitialized",
+          "kind": "method",
+          "startLine": 29,
+          "endLine": 38,
+          "tokens": 145
+        },
+        {
+          "name": "TdLibPreconditionsTest.readinessFailureChecksClientBeforeAuthorization",
+          "kind": "method",
+          "startLine": 40,
+          "endLine": 50,
+          "tokens": 156
+        },
+        {
+          "name": "TdLibPreconditionsTest.requireReadyOrThrowThrowsWhenClientIsNotInitialized",
+          "kind": "method",
+          "startLine": 52,
+          "endLine": 59,
+          "tokens": 108
+        },
+        {
+          "name": "TdLibPreconditionsTest.assertThrowsExecution",
+          "kind": "method",
+          "startLine": 61,
+          "endLine": 65,
+          "tokens": 66
+        }
+      ],
+      "symbolSource": "ts"
     },
     "src/test/java/com/zademy/nekolu/service/impl/UploadStagingAreaTest.java": {
       "description": "Unit tests for the upload staging area against a real temporary",
-      "tokens": 908,
+      "tokens": 972,
       "hash": "507e517fafcac7a2",
       "size": 3404,
       "mtimeMs": 1787464227686.8303,
-      "updatedAt": "2026-08-23T05:50:27.736Z",
-      "source": "hook"
+      "updatedAt": "2026-08-24T00:00:00.261Z",
+      "source": "scan",
+      "symbols": [
+        {
+          "name": "UploadStagingAreaTest",
+          "kind": "class",
+          "startLine": 32,
+          "endLine": 104,
+          "tokens": 712
+        },
+        {
+          "name": "UploadStagingAreaTest.setUp",
+          "kind": "method",
+          "startLine": 39,
+          "endLine": 42,
+          "tokens": 30
+        },
+        {
+          "name": "UploadStagingAreaTest.stageMaterializesContentWithASanitizedName",
+          "kind": "method",
+          "startLine": 44,
+          "endLine": 54,
+          "tokens": 168
+        },
+        {
+          "name": "UploadStagingAreaTest.stageFallsBackToAGenericNameWhenMissing",
+          "kind": "method",
+          "startLine": 56,
+          "endLine": 62,
+          "tokens": 73
+        },
+        {
+          "name": "UploadStagingAreaTest.discardRemovesTheStagedUploadDirectory",
+          "kind": "method",
+          "startLine": 64,
+          "endLine": 74,
+          "tokens": 106
+        },
+        {
+          "name": "UploadStagingAreaTest.purgeExpiredRemovesOnlyOldLeftovers",
+          "kind": "method",
+          "startLine": 76,
+          "endLine": 87,
+          "tokens": 150
+        },
+        {
+          "name": "UploadStagingAreaTest.stageSurfacesDiskFailuresAsStagingException",
+          "kind": "method",
+          "startLine": 89,
+          "endLine": 103,
+          "tokens": 153
+        }
+      ],
+      "symbolSource": "ts"
+    },
+    "tdlib/app.log": {
+      "description": "",
+      "tokens": 1322,
+      "hash": "6cf7a75be47ae88d",
+      "size": 4957,
+      "mtimeMs": 1787516733632.368,
+      "updatedAt": "2026-08-24T00:00:00.262Z",
+      "source": "scan"
     },
     "tdlib/db.sqlite-shm": {
       "description": "",
       "tokens": 8738,
-      "hash": "820c458c5559bd88",
+      "hash": "5cc95de448e7a7eb",
       "size": 32768,
-      "mtimeMs": 1787442445646.6292,
-      "updatedAt": "2026-08-23T00:00:00.289Z",
-      "source": "scan"
-    },
-    "tdlib/td.binlog": {
-      "description": "",
-      "tokens": 210562,
-      "hash": "60026a9a5ec00e63",
-      "size": 833176,
-      "mtimeMs": 1787443178601.5315,
-      "updatedAt": "2026-08-23T00:00:00.317Z",
+      "mtimeMs": 1787520878897.8257,
+      "updatedAt": "2026-08-24T00:00:00.264Z",
       "source": "scan"
     },
     "tdlib.log": {
@@ -2583,35 +4579,8 @@
       "hash": "e3b0c44298fc1c14",
       "size": 0,
       "mtimeMs": 1775348013088.2634,
-      "updatedAt": "2026-08-23T00:00:00.318Z",
+      "updatedAt": "2026-08-24T00:00:00.265Z",
       "source": "scan"
-    },
-    "src/main/java/com/zademy/nekolu/dto/UploadCommand.java": {
-      "description": "The single upload command: everything an upload needs, travelling as one",
-      "tokens": 298,
-      "hash": "7b42a80c6a399d40",
-      "size": 1117,
-      "mtimeMs": 1787445362504.4915,
-      "updatedAt": "2026-08-23T00:36:02.542Z",
-      "source": "hook"
-    },
-    "src/main/resources/static/css/tokens.css": {
-      "description": "Styles: 58 vars",
-      "tokens": 708,
-      "hash": "d146805744d8f11e",
-      "size": 2480,
-      "mtimeMs": 1787445971486.657,
-      "updatedAt": "2026-08-23T00:46:11.526Z",
-      "source": "hook"
-    },
-    "src/main/resources/static/js/theme.js": {
-      "description": "Declares apply",
-      "tokens": 190,
-      "hash": "12aaa9b029f31820",
-      "size": 663,
-      "mtimeMs": 1787446033983.2356,
-      "updatedAt": "2026-08-23T00:47:14.024Z",
-      "source": "hook"
     }
   },
   "preamble": [
