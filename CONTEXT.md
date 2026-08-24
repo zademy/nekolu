@@ -6,6 +6,8 @@ Términos del dominio de Nekolu, tal como los usa el código y la documentación
 
 **Workspace** — Nekolu mismo: Telegram usado como disco personal de archivos.
 
+**Private cloud** — término de producto para el workspace autohospedado de Nekolu. La interfaz y el despliegue pertenecen al usuario; Telegram sigue siendo el backend donde viven los mensajes con archivos. No implica almacenamiento independiente de Telegram.
+
 **Saved Messages** — el chat propio del usuario; el almacenamiento por defecto del workspace.
 
 **Folder (carpeta)** — un canal privado de Telegram que respalda una carpeta del workspace. Crear una carpeta es crear un canal; no hay entidad carpeta propia.

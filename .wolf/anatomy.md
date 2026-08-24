@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-23T05:54:56.831Z
-> Files: 153 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-24T00:00:00.333Z
+> Files: 233 tracked | Anatomy hits: 0 | Misses: 0
 
 > Project structure index. Auto-maintained by OpenWolf hooks and daemon.
 > Run `openwolf scan` to generate, or wait for the first Claude Code session.
@@ -9,15 +9,16 @@
 
 ## ./
 
-- `.classpath` (~614 tok)
+- `.classpath` (~530 tok)
+- `.dockerignore` — Docker ignore rules (~10 tok)
 - `.factorypath` (~46 tok)
 - `.gitattributes` — Git attributes (~11 tok)
-- `.gitignore` — Git ignore rules (~250 tok)
+- `.gitignore` — Git ignore rules (~278 tok)
 - `.project` (~222 tok)
 - `AGENTS.md` — AGENTS.md (~7852 tok)
 - `CLAUDE.md` — OpenWolf (~99 tok)
 - `CODE_OF_CONDUCT.md` — Code of Conduct (~641 tok)
-- `CONTEXT.md` — CONTEXT.md — Glosario del workspace (~662 tok)
+- `CONTEXT.md` — CONTEXT.md — Glosario del workspace (~727 tok)
 - `CONTRIBUTING.adoc` (~899 tok)
 - `docker-compose.yml` — Docker Compose services (~285 tok)
 - `Dockerfile` — Docker container definition (~219 tok)
@@ -26,8 +27,8 @@
 - `LICENSE` — Project license (~288 tok)
 - `mvnw` — or more contributor license agreements.  See the NOTICE file (~3144 tok)
 - `mvnw.cmd` — Declares Directory (~2212 tok)
-- `pom.xml` (~1531 tok)
-- `README.md` — Project documentation (~3854 tok)
+- `pom.xml` — Maven project configuration (~1640 tok)
+- `README.md` — Project documentation (~3876 tok)
 - `SECURITY.md` — Security Policy (~742 tok)
 - `tdlib.log` (~0 tok)
 
@@ -43,6 +44,36 @@
 
 - `console-2026-08-22T23-38-08-399Z.log` (~299 tok)
 - `console-2026-08-22T23-50-13-302Z.log` (~35 tok)
+- `console-2026-08-22T23-56-13-742Z.log` (~124 tok)
+- `console-2026-08-23T00-50-26-547Z.log` (~66 tok)
+- `console-2026-08-23T00-54-01-930Z.log` (~51 tok)
+- `console-2026-08-23T00-56-55-947Z.log` (~35 tok)
+- `console-2026-08-23T00-57-50-119Z.log` (~62 tok)
+- `console-2026-08-23T01-03-10-129Z.log` (~51 tok)
+- `console-2026-08-23T01-03-31-853Z.log` (~128 tok)
+- `console-2026-08-23T01-12-14-720Z.log` (~31 tok)
+- `console-2026-08-23T01-17-17-377Z.log` (~93 tok)
+- `console-2026-08-23T01-20-34-595Z.log` (~51 tok)
+- `console-2026-08-23T01-23-02-002Z.log` (~66 tok)
+- `console-2026-08-23T01-32-06-759Z.log` (~62 tok)
+- `console-2026-08-23T01-38-51-837Z.log` (~97 tok)
+- `console-2026-08-23T01-44-15-851Z.log` (~93 tok)
+- `console-2026-08-23T01-49-17-779Z.log` (~51 tok)
+- `console-2026-08-23T01-50-34-511Z.log` (~35 tok)
+- `console-2026-08-23T01-55-29-319Z.log` (~31 tok)
+- `console-2026-08-23T01-59-16-975Z.log` (~31 tok)
+- `console-2026-08-23T02-09-30-762Z.log` (~867 tok)
+- `console-2026-08-23T02-30-29-573Z.log` — Declares at (~37 tok)
+- `console-2026-08-23T02-31-32-400Z.log` (~31 tok)
+- `console-2026-08-23T02-35-22-678Z.log` (~51 tok)
+- `console-2026-08-23T02-37-49-268Z.log` (~51 tok)
+- `console-2026-08-23T02-38-10-285Z.log` (~35 tok)
+- `console-2026-08-23T02-38-46-461Z.log` (~93 tok)
+- `console-2026-08-23T02-43-47-252Z.log` (~186 tok)
+- `console-2026-08-23T02-50-19-321Z.log` (~62 tok)
+- `console-2026-08-23T02-54-28-473Z.log` (~1207 tok)
+- `console-2026-08-23T03-42-54-777Z.log` (~51 tok)
+- `console-2026-08-23T20-17-22-943Z.log` (~35 tok)
 - `page-2026-08-22T23-38-09-061Z.yml` (~202 tok)
 - `page-2026-08-22T23-50-13-675Z.yml` — Declares for (~1246 tok)
 - `page-2026-08-22T23-50-28-755Z.yml` — Declares for (~2614 tok)
@@ -62,6 +93,55 @@
 - `page-2026-08-22T23-57-03-734Z.yml` — Declares for (~12483 tok)
 - `page-2026-08-22T23-57-08-753Z.yml` — Declares for (~1538 tok)
 - `page-2026-08-22T23-57-22-109Z.yml` — Declares for (~12000 tok)
+- `page-2026-08-23T00-50-26-848Z.yml` — Declares for (~1284 tok)
+- `page-2026-08-23T00-56-58-576Z.yml` — Declares for (~1524 tok)
+- `page-2026-08-23T00-57-50-203Z.yml` — Declares for (~957 tok)
+- `page-2026-08-23T01-03-32-341Z.yml` — Declares for (~1284 tok)
+- `page-2026-08-23T01-09-16-095Z.yml` — Declares for (~1284 tok)
+- `page-2026-08-23T01-12-14-844Z.yml` — Declares for (~1338 tok)
+- `page-2026-08-23T01-16-00-231Z.yml` — Declares for (~1336 tok)
+- `page-2026-08-23T01-17-17-554Z.yml` — Declares for (~1338 tok)
+- `page-2026-08-23T01-23-02-156Z.yml` — Declares for (~1284 tok)
+- `page-2026-08-23T01-27-41-778Z.yml` — Declares for (~1338 tok)
+- `page-2026-08-23T01-32-06-857Z.yml` — Declares for (~1338 tok)
+- `page-2026-08-23T01-38-52-077Z.yml` — Declares for (~1284 tok)
+- `page-2026-08-23T01-44-17-672Z.yml` — Declares for (~1296 tok)
+- `page-2026-08-23T01-50-34-683Z.yml` — Declares for (~1536 tok)
+- `page-2026-08-23T01-50-59-753Z.yml` — Declares for (~11521 tok)
+- `page-2026-08-23T01-54-38-439Z.yml` — Declares for (~1590 tok)
+- `page-2026-08-23T01-54-52-096Z.yml` — Declares for (~1832 tok)
+- `page-2026-08-23T01-55-02-096Z.yml` — Declares for (~1590 tok)
+- `page-2026-08-23T01-55-29-402Z.yml` — Declares for (~1639 tok)
+- `page-2026-08-23T01-59-17-060Z.yml` — Declares for (~1669 tok)
+- `page-2026-08-23T01-59-35-808Z.yml` — Declares for (~1669 tok)
+- `page-2026-08-23T02-05-29-774Z.yml` — Declares for (~936 tok)
+- `page-2026-08-23T02-05-43-507Z.yml` — Declares for (~1766 tok)
+- `page-2026-08-23T02-09-30-866Z.yml` — Declares for (~970 tok)
+- `page-2026-08-23T02-09-59-619Z.yml` — Declares for (~1832 tok)
+- `page-2026-08-23T02-29-08-451Z.yml` — Declares for (~1435 tok)
+- `page-2026-08-23T02-29-22-352Z.yml` — Declares for (~2857 tok)
+- `page-2026-08-23T02-29-47-284Z.yml` — Declares for (~1851 tok)
+- `page-2026-08-23T02-30-09-430Z.yml` — Declares for (~1886 tok)
+- `page-2026-08-23T02-30-29-649Z.yml` — Declares for (~1619 tok)
+- `page-2026-08-23T02-31-32-508Z.yml` — Declares for (~1619 tok)
+- `page-2026-08-23T02-38-10-499Z.yml` — Declares for (~936 tok)
+- `page-2026-08-23T02-38-24-795Z.yml` — Declares for (~1776 tok)
+- `page-2026-08-23T02-38-46-542Z.yml` — Declares for (~1048 tok)
+- `page-2026-08-23T02-43-47-456Z.yml` — Declares for (~970 tok)
+- `page-2026-08-23T02-44-01-959Z.yml` — Declares for (~1841 tok)
+- `page-2026-08-23T02-50-19-724Z.yml` — Declares for (~970 tok)
+- `page-2026-08-23T02-54-29-502Z.yml` — Declares for (~988 tok)
+- `page-2026-08-23T20-17-23-255Z.yml` — Declares for (~1296 tok)
+- `page-2026-08-23T20-17-57-284Z.yml` — Declares for (~2658 tok)
+- `page-2026-08-23T20-19-07-599Z.yml` — Declares for (~1590 tok)
+- `page-2026-08-23T20-19-26-573Z.yml` — Declares for (~12112 tok)
+- `page-2026-08-23T20-20-38-517Z.yml` — Declares for (~1048 tok)
+- `page-2026-08-23T20-21-02-314Z.yml` — Declares for (~1841 tok)
+- `page-2026-08-23T20-22-16-372Z.yml` — Declares for (~1268 tok)
+- `page-2026-08-23T20-22-31-188Z.yml` — Declares for (~1268 tok)
+- `page-2026-08-23T20-23-49-350Z.yml` (~52 tok)
+- `page-2026-08-23T20-24-11-920Z.yml` (~5803 tok)
+- `page-2026-08-23T20-24-39-178Z.yml` (~27 tok)
 
 ## .qoder/rules/
 
@@ -87,7 +167,7 @@
 
 - `org.eclipse.core.resources.prefs` (~40 tok)
 - `org.eclipse.jdt.apt.core.prefs` (~58 tok)
-- `org.eclipse.jdt.core.prefs` (~347 tok)
+- `org.eclipse.jdt.core.prefs` (~344 tok)
 - `org.eclipse.m2e.core.prefs` (~23 tok)
 
 ## docs/adr/
@@ -123,8 +203,8 @@
 
 ## src/main/java/com/zademy/nekolu/controller/
 
-- `FileController.java` — Exposes REST endpoints for browsing, uploading, downloading, previewing, and organizing Telegram-bac (~9478 tok)
-- `GlobalExceptionHandler.java` — Centralizes exception handling for all REST controllers. (~2294 tok)
+- `FileController.java` — Exposes REST endpoints for browsing, uploading, downloading, previewing, and organizing Telegram-backed files. (~10215 tok)
+- `GlobalExceptionHandler.java` — Centralizes exception handling for all REST controllers. (~2458 tok)
 - `SetupController.java` — First-run authentication wizard: shows the step TDLib is waiting for and (~1010 tok)
 - `TelegramController.java` — Exposes folder-management endpoints backed by Telegram private channels. (~1952 tok)
 - `WebController.java` — MVC controller for Thymeleaf views. (~366 tok)
@@ -143,7 +223,7 @@
 - `DownloadJob.java` — DTO for batch download jobs. (~551 tok)
 - `DownloadResponse.java` — File download status response. (~611 tok)
 - `FileExportResponse.java` — DTO for file export. (~198 tok)
-- `FileInfoResponse.java` — Detailed API representation of a Telegram-backed file, including TDLib metadata and logical drive me (~1772 tok)
+- `FileInfoResponse.java` — Detailed API representation of a Telegram-backed file, including TDLib metadata and logical drive metadata. (~1914 tok)
 - `FileStatsResponse.java` — DTO for file statistics. (~277 tok)
 - `FileStreamResponse.java` — DTO for file streaming response. (~255 tok)
 - `FolderInfo.java` — Information about a folder (private Telegram channel). (~229 tok)
@@ -151,7 +231,7 @@
 - `NetworkStatsResponse.java` — DTO for TDLib network usage statistics. (~492 tok)
 - `StorageStatsResponse.java` — DTO for TDLib local storage statistics. (~238 tok)
 - `TelegramLimitsResponse.java` — DTO for Telegram account limits. (~211 tok)
-- `UploadCommand.java` — The single upload command: everything an upload needs, travelling as one (~298 tok)
+- `UploadCommand.java` — The single upload command: everything an upload needs, travelling as one (~319 tok)
 - `UploadResponse.java` — File upload status response for Telegram. (~745 tok)
 
 ## src/main/java/com/zademy/nekolu/exception/
@@ -170,20 +250,20 @@
 
 ## src/main/java/com/zademy/nekolu/service/
 
-- `FileService.java` — Interface for the Telegram file management service. (~2195 tok)
+- `FileService.java` — Interface for the Telegram file management service. (~1701 tok)
 - `TelegramService.java` — The seam between the workspace and Telegram. This contract owns the whole (~2842 tok)
 
 ## src/main/java/com/zademy/nekolu/service/impl/
 
-- `FileServiceImpl.java` — Implementation of the Telegram file management service. (~11209 tok)
-- `TdLibPreconditions.java` — Centralizes TDLib precondition checks that are repeated across service methods. (~481 tok)
+- `FileServiceImpl.java` — Implementation of the Telegram file management service. (~12039 tok)
+- `TdLibPreconditions.java` — Centralizes TDLib precondition checks that are repeated across service methods. (~515 tok)
 - `TelegramRateLimiter.java` — Token-bucket-style rate limiter that protects the TDLib client from (~644 tok)
-- `TelegramServiceImpl.java` — TDLib-backed implementation of Telegram operations such as authorization, downloads, folders, and te (~11191 tok)
-- `UploadStagingArea.java` — Deep module owning the staged-upload cycle: materializing an incoming (~1408 tok)
+- `TelegramServiceImpl.java` — TDLib-backed implementation of Telegram operations such as authorization, downloads, folders, and telemetry retrieval. (~12047 tok)
+- `UploadStagingArea.java` — Deep module owning the staged-upload cycle: materializing an incoming (~1509 tok)
 
 ## src/main/resources/
 
-- `application.example.properties` — Spring Boot application name (~734 tok)
+- `application.example.properties` — Spring Boot application name (~776 tok)
 - `application.properties` — Spring Boot application name (~712 tok)
 - `logback-spring.xml` (~279 tok)
 - `messages_es.properties` — === Mensajes en Español === (~535 tok)
@@ -191,7 +271,7 @@
 
 ## src/main/resources/static/css/
 
-- `app.css` — Styles: 89 rules, 20 vars (~9229 tok)
+- `app.css` — Styles: 91 rules, 20 vars (~13811 tok)
 - `tokens.css` — Styles: 58 vars (~708 tok)
 
 ## src/main/resources/static/js/
@@ -209,15 +289,15 @@
 ## src/main/resources/templates/
 
 - `dashboard.html` — Home (~3853 tok)
-- `files.html` — Files (~12158 tok)
-- `folder-files.html` — Folder files (~12598 tok)
+- `files.html` — Files (~12197 tok)
+- `folder-files.html` — Folder files (~12637 tok)
 - `folders.html` — Folders (~4094 tok)
-- `setup.html` — Nekolu setup (~1843 tok)
+- `setup.html` — Nekolu setup (~2017 tok)
 - `stats.html` — Statistics (~5154 tok)
 
 ## src/main/resources/templates/layout/
 
-- `base.html` — Nekolu (~1270 tok)
+- `base.html` — Nekolu (~1495 tok)
 
 ## src/test/java/com/zademy/nekolu/
 
@@ -235,11 +315,11 @@
 
 ## src/test/java/com/zademy/nekolu/service/impl/
 
-- `FileServiceImplTest.java` — Unit tests for the file-management module through the TelegramService seam, (~3782 tok)
-- `TdLibPreconditionsTest.java` — Unit tests for the centralized TDLib readiness preconditions used by the (~669 tok)
-- `UploadStagingAreaTest.java` — Unit tests for the upload staging area against a real temporary (~908 tok)
+- `FileServiceImplTest.java` — Unit tests for the file-management module through the TelegramService seam, (~4566 tok)
+- `TdLibPreconditionsTest.java` — Unit tests for the centralized TDLib readiness preconditions used by the (~717 tok)
+- `UploadStagingAreaTest.java` — Unit tests for the upload staging area against a real temporary (~972 tok)
 
 ## tdlib/
 
+- `app.log` (~1322 tok)
 - `db.sqlite-shm` (~8738 tok)
-- `td.binlog` (~210562 tok)

@@ -6,7 +6,7 @@ budget_tokens: 2000
 
 > OpenWolf's learning memory. Updated automatically as the AI learns from interactions.
 > Do not edit manually unless correcting an error.
-> Last updated: 2026-08-22
+> Last updated: 2026-08-23
 
 ## User Preferences
 
@@ -14,8 +14,7 @@ budget_tokens: 2000
 
 ## Key Learnings
 
-- **Project:** nekolu
-- **Description:** <h1 align="center">Nekolu</h1>
+- **Project:** nekolu — self-hosted personal file workspace using Telegram as storage backend (Spring Boot 4, Java 25, TDLib).
 
 ## Do-Not-Repeat
 
